@@ -85,12 +85,28 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
         />
         {status !== 'running' && (
           <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', textAlign: 'center', padding: '1rem', fontFamily: 'var(--font-read)' }}>
-            {status === 'loading' ? tr('cameraLoading') : status === 'denied' ? tr('cameraDenied') : status === 'error' ? tr('cameraDenied') : tr('answerWithHand')}
+            {status === 'loading'
+              ? tr('cameraLoading')
+              : status === 'denied'
+                ? tr('cameraDenied')
+                : status === 'insecure'
+                  ? tr('cameraInsecure')
+                  : status === 'nocamera'
+                    ? tr('cameraNoDevice')
+                    : status === 'busy'
+                      ? tr('cameraBusy')
+                      : status === 'error'
+                        ? tr('cameraError')
+                        : tr('answerWithHand')}
           </div>
         )}
         {status === 'running' && (
           <div aria-live="polite" style={{ position: 'absolute', left: 6, bottom: 6, background: 'rgba(0,0,0,0.6)', color: '#fff', fontFamily: 'var(--font-read)', fontSize: '0.8rem', padding: '2px 8px' }}>
-            {raised === 0 ? tr('showFingers') : `✋ ${raised}`}
+            {raised === 0
+              ? tr('showFingers')
+              : settings.fingerMode === 'point' && raised > 1
+                ? `✋ ${raised} · ${tr('pointOneFinger')}`
+                : `✋ ${raised}`}
           </div>
         )}
         {showPosture && status === 'running' && posture !== 'none' && (

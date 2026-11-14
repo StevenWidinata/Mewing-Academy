@@ -50,6 +50,26 @@ export const STRINGS = {
     en: 'Camera is off. You can still tap your answers below!',
     id: 'Kamera mati. Kamu tetap bisa mengetuk jawaban di bawah!',
   },
+  cameraInsecure: {
+    en: 'Camera needs a secure (https://) link. You can still tap your answers below!',
+    id: 'Kamera butuh tautan aman (https://). Kamu tetap bisa mengetuk jawaban di bawah!',
+  },
+  cameraNoDevice: {
+    en: 'No camera found on this device. You can still tap your answers below!',
+    id: 'Kamera tidak ditemukan di perangkat ini. Kamu tetap bisa mengetuk jawaban di bawah!',
+  },
+  cameraBusy: {
+    en: 'The camera is busy in another app. Close it and try again!',
+    id: 'Kamera sedang dipakai aplikasi lain. Tutup lalu coba lagi!',
+  },
+  cameraError: {
+    en: 'The camera AI could not start on this device. You can still tap your answers below!',
+    id: 'AI kamera tidak bisa berjalan di perangkat ini. Kamu tetap bisa mengetuk jawaban di bawah!',
+  },
+  pointOneFinger: {
+    en: 'Raise just ONE finger (or switch to "Count" in Settings)',
+    id: 'Angkat SATU jari saja (atau pilih "Hitung" di Pengaturan)',
+  },
   cameraPrivacy: {
     en: 'The camera runs only on this device. No video is sent or saved.',
     id: 'Kamera hanya berjalan di perangkat ini. Video tidak dikirim atau disimpan.',

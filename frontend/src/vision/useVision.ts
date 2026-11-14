@@ -7,7 +7,48 @@ import {
 } from '@mediapipe/tasks-vision';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type VisionStatus = 'idle' | 'loading' | 'running' | 'denied' | 'error';
+export type VisionStatus =
+  | 'idle'
+  | 'loading'
+  | 'running'
+  | 'denied' // user/browser blocked camera permission
+  | 'insecure' // page not served over HTTPS (or localhost): browsers hide the camera API
+  | 'nocamera' // no camera found / camera API not supported by this browser
+  | 'busy' // camera is being used by another app/tab
+  | 'error'; // AI model failed to load or something unexpected
+
+type Delegate = 'GPU' | 'CPU';
+
+/**
+ * Many devices (older phones, Chromebooks, some Android GPUs, browsers with
+ * WebGL disabled) cannot run MediaPipe on the GPU. Try GPU first for speed,
+ * then fall back to CPU so the camera still works everywhere.
+ */
+async function createWithFallback<T>(make: (delegate: Delegate) => Promise<T>): Promise<T> {
+  try {
+    return await make('GPU');
+  } catch (err) {
+    console.warn('[vision] GPU delegate failed, falling back to CPU:', err);
+    return make('CPU');
+  }
+}
+
+function classifyCameraError(err: unknown): VisionStatus {
+  if (!(err instanceof DOMException)) return 'error';
+  switch (err.name) {
+    case 'NotAllowedError':
+    case 'SecurityError':
+      return 'denied';
+    case 'NotFoundError':
+    case 'OverconstrainedError':
+      return 'nocamera';
+    case 'NotReadableError':
+    case 'AbortError':
+      return 'busy';
+    default:
+      return 'error';
+  }
+}
 
 export interface VisionFrame {
   hand?: HandLandmarkerResult;
@@ -66,9 +107,15 @@ export function useVision({ withFace = false, onFrame }: Options) {
       if (video && hand && video.readyState >= 2 && video.currentTime !== lastVideoTime.current) {
         lastVideoTime.current = video.currentTime;
         const now = performance.now();
-        const frame: VisionFrame = { hand: hand.detectForVideo(video, now) };
-        if (withFaceRef.current && faceRef.current) frame.face = faceRef.current.detectForVideo(video, now);
-        onFrameRef.current(frame);
+        // A single failed frame (e.g. GPU context hiccup) must not kill the
+        // loop, otherwise the video keeps playing but nothing is detected.
+        try {
+          const frame: VisionFrame = { hand: hand.detectForVideo(video, now) };
+          if (withFaceRef.current && faceRef.current) frame.face = faceRef.current.detectForVideo(video, now);
+          onFrameRef.current(frame);
+        } catch (err) {
+          console.warn('[vision] frame failed:', err);
+        }
       }
       rafRef.current = requestAnimationFrame(() => loopRef.current());
     };
@@ -76,30 +123,66 @@ export function useVision({ withFace = false, onFrame }: Options) {
 
   const start = useCallback(async () => {
     if (status === 'loading' || status === 'running') return;
+    // Browsers only expose the camera on HTTPS or localhost. Opening the dev
+    // server from a phone via http://192.168.x.x makes mediaDevices undefined.
+    if (!window.isSecureContext) {
+      setStatus('insecure');
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setStatus('nocamera');
+      return;
+    }
     setStatus('loading');
     try {
-      if (!handRef.current) {
-        const fileset = await FilesetResolver.forVisionTasks(WASM_PATH);
-        handRef.current = await HandLandmarker.createFromOptions(fileset, {
-          baseOptions: { modelAssetPath: HAND_MODEL, delegate: 'GPU' },
-          runningMode: 'VIDEO',
-          numHands: 1,
+      // Ask for the camera first so permission/hardware problems are reported
+      // quickly instead of after a multi-MB model download.
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false,
         });
-        if (withFaceRef.current) {
-          faceRef.current = await FaceLandmarker.createFromOptions(fileset, {
-            baseOptions: { modelAssetPath: FACE_MODEL, delegate: 'GPU' },
-            runningMode: 'VIDEO',
-            numFaces: 1,
-            outputFaceBlendshapes: false,
-          });
+      } catch (err) {
+        if (err instanceof DOMException && (err.name === 'OverconstrainedError' || err.name === 'NotReadableError')) {
+          // Some webcams/drivers reject any constraints: retry with the bare minimum.
+          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        } else {
+          throw err;
         }
       }
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: 640, height: 480 },
-        audio: false,
-      });
       streamRef.current = stream;
+
+      try {
+        if (!handRef.current) {
+          const fileset = await FilesetResolver.forVisionTasks(WASM_PATH);
+          handRef.current = await createWithFallback((delegate) =>
+            HandLandmarker.createFromOptions(fileset, {
+              baseOptions: { modelAssetPath: HAND_MODEL, delegate },
+              runningMode: 'VIDEO',
+              numHands: 1,
+            }),
+          );
+        }
+        if (withFaceRef.current && !faceRef.current) {
+          const fileset = await FilesetResolver.forVisionTasks(WASM_PATH);
+          faceRef.current = await createWithFallback((delegate) =>
+            FaceLandmarker.createFromOptions(fileset, {
+              baseOptions: { modelAssetPath: FACE_MODEL, delegate },
+              runningMode: 'VIDEO',
+              numFaces: 1,
+              outputFaceBlendshapes: false,
+            }),
+          );
+        }
+      } catch (err) {
+        stream.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+        setStatus('error');
+        console.warn('[vision] model load failed:', err);
+        return;
+      }
+
       const video = videoRef.current;
       if (!video) throw new Error('No video element');
       video.srcObject = stream;
@@ -108,8 +191,9 @@ export function useVision({ withFace = false, onFrame }: Options) {
       lastVideoTime.current = -1;
       rafRef.current = requestAnimationFrame(() => loopRef.current());
     } catch (err) {
-      const denied = err instanceof DOMException && (err.name === 'NotAllowedError' || err.name === 'NotFoundError');
-      setStatus(denied ? 'denied' : 'error');
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+      setStatus(classifyCameraError(err));
       console.warn('[vision] start failed:', err);
     }
   }, [status]);
