@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSettings } from '../state/settings';
-import { classify } from '../vision/fingers';
+import { classify, type Classification } from '../vision/fingers';
+import { LETTERS } from './ChoiceGrid';
+import { HandPose } from './HandPose';
 import { readPosture, type PostureTip } from '../vision/posture';
 import { useVision, type VisionFrame } from '../vision/useVision';
 
@@ -14,7 +16,13 @@ interface Props {
   paused?: boolean;
   showPosture?: boolean;
   onHover?: (index: number | null, progress: number) => void;
+  /** Answers are numbers (e.g. "5"): remind kids fingers pick the letter. */
+  numericChoices?: boolean;
 }
+
+type Readout = Pick<Classification, 'answer' | 'pose' | 'reason'>;
+const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false, false], reason: 'no-hand' };
+const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
 
 const POSTURE_TEXT: Record<PostureTip, { en: string; id: string }> = {
   good: { en: '😺 Great posture!', id: '😺 Postur bagus!' },
@@ -24,9 +32,17 @@ const POSTURE_TEXT: Record<PostureTip, { en: string; id: string }> = {
   none: { en: '', id: '' },
 };
 
-export function CameraStage({ choiceCount, onConfirm, paused = false, showPosture = false, onHover }: Props) {
+export function CameraStage({ choiceCount, onConfirm, paused = false, showPosture = false, onHover, numericChoices = false }: Props) {
   const { settings, tr } = useSettings();
-  const [raised, setRaised] = useState(0);
+  // Only re-render when what we show changes, not on every camera frame.
+  const [readout, setReadout] = useState<Readout>(EMPTY_READOUT);
+  const lastKey = useRef(readoutKey(EMPTY_READOUT));
+  const showReadout = useCallback((r: Readout) => {
+    const key = readoutKey(r);
+    if (key === lastKey.current) return;
+    lastKey.current = key;
+    setReadout({ answer: r.answer, pose: r.pose, reason: r.reason });
+  }, []);
   const [posture, setPosture] = useState<PostureTip>('none');
 
   // Hold tracking lives in refs so the rAF loop doesn't re-render every frame.
@@ -47,8 +63,9 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
         return;
       }
       const lm = frame.hand?.landmarks?.[0];
-      const { answer, raised: r } = classify(lm, settings.fingerMode, choiceCount);
-      setRaised(r);
+      const result = classify(lm, settings.fingerMode, choiceCount);
+      const { answer } = result;
+      showReadout(result);
 
       if (answer == null) {
         candidate.current = null;
@@ -68,7 +85,7 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
         onConfirm(answer);
       }
     },
-    [choiceCount, onConfirm, onHover, settings.fingerMode, showPosture],
+    [choiceCount, onConfirm, onHover, settings.fingerMode, showPosture, showReadout],
   );
 
   const { videoRef, status, start, stop } = useVision({ withFace: showPosture, onFrame: handleFrame });
@@ -101,12 +118,43 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
           </div>
         )}
         {status === 'running' && (
-          <div aria-live="polite" style={{ position: 'absolute', left: 6, bottom: 6, background: 'rgba(0,0,0,0.6)', color: '#fff', fontFamily: 'var(--font-read)', fontSize: '0.8rem', padding: '2px 8px' }}>
-            {raised === 0
-              ? tr('showFingers')
-              : settings.fingerMode === 'point' && raised > 1
-                ? `✋ ${raised} · ${tr('pointOneFinger')}`
-                : `✋ ${raised}`}
+          <div
+            aria-live="polite"
+            style={{
+              position: 'absolute',
+              left: 6,
+              right: 6,
+              bottom: 6,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: readout.answer != null ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
+              color: '#fff',
+              fontFamily: 'var(--font-read)',
+              fontSize: '0.8rem',
+              padding: '4px 8px',
+            }}
+          >
+            {readout.reason === 'no-hand' || readout.reason === 'fist' ? (
+              tr('showFingers')
+            ) : (
+              <>
+                <HandPose pose={readout.pose} size={26} />
+                {readout.answer != null ? (
+                  <strong style={{ fontFamily: 'var(--font-pixel)', fontSize: '1rem', color: 'var(--yellow)' }}>
+                    → {LETTERS[readout.answer]}
+                  </strong>
+                ) : (
+                  <span>
+                    {readout.reason === 'open-hand'
+                      ? tr('handOpen')
+                      : readout.reason === 'one-finger'
+                        ? tr('pointOneFinger')
+                        : tr('handTooMany')}
+                  </span>
+                )}
+              </>
+            )}
           </div>
         )}
         {showPosture && status === 'running' && posture !== 'none' && (
@@ -115,6 +163,15 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
           </div>
         )}
       </div>
+
+      {numericChoices && (
+        <p
+          role="note"
+          style={{ margin: 0, padding: '4px 10px', background: 'var(--yellow)', color: 'var(--ink)', fontFamily: 'var(--font-read)', fontWeight: 700, fontSize: '0.85rem', textAlign: 'center' }}
+        >
+          {tr('fingersPickLetter')}
+        </p>
+      )}
 
       <div style={{ display: 'flex', gap: '0.5rem' }}>
         {status === 'running' ? (

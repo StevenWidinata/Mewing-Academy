@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Difficulty, MemoryRound } from '../../../shared/types';
 import { AdaptiveTip } from '../components/AdaptiveTip';
 import { CameraStage } from '../components/CameraStage';
+import { hasNumberLabels } from '../vision/fingers';
 import { ChoiceGrid } from '../components/ChoiceGrid';
 import { Confetti } from '../components/Confetti';
 import { LevelPicker } from '../components/LevelPicker';
@@ -137,7 +138,13 @@ export function MemoryPage() {
         {q.prompt[settings.lang]} <SpeakButton text={questionToSpeech(q, settings.lang)} small />
       </h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 360px) 1fr', gap: '1.5rem', alignItems: 'start' }}>
-        <CameraStage choiceCount={q.choices.length} onConfirm={pick} onHover={(i, p) => setHover({ index: i, progress: p })} paused={revealed} />
+        <CameraStage
+          choiceCount={q.choices.length}
+          onConfirm={pick}
+          onHover={(i, p) => setHover({ index: i, progress: p })}
+          paused={revealed}
+          numericChoices={hasNumberLabels(q.choices.map((c) => c.label[settings.lang]))}
+        />
         <div>
           <ChoiceGrid choices={q.choices} hovered={hover.index} holdProgress={hover.progress} picked={picked} answer={q.answer} onPick={pick} />
           {revealed && (

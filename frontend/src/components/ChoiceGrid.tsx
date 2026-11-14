@@ -1,8 +1,21 @@
 import type { Choice } from '../../../shared/types';
 import { useSettings } from '../state/settings';
+import { poseFor, type FingerMode } from '../vision/fingers';
+import { HandPose } from './HandPose';
 import { ColorSwatch } from './Sprite';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
+
+const FINGER_NAMES = {
+  en: ['index finger', 'middle finger', 'ring finger', 'little finger'],
+  id: ['jari telunjuk', 'jari tengah', 'jari manis', 'jari kelingking'],
+} as const;
+
+function fingerHintLabel(i: number, mode: FingerMode, lang: 'en' | 'id'): string {
+  if (mode === 'point') return FINGER_NAMES[lang][i];
+  const n = i + 1;
+  return lang === 'en' ? `${n} finger${n > 1 ? 's' : ''}` : `${n} jari`;
+}
 
 interface Props {
   choices: Choice[];
@@ -16,9 +29,11 @@ interface Props {
   answer?: number;
   onPick: (index: number) => void;
   disabled?: boolean;
+  /** Draw the hand pose that picks each answer with the camera. */
+  showFingerHint?: boolean;
 }
 
-export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer, onPick, disabled }: Props) {
+export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer, onPick, disabled, showFingerHint = true }: Props) {
   const { settings } = useSettings();
   const revealed = picked != null && answer != null;
 
@@ -49,7 +64,15 @@ export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer,
               <span aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.45)', transformOrigin: 'left', transform: `scaleX(${holdProgress})`, transition: 'transform 0.05s linear' }} />
             )}
             <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              <strong style={{ fontFamily: 'var(--font-pixel)', marginRight: 8 }}>{LETTERS[i]}</strong>
+              <strong style={{ fontFamily: 'var(--font-pixel)', marginRight: showFingerHint ? 2 : 8 }}>{LETTERS[i]}</strong>
+              {showFingerHint && (
+                <span
+                  title={fingerHintLabel(i, settings.fingerMode, settings.lang)}
+                  style={{ marginRight: 8, padding: 2, borderRadius: 4, background: 'rgba(0,0,0,0.12)' }}
+                >
+                  <HandPose pose={poseFor(i, settings.fingerMode)} size={22} label={fingerHintLabel(i, settings.fingerMode, settings.lang)} />
+                </span>
+              )}
               {c.color && <ColorSwatch color={c.color} />}
               <span style={{ fontFamily: 'var(--font-read)', fontWeight: 700 }}>{c.label[settings.lang]}</span>
             </span>

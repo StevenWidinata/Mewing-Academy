@@ -5,6 +5,7 @@ import { useQuiz } from '../lib/useQuiz';
 import { useSettings } from '../state/settings';
 import { BossBar, BossSprite, ComboPop } from './Boss';
 import { bossHp } from '../lib/boss';
+import { hasNumberLabels } from '../vision/fingers';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
 import { Confetti } from './Confetti';
@@ -88,7 +89,13 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
-        <CameraStage choiceCount={current.choices.length} onConfirm={pick} onHover={onHover} paused={revealed} />
+        <CameraStage
+          choiceCount={current.choices.length}
+          onConfirm={pick}
+          onHover={onHover}
+          paused={revealed}
+          numericChoices={hasNumberLabels(current.choices.map((c) => c.label[lang]))}
+        />
         <div>
           <p style={{ fontFamily: 'var(--font-read)', textAlign: 'center' }}>{tr('answerWithTap')}</p>
           <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pick} />

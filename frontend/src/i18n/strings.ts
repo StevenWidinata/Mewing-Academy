@@ -70,6 +70,15 @@ export const STRINGS = {
     en: 'Raise just ONE finger (or switch to "Count" in Settings)',
     id: 'Angkat SATU jari saja (atau pilih "Hitung" di Pengaturan)',
   },
+  handOpen: {
+    en: 'Whole hand = no answer',
+    id: 'Satu tangan penuh = bukan jawaban',
+  },
+  handTooMany: { en: 'Too many fingers', id: 'Jarinya terlalu banyak' },
+  fingersPickLetter: {
+    en: '✋ Fingers pick the LETTER, not the number!',
+    id: '✋ Jari memilih HURUF, bukan angka!',
+  },
   cameraPrivacy: {
     en: 'The camera runs only on this device. No video is sent or saved.',
     id: 'Kamera hanya berjalan di perangkat ini. Video tidak dikirim atau disimpan.',
