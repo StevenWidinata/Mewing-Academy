@@ -11,9 +11,11 @@ export interface QuizState {
   done: boolean;
   /** Right answers in a row (combo meter). */
   streak: number;
+  /** One entry per answered question: true = right. */
+  results: boolean[];
 }
 
-const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0 };
+const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [] };
 
 /**
  * Side effects (saving progress, sounds, onFinish) run in the event handler,
@@ -34,7 +36,13 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
       recordAnswer(q.topic, correct);
       if (correct) sfx.correct(settings.sound);
       else sfx.wrong(settings.sound);
-      setState({ ...state, picked: choice, correctCount: state.correctCount + (correct ? 1 : 0), streak: correct ? state.streak + 1 : 0 });
+      setState({
+        ...state,
+        picked: choice,
+        correctCount: state.correctCount + (correct ? 1 : 0),
+        streak: correct ? state.streak + 1 : 0,
+        results: [...state.results, correct],
+      });
     },
     [questions, settings.sound, state],
   );

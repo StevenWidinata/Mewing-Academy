@@ -8,6 +8,7 @@ import { bossHp } from '../lib/boss';
 import { hasNumberLabels } from '../vision/fingers';
 import type { VisionStatus } from '../vision/useVision';
 import { AnswerModeHint } from './AnswerModeHint';
+import { QuizProgress } from './QuizProgress';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
 import { Confetti } from './Confetti';
@@ -74,10 +75,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
   const comboShake = revealed && state.picked === current.answer && state.streak >= 3 && !settings.reduceMotion;
   return (
     <section className={comboShake ? 'shake' : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-pixel)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
-        <span>{state.index + 1} / {total}</span>
-        <span>⭐ {state.correctCount}</span>
-      </div>
+      <QuizProgress index={state.index} total={total} results={state.results} stars={state.correctCount} />
 
       {boss && <BossBar hits={state.correctCount} total={total} lang={lang} />}
       <MewyBuddy mood={mood} />

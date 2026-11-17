@@ -1349,3 +1349,53 @@ main > section > h1:first-child::after {
   border-color: #fff;
   box-shadow: none;
 }
+
+/* ============ Quiz progress: "Question 3 / 10" + segments ============ */
+.quiz-progress {
+  margin-bottom: 0.75rem;
+}
+.quiz-progress__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.quiz-progress__badge {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  background: var(--ink);
+  color: #fdf6e3;
+  border: 3px solid var(--yellow);
+  box-shadow: 3px 3px 0 var(--shadow);
+  padding: 0.45rem 0.7rem;
+}
+.quiz-progress__badge--stars {
+  background: var(--yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.quiz-progress__bar {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  background: var(--ink);
+  border: 3px solid var(--ink);
+}
+.quiz-progress__seg {
+  flex: 1;
+  height: 10px;
+  background: #4a4560;
+}
+.quiz-progress__seg--right {
+  background: var(--green);
+}
+.quiz-progress__seg--wrong {
+  background: var(--red);
+}
+.quiz-progress__seg--current {
+  background: var(--yellow);
+  animation: twinkle 1.2s ease-in-out infinite;
+}

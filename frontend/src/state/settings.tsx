@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Lang } from '../../../shared/types';
 import { t, type StringKey } from '../i18n/strings';
 import type { FurId, ItemId } from './rewards';
+import { ROUND_SIZES, type RoundSize } from './roundSize';
 
 export type ThemeId = 'purple' | 'sky' | 'mint' | 'sunset';
 export type TextSize = 'normal' | 'large' | 'xlarge';
@@ -23,6 +24,8 @@ export interface Settings {
   pawCursor: boolean;
   mewyFur: FurId;
   mewyItem: ItemId | null;
+  /** Questions per Hand Quiz round. */
+  roundSize: RoundSize;
 }
 
 const DEFAULTS: Settings = {
@@ -39,6 +42,7 @@ const DEFAULTS: Settings = {
   pawCursor: true,
   mewyFur: 'yellow',
   mewyItem: null,
+  roundSize: 5,
 };
 
 const KEY = 'mewing.settings.v1';
@@ -49,7 +53,9 @@ function load(): Settings {
     if (raw) {
       // fingerMode was removed (count mode only); drop it from old saves.
       const { fingerMode: _removed, ...saved } = JSON.parse(raw) as Partial<Settings> & { fingerMode?: unknown };
-      return { ...DEFAULTS, ...saved };
+      const merged = { ...DEFAULTS, ...saved };
+      if (!ROUND_SIZES.includes(merged.roundSize)) merged.roundSize = DEFAULTS.roundSize;
+      return merged;
     }
   } catch {
     /* ignore corrupt storage */

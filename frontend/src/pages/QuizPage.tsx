@@ -4,13 +4,12 @@ import { isQuizTopic, type QuizTopic } from '../../../shared/questions';
 import { TOPICS, type Difficulty, type Question } from '../../../shared/types';
 import { AdaptiveTip } from '../components/AdaptiveTip';
 import { LevelPicker } from '../components/LevelPicker';
+import { RoundSizePicker } from '../components/RoundSizePicker';
 import { MewyBuddy } from '../components/MewyBuddy';
 import { QuizRunner } from '../components/QuizRunner';
 import { TopicIcon } from '../components/TopicIcon';
 import { fetchQuestions } from '../lib/api';
 import { useSettings } from '../state/settings';
-
-const QUESTIONS_PER_ROUND = 5;
 
 export function QuizPage() {
   const { tr, settings } = useSettings();
@@ -21,10 +20,14 @@ export function QuizPage() {
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [round, setRound] = useState(0);
 
-  const start = useCallback(async (t: QuizTopic, d: Difficulty) => {
-    setQuestions(await fetchQuestions(t, d, QUESTIONS_PER_ROUND));
-    setRound((r) => r + 1);
-  }, []);
+  const roundSize = settings.roundSize;
+  const start = useCallback(
+    async (t: QuizTopic, d: Difficulty) => {
+      setQuestions(await fetchQuestions(t, d, roundSize));
+      setRound((r) => r + 1);
+    },
+    [roundSize],
+  );
   const changeLevel = (d: Difficulty) => {
     setLevel(d);
     setQuestions(null);
@@ -50,6 +53,7 @@ export function QuizPage() {
           </p>
         </div>
         <LevelPicker value={level} onChange={changeLevel} />
+        <RoundSizePicker />
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginTop: '1.5rem', flexWrap: 'wrap' }}>
           <button type="button" className="btn" onClick={() => start(topic, level)} style={{ fontSize: '0.9rem', padding: '1em 1.6em' }}>
             ▶ {tr('start')}

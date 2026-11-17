@@ -34,6 +34,8 @@ export const STRINGS = {
   correct: { en: 'Correct!', id: 'Benar!' },
   notQuite: { en: 'Not quite!', id: 'Belum tepat!' },
   level: { en: 'Level', id: 'Tingkat' },
+  roundSize: { en: 'How many questions?', id: 'Berapa soal?' },
+  questionWord: { en: 'Question', id: 'Soal' },
   easy: { en: 'Easy', id: 'Mudah' },
   medium: { en: 'Medium', id: 'Sedang' },
   hard: { en: 'Hard', id: 'Sulit' },
