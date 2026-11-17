@@ -66,11 +66,13 @@ function arrowKeys(e: KeyboardEvent<HTMLElement>) {
 /** Desktop: one balanced bar with three dropdown groups. */
 export function NavBar() {
   const { tr } = useSettings();
-  const { pathname } = useLocation();
-  // The menu remembers the page it was opened on, so navigating closes it.
-  const [openAt, setOpenAt] = useState<{ id: Group['id']; path: string } | null>(null);
-  const open = openAt?.path === pathname ? openAt.id : null;
-  const setOpen = (id: Group['id'] | null) => setOpenAt(id ? { id, path: pathname } : null);
+  const location = useLocation();
+  const { pathname } = location;
+  // The menu remembers the navigation it was opened on (location.key changes
+  // on every navigation, even /quiz -> /quiz?topic=x), so navigating closes it.
+  const [openAt, setOpenAt] = useState<{ id: Group['id']; nav: string } | null>(null);
+  const open = openAt?.nav === location.key ? openAt.id : null;
+  const setOpen = (id: Group['id'] | null) => setOpenAt(id ? { id, nav: location.key } : null);
   const barRef = useRef<HTMLElement | null>(null);
 
   // Close on outside click and Escape.
@@ -128,7 +130,7 @@ export function NavBar() {
               <ul id={`nav-menu-${g.id}`} className="navbar__menu" onKeyDown={arrowKeys}>
                 {g.items.map((i) => (
                   <li key={i.to}>
-                    <NavLink to={i.to} className={({ isActive }) => `navbar__link${isActive ? ' is-active' : ''}`}>
+                    <NavLink to={i.to} onClick={() => setOpenAt(null)} className={({ isActive }) => `navbar__link${isActive ? ' is-active' : ''}`}>
                       <span aria-hidden="true">{i.icon}</span> {tr(i.key)}
                     </NavLink>
                   </li>
@@ -149,11 +151,11 @@ export function NavBar() {
 /** Phones: ☰ button that opens a full-screen menu with the same groups. */
 export function MobileMenu() {
   const { tr } = useSettings();
-  const { pathname } = useLocation();
-  // Opened on one page; navigating anywhere closes it.
+  const location = useLocation();
+  // Opened on one navigation; navigating anywhere (even the same page) closes it.
   const [openAt, setOpenAt] = useState<string | null>(null);
-  const open = openAt === pathname;
-  const setOpen = (v: boolean) => setOpenAt(v ? pathname : null);
+  const open = openAt === location.key;
+  const setOpen = (v: boolean) => setOpenAt(v ? location.key : null);
   const burgerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
@@ -175,7 +177,7 @@ export function MobileMenu() {
   }, [open]);
 
   const link = (i: Item) => (
-    <NavLink key={i.to} to={i.to} end={i.to === '/'} className={({ isActive }) => `mobile-menu__link${isActive ? ' is-active' : ''}`}>
+    <NavLink key={i.to} to={i.to} end={i.to === '/'} onClick={() => setOpenAt(null)} className={({ isActive }) => `mobile-menu__link${isActive ? ' is-active' : ''}`}>
       <span aria-hidden="true">{i.icon}</span> {tr(i.key)}
     </NavLink>
   );
