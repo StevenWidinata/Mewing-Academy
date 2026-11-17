@@ -23,7 +23,7 @@ const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false
 const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
 
 export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false }: Props) {
-  const { settings, tr } = useSettings();
+  const { tr } = useSettings();
   // Only re-render when what we show changes, not on every camera frame.
   const [readout, setReadout] = useState<Readout>(EMPTY_READOUT);
   const lastKey = useRef(readoutKey(EMPTY_READOUT));
@@ -51,7 +51,7 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         return;
       }
       const lm = frame.hand?.landmarks?.[0];
-      const result = classify(lm, settings.fingerMode, choiceCount);
+      const result = classify(lm, choiceCount);
       const { answer } = result;
       showReadout(result);
 
@@ -73,7 +73,7 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         onConfirm(answer);
       }
     },
-    [choiceCount, onConfirm, onHover, settings.fingerMode, showReadout],
+    [choiceCount, onConfirm, onHover, showReadout],
   );
 
   const { videoRef, status, start, stop } = useVision({ onFrame: handleFrame });
@@ -136,9 +136,7 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
                   <span>
                     {readout.reason === 'open-hand'
                       ? tr('handOpen')
-                      : readout.reason === 'one-finger'
-                        ? tr('pointOneFinger')
-                        : tr('handTooMany')}
+                      : tr('handTooMany')}
                   </span>
                 )}
               </>

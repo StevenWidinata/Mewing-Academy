@@ -4,7 +4,6 @@ import { t, type StringKey } from '../i18n/strings';
 import type { FurId, ItemId } from './rewards';
 
 export type ThemeId = 'purple' | 'sky' | 'mint' | 'sunset';
-export type FingerMode = 'point' | 'count';
 export type TextSize = 'normal' | 'large' | 'xlarge';
 
 export interface Settings {
@@ -15,7 +14,6 @@ export interface Settings {
   readableFont: boolean;
   textSize: TextSize;
   sound: boolean;
-  fingerMode: FingerMode;
   autoRead: boolean;
   /** 8-bit background music (off by default). */
   music: boolean;
@@ -35,7 +33,6 @@ const DEFAULTS: Settings = {
   readableFont: false,
   textSize: 'normal',
   sound: true,
-  fingerMode: 'point',
   autoRead: false,
   music: false,
   musicVolume: 0.4,
@@ -49,7 +46,11 @@ const KEY = 'mewing.settings.v1';
 function load(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (raw) {
+      // fingerMode was removed (count mode only); drop it from old saves.
+      const { fingerMode: _removed, ...saved } = JSON.parse(raw) as Partial<Settings> & { fingerMode?: unknown };
+      return { ...DEFAULTS, ...saved };
+    }
   } catch {
     /* ignore corrupt storage */
   }

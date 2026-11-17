@@ -66,10 +66,6 @@ export const STRINGS = {
     en: 'The camera AI could not start on this device. You can still tap your answers below!',
     id: 'AI kamera tidak bisa berjalan di perangkat ini. Kamu tetap bisa mengetuk jawaban di bawah!',
   },
-  pointOneFinger: {
-    en: 'Raise just ONE finger (or switch to "Count" in Settings)',
-    id: 'Angkat SATU jari saja (atau pilih "Hitung" di Pengaturan)',
-  },
   handOpen: {
     en: 'Whole hand = no answer',
     id: 'Satu tangan penuh = bukan jawaban',
@@ -147,9 +143,6 @@ export const STRINGS = {
   settingsMusic: { en: '8-bit music', id: 'Musik 8-bit' },
   settingsMusicVolume: { en: 'Music volume', id: 'Volume musik' },
   settingsPaw: { en: 'Paw cursor', id: 'Kursor kaki kucing' },
-  settingsFingerMode: { en: 'Hand answer style', id: 'Gaya jawab tangan' },
-  fingerModePoint: { en: 'Point: index=A, middle=B...', id: 'Tunjuk: telunjuk=A, tengah=B...' },
-  fingerModeCount: { en: 'Count: 1 finger=A, 2=B...', id: 'Hitung: 1 jari=A, 2=B...' },
   on: { en: 'On', id: 'Nyala' },
   off: { en: 'Off', id: 'Mati' },
 

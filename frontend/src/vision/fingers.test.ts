@@ -33,41 +33,24 @@ describe('extendedFingers', () => {
   });
 });
 
-describe('classify point mode', () => {
-  it('maps each single finger to A,B,C,D', () => {
-    expect(classify(hand({ index: true }), 'point', 4).answer).toBe(0);
-    expect(classify(hand({ middle: true }), 'point', 4).answer).toBe(1);
-    expect(classify(hand({ ring: true }), 'point', 4).answer).toBe(2);
-    expect(classify(hand({ pinky: true }), 'point', 4).answer).toBe(3);
-  });
-
-  it('is unclear when two fingers are up', () => {
-    expect(classify(hand({ index: true, middle: true }), 'point', 4).answer).toBeNull();
-  });
-
-  it('respects choiceCount (3 choices -> D is invalid)', () => {
-    expect(classify(hand({ pinky: true }), 'point', 3).answer).toBeNull();
-  });
-});
-
-describe('classify count mode', () => {
+describe('classify', () => {
   it('counts raised fingers 1..4 -> A..D', () => {
-    expect(classify(hand({ index: true }), 'count', 4).answer).toBe(0);
-    expect(classify(hand({ index: true, middle: true }), 'count', 4).answer).toBe(1);
-    expect(classify(hand({ index: true, middle: true, ring: true }), 'count', 4).answer).toBe(2);
-    expect(classify(hand({ index: true, middle: true, ring: true, pinky: true }), 'count', 4).answer).toBe(3);
+    expect(classify(hand({ index: true }), 4).answer).toBe(0);
+    expect(classify(hand({ index: true, middle: true }), 4).answer).toBe(1);
+    expect(classify(hand({ index: true, middle: true, ring: true }), 4).answer).toBe(2);
+    expect(classify(hand({ index: true, middle: true, ring: true, pinky: true }), 4).answer).toBe(3);
   });
 
   it('returns null for a closed fist', () => {
-    expect(classify(hand({}), 'count', 4).answer).toBeNull();
-    expect(classify(hand({}), 'count', 4).raised).toBe(0);
+    expect(classify(hand({}), 4).answer).toBeNull();
+    expect(classify(hand({}), 4).raised).toBe(0);
   });
 });
 
 describe('guards', () => {
   it('handles missing landmarks', () => {
-    expect(classify(undefined, 'point', 4).answer).toBeNull();
-    expect(classify([{ x: 0, y: 0 }], 'count', 4).answer).toBeNull();
+    expect(classify(undefined, 4).answer).toBeNull();
+    expect(classify([{ x: 0, y: 0 }], 4).answer).toBeNull();
   });
 });
 
@@ -78,51 +61,51 @@ describe('open hand (showing "5")', () => {
     expect(extendedFingers(open()).thumb).toBe(true);
   });
 
-  it('is never an answer in count mode (used to pick D)', () => {
-    const r = classify(open(), 'count', 4);
+  it('is never an answer (used to pick D)', () => {
+    const r = classify(open(), 4);
     expect(r.answer).toBeNull();
     expect(r.reason).toBe('open-hand');
   });
 
   it('is never an answer in point mode', () => {
-    expect(classify(open(), 'point', 4).reason).toBe('open-hand');
+    expect(classify(open(), 4).reason).toBe('open-hand');
   });
 
   it('four fingers with the thumb tucked still picks D', () => {
-    expect(classify(hand({ index: true, middle: true, ring: true, pinky: true }), 'count', 4).answer).toBe(3);
+    expect(classify(hand({ index: true, middle: true, ring: true, pinky: true }), 4).answer).toBe(3);
   });
 
   it('a thumb next to one finger still counts as one', () => {
-    expect(classify(hand({ thumb: true, index: true }), 'count', 4).answer).toBe(0);
+    expect(classify(hand({ thumb: true, index: true }), 4).answer).toBe(0);
   });
 });
 
 describe('unclear reasons', () => {
   it('explains why there is no answer', () => {
-    expect(classify(undefined, 'count', 4).reason).toBe('no-hand');
-    expect(classify(hand({}), 'count', 4).reason).toBe('fist');
-    expect(classify(hand({ index: true, middle: true }), 'point', 4).reason).toBe('one-finger');
-    expect(classify(hand({ index: true, middle: true, ring: true, pinky: true }), 'count', 3).reason).toBe('too-many');
-    expect(classify(hand({ middle: true }), 'point', 4).reason).toBeNull();
+    expect(classify(undefined, 4).reason).toBe('no-hand');
+    expect(classify(hand({}), 4).reason).toBe('fist');
+    expect(classify(hand({ index: true, middle: true, ring: true, pinky: true }), 3).reason).toBe('too-many');
+    expect(classify(hand({ index: true, middle: true }), 4).reason).toBeNull();
   });
 });
 
 describe('poseFor (answer hint drawings)', () => {
-  it('count mode raises the first N fingers', () => {
-    expect(poseFor(0, 'count')).toEqual([false, true, false, false, false]);
-    expect(poseFor(2, 'count')).toEqual([false, true, true, true, false]);
-  });
-
-  it('point mode raises only the matching finger', () => {
-    expect(poseFor(3, 'point')).toEqual([false, false, false, false, true]);
+  it('raises the first N fingers, thumb tucked', () => {
+    expect(poseFor(0)).toEqual([false, true, false, false, false]);
+    expect(poseFor(2)).toEqual([false, true, true, true, false]);
   });
 
   it('round-trips through classify', () => {
-    for (const mode of ['point', 'count'] as const) {
-      for (let i = 0; i < 4; i++) {
-        const [, index, middle, ring, pinky] = poseFor(i, mode);
-        expect(classify(hand({ index, middle, ring, pinky }), mode, 4).answer).toBe(i);
-      }
+    for (let i = 0; i < 4; i++) {
+      const [, index, middle, ring, pinky] = poseFor(i);
+      expect(classify(hand({ index, middle, ring, pinky }), 4).answer).toBe(i);
+    }
+  });
+
+  it('never asks for a lone middle finger', () => {
+    for (let i = 0; i < 4; i++) {
+      const [, index, middle] = poseFor(i);
+      expect(middle && !index).toBe(false);
     }
   });
 });

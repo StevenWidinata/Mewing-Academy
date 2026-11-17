@@ -116,8 +116,8 @@ const INTENTS: Intent[] = [
     id: 'camera',
     keywords: ['camera', 'finger', 'fingers', 'hand', 'answer', 'kamera', 'jari', 'tangan', 'jawab'],
     reply: {
-      en: 'To answer with your hand: raise your index finger for A, middle finger for B, ring finger for C, little finger for D. Keep it still until the bar fills up! (Grown-ups can switch to "count fingers" in Settings.) The camera only works on this device.',
-      id: 'Untuk menjawab dengan tangan: angkat jari telunjuk untuk A, jari tengah untuk B, jari manis untuk C, kelingking untuk D. Tahan sampai bar penuh! (Orang tua bisa ganti ke "hitung jari" di Pengaturan.) Kamera hanya bekerja di perangkat ini.',
+      en: 'To answer with your hand, count with your fingers: 1 finger for A, 2 for B, 3 for C, 4 for D (tuck your thumb in). Keep it still until the bar fills up! The camera only works on this device.',
+      id: 'Untuk menjawab dengan tangan, hitung dengan jarimu: 1 jari untuk A, 2 untuk B, 3 untuk C, 4 untuk D (lipat jempolmu). Tahan sampai bar penuh! Kamera hanya bekerja di perangkat ini.',
     },
   },
   {

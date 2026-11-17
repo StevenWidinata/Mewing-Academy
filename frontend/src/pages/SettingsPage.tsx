@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Lang } from '../../../shared/types';
-import { useSettings, type FingerMode, type TextSize, type ThemeId } from '../state/settings';
+import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
 const THEMES: { id: ThemeId; name: { en: string; id: string }; swatch: string; ink: string }[] = [
   { id: 'purple', name: { en: 'Purple Night', id: 'Malam Ungu' }, swatch: 'linear-gradient(135deg,#3a2a7a,#883a7e)', ink: '#fdf6e3' },
@@ -58,14 +58,6 @@ export function SettingsPage() {
               </button>
             );
           })}
-        </Row>
-
-        <Row label={tr('settingsFingerMode')}>
-          {(['point', 'count'] as FingerMode[]).map((m) => (
-            <button key={m} type="button" className="btn" aria-pressed={settings.fingerMode === m} onClick={() => set('fingerMode', m)} style={{ background: settings.fingerMode === m ? 'var(--yellow)' : 'var(--panel-light)', color: settings.fingerMode === m ? 'var(--ink)' : 'var(--white)', fontSize: '0.65rem' }}>
-              {m === 'point' ? tr('fingerModePoint') : tr('fingerModeCount')}
-            </button>
-          ))}
         </Row>
 
         <Row label={tr('settingsTextSize')}>

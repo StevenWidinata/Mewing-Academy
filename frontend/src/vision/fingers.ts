@@ -7,8 +7,6 @@ export interface Point {
   z?: number;
 }
 
-export type FingerMode = 'point' | 'count';
-
 // MediaPipe hand landmark indices.
 const WRIST = 0;
 const TIPS = { thumb: 4, index: 8, middle: 12, ring: 16, pinky: 20 } as const;
@@ -48,7 +46,6 @@ export type UnclearReason =
   | 'no-hand'
   | 'fist' // nothing raised
   | 'open-hand' // all five up: a child showing "5", not an answer
-  | 'one-finger' // point mode with several fingers up
   | 'too-many'; // more fingers than there are answers
 
 export interface Classification {
@@ -64,13 +61,14 @@ export interface Classification {
 const NO_POSE: FingerPose = [false, false, false, false, false];
 
 /**
- * point mode: which single finger is up -> index=A, middle=B, ring=C, pinky=D.
- * count mode: how many fingers are up (ignoring thumb) -> 1=A .. 4=D.
+ * Count how many fingers are up (ignoring the thumb): 1=A .. 4=D.
+ * (A "point" mode where a lone middle finger meant B was removed: that is
+ * a rude gesture.)
  * An open hand (all five up) is never an answer: on number questions kids
  * hold up five fingers to mean "5", which used to silently pick D.
  * Returns null when ambiguous so we never guess for a child.
  */
-export function classify(lm: Point[] | undefined, mode: FingerMode, choiceCount: number): Classification {
+export function classify(lm: Point[] | undefined, choiceCount: number): Classification {
   if (!lm || lm.length < 21) return { answer: null, raised: 0, pose: NO_POSE, reason: 'no-hand' };
   const f = extendedFingers(lm);
   const fingers = [f.index, f.middle, f.ring, f.pinky];
@@ -81,20 +79,13 @@ export function classify(lm: Point[] | undefined, mode: FingerMode, choiceCount:
   if (raised === 0) return unclear('fist');
   if (raised === 4 && f.thumb) return unclear('open-hand');
 
-  if (mode === 'count') {
-    if (raised > choiceCount) return unclear('too-many');
-    return { answer: raised - 1, raised, pose, reason: null };
-  }
-
-  // point mode: exactly one of the four fingers up maps directly to a choice.
-  if (raised !== 1) return unclear('one-finger');
-  const idx = fingers.indexOf(true); // 0..3
-  return idx < choiceCount ? { answer: idx, raised, pose, reason: null } : unclear('too-many');
+  if (raised > choiceCount) return unclear('too-many');
+  return { answer: raised - 1, raised, pose, reason: null };
 }
 
 /** The finger pose a child should make to pick `answer` (for the hint drawings). */
-export function poseFor(answer: number, mode: FingerMode): FingerPose {
-  const fingers = [0, 1, 2, 3].map((i) => (mode === 'count' ? i <= answer : i === answer));
+export function poseFor(answer: number): FingerPose {
+  const fingers = [0, 1, 2, 3].map((i) => i <= answer);
   return [false, fingers[0], fingers[1], fingers[2], fingers[3]];
 }
 
