@@ -424,6 +424,25 @@ select {
 .choice-btn:active:not(:disabled) {
   transform: translateY(1px) scale(0.99);
 }
+/* Camera running: cards react to hands only, so no tap/hover affordance. */
+.choice-btn.choice-btn--camera {
+  cursor: default;
+}
+.choice-btn.choice-btn--camera:hover:not(:disabled),
+.choice-btn.choice-btn--camera:active:not(:disabled) {
+  transform: none;
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+/* Line above the answer cards: how to answer right now */
+.answer-hint {
+  background: var(--cyan);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+}
+.answer-hint--tap {
+  background: var(--yellow);
+}
 
 /* ---- Lesson road ---- */
 .lesson-step {

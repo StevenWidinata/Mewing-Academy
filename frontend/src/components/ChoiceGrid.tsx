@@ -25,9 +25,14 @@ interface Props {
   disabled?: boolean;
   /** Draw the hand pose that picks each answer with the camera. */
   showFingerHint?: boolean;
+  /**
+   * False while the camera is running: the cards only light up from hand
+   * gestures, so the camera stays the main way to play.
+   */
+  tapEnabled?: boolean;
 }
 
-export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer, onPick, disabled, showFingerHint = true }: Props) {
+export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer, onPick, disabled, showFingerHint = true, tapEnabled = true }: Props) {
   const { settings } = useSettings();
   const revealed = picked != null && answer != null;
 
@@ -47,9 +52,10 @@ export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer,
           <button
             key={i}
             type="button"
-            className="btn choice-btn"
-            onClick={() => !disabled && !revealed && onPick(i)}
+            className={`btn choice-btn${tapEnabled ? '' : ' choice-btn--camera'}`}
+            onClick={() => tapEnabled && !disabled && !revealed && onPick(i)}
             disabled={disabled || revealed}
+            aria-disabled={!tapEnabled || undefined}
             aria-pressed={isPicked}
             style={{ background: bg, position: 'relative', overflow: 'hidden', fontSize: '1rem', padding: '1.2em 1em', minHeight: 72 }}
           >

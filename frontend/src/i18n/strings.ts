@@ -42,7 +42,11 @@ export const STRINGS = {
 
   // Quiz / camera
   answerWithHand: { en: 'Answer with your hand', id: 'Jawab dengan tanganmu' },
-  answerWithTap: { en: 'Or tap an answer', id: 'Atau ketuk jawaban' },
+  answerWithFingers: { en: '✋ Show your answer with your fingers!', id: '✋ Tunjukkan jawabanmu dengan jari!' },
+  cameraNudge: {
+    en: '📷 Turn on the camera for the real game! For now, tap an answer.',
+    id: '📷 Nyalakan kamera untuk main yang seru! Untuk sementara, ketuk jawaban.',
+  },
   cameraStart: { en: 'Turn on camera', id: 'Nyalakan kamera' },
   cameraStop: { en: 'Turn off camera', id: 'Matikan kamera' },
   cameraLoading: { en: 'Waking up the camera AI...', id: 'Membangunkan AI kamera...' },

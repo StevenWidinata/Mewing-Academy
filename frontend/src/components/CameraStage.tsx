@@ -3,7 +3,7 @@ import { useSettings } from '../state/settings';
 import { classify, type Classification } from '../vision/fingers';
 import { LETTERS } from './ChoiceGrid';
 import { HandPose } from './HandPose';
-import { useVision, type VisionFrame } from '../vision/useVision';
+import { useVision, type VisionFrame, type VisionStatus } from '../vision/useVision';
 
 const HOLD_MS = 1200; // how long a finger pose must be held to confirm
 
@@ -16,13 +16,15 @@ interface Props {
   onHover?: (index: number | null, progress: number) => void;
   /** Answers are numbers (e.g. "5"): remind kids fingers pick the letter. */
   numericChoices?: boolean;
+  /** Lets the page switch tapping off while the camera is running. */
+  onStatusChange?: (status: VisionStatus) => void;
 }
 
 type Readout = Pick<Classification, 'answer' | 'pose' | 'reason'>;
 const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false, false], reason: 'no-hand' };
 const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
 
-export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false }: Props) {
+export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false, onStatusChange }: Props) {
   const { tr } = useSettings();
   // Only re-render when what we show changes, not on every camera frame.
   const [readout, setReadout] = useState<Readout>(EMPTY_READOUT);
@@ -77,6 +79,9 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
   );
 
   const { videoRef, status, start, stop } = useVision({ onFrame: handleFrame });
+  useEffect(() => {
+    onStatusChange?.(status);
+  }, [status, onStatusChange]);
 
   return (
     <div className="pixel-panel" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>

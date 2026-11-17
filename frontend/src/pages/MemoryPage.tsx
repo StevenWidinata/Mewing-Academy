@@ -3,6 +3,8 @@ import type { Difficulty, MemoryRound } from '../../../shared/types';
 import { AdaptiveTip } from '../components/AdaptiveTip';
 import { CameraStage } from '../components/CameraStage';
 import { hasNumberLabels } from '../vision/fingers';
+import type { VisionStatus } from '../vision/useVision';
+import { AnswerModeHint } from '../components/AnswerModeHint';
 import { ChoiceGrid } from '../components/ChoiceGrid';
 import { Confetti } from '../components/Confetti';
 import { LevelPicker } from '../components/LevelPicker';
@@ -28,6 +30,8 @@ export function MemoryPage() {
   const [countdown, setCountdown] = useState(0);
   const [hover, setHover] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 });
   const timers = useRef<number[]>([]);
+  const [camStatus, setCamStatus] = useState<VisionStatus>('idle');
+  const tapEnabled = camStatus !== 'running';
 
   const clearTimers = () => {
     timers.current.forEach(clearTimeout);
@@ -144,9 +148,11 @@ export function MemoryPage() {
           onHover={(i, p) => setHover({ index: i, progress: p })}
           paused={revealed}
           numericChoices={hasNumberLabels(q.choices.map((c) => c.label[settings.lang]))}
+          onStatusChange={setCamStatus}
         />
         <div>
-          <ChoiceGrid choices={q.choices} hovered={hover.index} holdProgress={hover.progress} picked={picked} answer={q.answer} onPick={pick} />
+          <AnswerModeHint tapEnabled={tapEnabled} />
+          <ChoiceGrid choices={q.choices} hovered={hover.index} holdProgress={hover.progress} picked={picked} answer={q.answer} onPick={pick} tapEnabled={tapEnabled} />
           {revealed && (
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <p style={{ fontFamily: 'var(--font-read)', fontSize: '1.1rem' }}>

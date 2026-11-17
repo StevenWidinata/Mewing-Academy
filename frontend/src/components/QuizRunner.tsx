@@ -6,6 +6,8 @@ import { useSettings } from '../state/settings';
 import { BossBar, BossSprite, ComboPop } from './Boss';
 import { bossHp } from '../lib/boss';
 import { hasNumberLabels } from '../vision/fingers';
+import type { VisionStatus } from '../vision/useVision';
+import { AnswerModeHint } from './AnswerModeHint';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
 import { Confetti } from './Confetti';
@@ -28,18 +30,20 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
   const { state, current, pick, next, restart, total } = useQuiz(questions, onFinish);
   const [hover, setHover] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 });
   const onHover = useCallback((index: number | null, progress: number) => setHover({ index, progress }), []);
+  const [camStatus, setCamStatus] = useState<VisionStatus>('idle');
+  const tapEnabled = camStatus !== 'running';
 
   // Keyboard: 1-4 or A-D also answer, for kids without a camera.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (state.picked != null || state.done || (e.target as HTMLElement)?.tagName === 'INPUT') return;
+      if (!tapEnabled || state.picked != null || state.done || (e.target as HTMLElement)?.tagName === 'INPUT') return;
       const map: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 };
       const idx = map[e.key.toLowerCase()];
       if (idx != null && idx < current.choices.length) pick(idx);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [state.picked, state.done, current, pick]);
+  }, [tapEnabled, state.picked, state.done, current, pick]);
 
   // Optional auto read-aloud of each new question.
   useEffect(() => {
@@ -95,10 +99,11 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
           onHover={onHover}
           paused={revealed}
           numericChoices={hasNumberLabels(current.choices.map((c) => c.label[lang]))}
+          onStatusChange={setCamStatus}
         />
         <div>
-          <p style={{ fontFamily: 'var(--font-read)', textAlign: 'center' }}>{tr('answerWithTap')}</p>
-          <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pick} />
+          <AnswerModeHint tapEnabled={tapEnabled} />
+          <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pick} tapEnabled={tapEnabled} />
           {revealed && (
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <p style={{ fontFamily: 'var(--font-read)', fontSize: '1.1rem' }}>
