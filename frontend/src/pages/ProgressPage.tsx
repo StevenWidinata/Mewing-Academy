@@ -1,5 +1,5 @@
 import { TOPICS } from '../../../shared/types';
-import { resetProgress, useProgress } from '../state/progress';
+import { useProgress } from '../state/progress';
 import { badgeFor, nextBadge, topicTitle } from '../state/rewards';
 import { useSettings } from '../state/settings';
 
@@ -54,12 +54,6 @@ export function ProgressPage() {
           })}
         </div>
       )}
-
-      <div style={{ marginTop: '1.5rem' }}>
-        <button type="button" className="btn btn--ghost" onClick={() => { if (confirm(tr('progressReset') + '?')) resetProgress(); }}>
-          {tr('progressReset')}
-        </button>
-      </div>
     </section>
   );
 }
