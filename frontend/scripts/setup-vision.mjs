@@ -1,5 +1,5 @@
-// Copies MediaPipe WASM from node_modules and downloads the two models once,
-// so hand/face tracking runs fully on-device (no CDN at runtime).
+// Copies MediaPipe WASM from node_modules and downloads the hand model once,
+// so hand tracking runs fully on-device (no CDN at runtime).
 import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,8 +17,6 @@ if (!existsSync(join(wasmDst, 'vision_wasm_internal.wasm'))) {
 const models = {
   'hand_landmarker.task':
     'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-  'face_landmarker.task':
-    'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
 };
 mkdirSync(join(pub, 'models'), { recursive: true });
 for (const [name, url] of Object.entries(models)) {

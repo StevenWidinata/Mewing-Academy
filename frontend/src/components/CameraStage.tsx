@@ -3,7 +3,6 @@ import { useSettings } from '../state/settings';
 import { classify, type Classification } from '../vision/fingers';
 import { LETTERS } from './ChoiceGrid';
 import { HandPose } from './HandPose';
-import { readPosture, type PostureTip } from '../vision/posture';
 import { useVision, type VisionFrame } from '../vision/useVision';
 
 const HOLD_MS = 1200; // how long a finger pose must be held to confirm
@@ -14,7 +13,6 @@ interface Props {
   onConfirm: (index: number) => void;
   /** Pauses detection (e.g., while showing the result). */
   paused?: boolean;
-  showPosture?: boolean;
   onHover?: (index: number | null, progress: number) => void;
   /** Answers are numbers (e.g. "5"): remind kids fingers pick the letter. */
   numericChoices?: boolean;
@@ -24,15 +22,7 @@ type Readout = Pick<Classification, 'answer' | 'pose' | 'reason'>;
 const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false, false], reason: 'no-hand' };
 const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
 
-const POSTURE_TEXT: Record<PostureTip, { en: string; id: string }> = {
-  good: { en: '😺 Great posture!', id: '😺 Postur bagus!' },
-  'come-closer': { en: '🔍 Come a little closer', id: '🔍 Sedikit lebih dekat' },
-  center: { en: '↔️ Move to the center', id: '↔️ Geser ke tengah' },
-  'chin-up': { en: '⬆️ Lift your chin a bit', id: '⬆️ Angkat dagu sedikit' },
-  none: { en: '', id: '' },
-};
-
-export function CameraStage({ choiceCount, onConfirm, paused = false, showPosture = false, onHover, numericChoices = false }: Props) {
+export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false }: Props) {
   const { settings, tr } = useSettings();
   // Only re-render when what we show changes, not on every camera frame.
   const [readout, setReadout] = useState<Readout>(EMPTY_READOUT);
@@ -43,7 +33,6 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
     lastKey.current = key;
     setReadout({ answer: r.answer, pose: r.pose, reason: r.reason });
   }, []);
-  const [posture, setPosture] = useState<PostureTip>('none');
 
   // Hold tracking lives in refs so the rAF loop doesn't re-render every frame.
   const candidate = useRef<number | null>(null);
@@ -57,7 +46,6 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
 
   const handleFrame = useCallback(
     (frame: VisionFrame) => {
-      if (showPosture) setPosture(readPosture(frame.face));
       if (pausedRef.current || confirmed.current) {
         onHover?.(null, 0);
         return;
@@ -85,10 +73,10 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
         onConfirm(answer);
       }
     },
-    [choiceCount, onConfirm, onHover, settings.fingerMode, showPosture, showReadout],
+    [choiceCount, onConfirm, onHover, settings.fingerMode, showReadout],
   );
 
-  const { videoRef, status, start, stop } = useVision({ withFace: showPosture, onFrame: handleFrame });
+  const { videoRef, status, start, stop } = useVision({ onFrame: handleFrame });
 
   return (
     <div className="pixel-panel" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
@@ -155,11 +143,6 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, showPostur
                 )}
               </>
             )}
-          </div>
-        )}
-        {showPosture && status === 'running' && posture !== 'none' && (
-          <div style={{ position: 'absolute', left: 6, top: 6, background: 'rgba(0,0,0,0.6)', color: '#fff', fontFamily: 'var(--font-read)', fontSize: '0.8rem', padding: '2px 8px' }}>
-            {POSTURE_TEXT[posture][settings.lang]}
           </div>
         )}
       </div>

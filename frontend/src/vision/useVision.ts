@@ -1,10 +1,4 @@
-import {
-  FaceLandmarker,
-  FilesetResolver,
-  HandLandmarker,
-  type FaceLandmarkerResult,
-  type HandLandmarkerResult,
-} from '@mediapipe/tasks-vision';
+import { FilesetResolver, HandLandmarker, type HandLandmarkerResult } from '@mediapipe/tasks-vision';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type VisionStatus =
@@ -52,11 +46,9 @@ function classifyCameraError(err: unknown): VisionStatus {
 
 export interface VisionFrame {
   hand?: HandLandmarkerResult;
-  face?: FaceLandmarkerResult;
 }
 
 interface Options {
-  withFace?: boolean;
   onFrame: (frame: VisionFrame) => void;
 }
 
@@ -65,28 +57,24 @@ interface Options {
 const BASE = import.meta.env.BASE_URL;
 const WASM_PATH = `${BASE}wasm`;
 const HAND_MODEL = `${BASE}models/hand_landmarker.task`;
-const FACE_MODEL = `${BASE}models/face_landmarker.task`;
 
 /**
- * Owns the webcam stream and the MediaPipe landmarkers. Everything runs
+ * Owns the webcam stream and the MediaPipe hand landmarker. Everything runs
  * on-device; the frame data never leaves the browser. `start`/`stop` are
  * exposed so the camera is only on when a child is actually playing.
  */
-export function useVision({ withFace = false, onFrame }: Options) {
+export function useVision({ onFrame }: Options) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [status, setStatus] = useState<VisionStatus>('idle');
 
   const handRef = useRef<HandLandmarker | null>(null);
-  const faceRef = useRef<FaceLandmarker | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastVideoTime = useRef(-1);
   const onFrameRef = useRef(onFrame);
-  const withFaceRef = useRef(withFace);
   useEffect(() => {
     onFrameRef.current = onFrame;
-    withFaceRef.current = withFace;
-  }, [onFrame, withFace]);
+  }, [onFrame]);
 
   const stop = useCallback(() => {
     if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
@@ -110,9 +98,7 @@ export function useVision({ withFace = false, onFrame }: Options) {
         // A single failed frame (e.g. GPU context hiccup) must not kill the
         // loop, otherwise the video keeps playing but nothing is detected.
         try {
-          const frame: VisionFrame = { hand: hand.detectForVideo(video, now) };
-          if (withFaceRef.current && faceRef.current) frame.face = faceRef.current.detectForVideo(video, now);
-          onFrameRef.current(frame);
+          onFrameRef.current({ hand: hand.detectForVideo(video, now) });
         } catch (err) {
           console.warn('[vision] frame failed:', err);
         }
@@ -161,17 +147,6 @@ export function useVision({ withFace = false, onFrame }: Options) {
               baseOptions: { modelAssetPath: HAND_MODEL, delegate },
               runningMode: 'VIDEO',
               numHands: 1,
-            }),
-          );
-        }
-        if (withFaceRef.current && !faceRef.current) {
-          const fileset = await FilesetResolver.forVisionTasks(WASM_PATH);
-          faceRef.current = await createWithFallback((delegate) =>
-            FaceLandmarker.createFromOptions(fileset, {
-              baseOptions: { modelAssetPath: FACE_MODEL, delegate },
-              runningMode: 'VIDEO',
-              numFaces: 1,
-              outputFaceBlendshapes: false,
             }),
           );
         }

@@ -86,7 +86,6 @@ export const STRINGS = {
   showFingers: { en: 'Show your fingers', id: 'Tunjukkan jarimu' },
   holdSteady: { en: 'Hold steady...', id: 'Tahan...' },
   noHand: { en: 'I cannot see your hand yet', id: 'Aku belum melihat tanganmu' },
-  posturePerfect: { en: 'Great posture!', id: 'Postur bagus!' },
 
   // Memory
   memoryWatch: { en: 'Look carefully!', id: 'Perhatikan baik-baik!' },

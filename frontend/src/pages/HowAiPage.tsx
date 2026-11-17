@@ -2,26 +2,24 @@ import { useSettings } from '../state/settings';
 
 const CONTENT = {
   en: {
-    intro: 'Mewing Academy uses three kinds of AI, and all of them run right here on your device.',
+    intro: 'Mewing Academy uses two kinds of AI, and both run right here on your device.',
     steps: [
       { icon: '✋', title: 'Hand tracking', body: 'A computer-vision model (Google MediaPipe HandLandmarker) finds 21 points on your hand. We measure which fingers are up and turn that into answer A, B, C or D.' },
-      { icon: '😺', title: 'Face & posture', body: 'A face-mesh model finds points on your face so we can gently remind you to sit up, center yourself, and lift your chin.' },
       { icon: '💬', title: 'Tutor Mewy', body: 'A language helper reads your question, cleans it up, matches it to what it knows, and even solves simple maths. It shows how sure it is.' },
     ],
     privacyTitle: 'Your privacy',
-    privacy: 'The camera and all the AI run inside your browser. No video or photo is ever uploaded or saved. Turn the camera off any time, and you can still play by tapping or using number keys.',
+    privacy: 'The camera and all the AI run inside your browser. The camera only looks for your hand: we never scan or remember your face. No video or photo is ever uploaded or saved. Turn the camera off any time, and you can still play by tapping or using number keys.',
     tryTitle: 'Try the hand controls',
     try: 'In a quiz, raise one finger for each answer: index = A, middle = B, ring = C, little finger = D. Hold still until the bar fills up. Grown-ups can switch to "count fingers" in Settings.',
   },
   id: {
-    intro: 'Mewing Academy memakai tiga jenis AI, dan semuanya berjalan di perangkatmu sendiri.',
+    intro: 'Mewing Academy memakai dua jenis AI, dan keduanya berjalan di perangkatmu sendiri.',
     steps: [
       { icon: '✋', title: 'Pelacakan tangan', body: 'Model computer vision (Google MediaPipe HandLandmarker) menemukan 21 titik di tanganmu. Kami melihat jari mana yang terangkat dan mengubahnya jadi jawaban A, B, C, atau D.' },
-      { icon: '😺', title: 'Wajah & postur', body: 'Model face-mesh menemukan titik di wajahmu supaya kami bisa mengingatkanmu untuk duduk tegak, berada di tengah, dan mengangkat dagu.' },
       { icon: '💬', title: 'Tutor Mewy', body: 'Pembantu bahasa membaca pertanyaanmu, merapikannya, mencocokkan dengan yang diketahui, bahkan menyelesaikan hitungan sederhana. Ia menunjukkan seberapa yakin.' },
     ],
     privacyTitle: 'Privasimu',
-    privacy: 'Kamera dan semua AI berjalan di dalam browsermu. Tidak ada video atau foto yang diunggah atau disimpan. Matikan kamera kapan saja, dan kamu tetap bisa bermain dengan mengetuk atau memakai tombol angka.',
+    privacy: 'Kamera dan semua AI berjalan di dalam browsermu. Kamera hanya mencari tanganmu: kami tidak pernah memindai atau mengingat wajahmu. Tidak ada video atau foto yang diunggah atau disimpan. Matikan kamera kapan saja, dan kamu tetap bisa bermain dengan mengetuk atau memakai tombol angka.',
     tryTitle: 'Coba kontrol tangan',
     try: 'Dalam kuis, angkat satu jari untuk tiap jawaban: telunjuk = A, tengah = B, manis = C, kelingking = D. Tahan sampai bar penuh. Orang tua bisa ganti ke "hitung jari" di Pengaturan.',
   },
