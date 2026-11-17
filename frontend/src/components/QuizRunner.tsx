@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Question } from '../../../shared/types';
 import { questionToSpeech, speak } from '../lib/speak';
 import { useQuiz } from '../lib/useQuiz';
 import { useSettings } from '../state/settings';
 import { BossBar, BossSprite, ComboPop } from './Boss';
-import { bossHp } from '../lib/boss';
+import { bossState, tauntFor } from '../lib/boss';
 import { hasNumberLabels } from '../vision/fingers';
 import type { VisionStatus } from '../vision/useVision';
 import { AnswerModeHint } from './AnswerModeHint';
@@ -33,6 +33,8 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
   const onHover = useCallback((index: number | null, progress: number) => setHover({ index, progress }), []);
   const [camStatus, setCamStatus] = useState<VisionStatus>('idle');
   const tapEnabled = camStatus !== 'running';
+  const difficulties = useMemo(() => questions.map((q) => q.difficulty), [questions]);
+  const fight = useMemo(() => bossState(difficulties, state.answers), [difficulties, state.answers]);
 
   // Keyboard: 1-4 or A-D also answer, for kids without a camera.
   useEffect(() => {
@@ -57,11 +59,18 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
         <Confetti fire={state.correctCount >= Math.ceil(total / 2) ? state.correctCount : 0} />
         {boss && (
           <div className="boss-result">
-            <BossSprite size={state.correctCount >= bossHp(total) ? 56 : 88} />
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+              <BossSprite size={fight.bigBossBeaten ? 56 : 88} face={fight.bigBossBeaten ? 'hurt' : 'smug'} />
+              {fight.phase === 2 && <BossSprite size={fight.defeated ? 36 : 56} face={fight.defeated ? 'hurt' : 'smug'} mini />}
+            </div>
             <p style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.8rem' }}>
-              {state.correctCount >= bossHp(total)
-                ? lang === 'en' ? '🏆 BOSS DEFEATED!' : '🏆 BOS DIKALAHKAN!'
-                : lang === 'en' ? 'The boss got away... try again!' : 'Bosnya kabur... coba lagi!'}
+              {!fight.bigBossBeaten
+                ? lang === 'en' ? 'The boss got away... try again!' : 'Bosnya kabur... coba lagi!'
+                : fight.phase === 2 && fight.defeated
+                  ? lang === 'en' ? '🏆🏆 DOUBLE WIN! Both bosses defeated!' : '🏆🏆 MENANG GANDA! Dua bos dikalahkan!'
+                  : fight.phase === 2
+                    ? lang === 'en' ? '🏆 BOSS DEFEATED! (Mini Muddle ran away)' : '🏆 BOS DIKALAHKAN! (Bingung Kecil kabur)'
+                    : lang === 'en' ? '🏆 BOSS DEFEATED!' : '🏆 BOS DIKALAHKAN!'}
             </p>
           </div>
         )}
@@ -77,7 +86,16 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
     <section className={comboShake ? 'shake' : undefined}>
       <QuizProgress index={state.index} total={total} results={state.results} stars={state.correctCount} />
 
-      {boss && <BossBar hits={state.correctCount} total={total} lang={lang} />}
+      {boss && (
+        <BossBar
+          state={fight}
+          reaction={!revealed ? 'none' : state.picked === current.answer ? 'hit' : 'miss'}
+          answerKey={state.answers.length}
+          taunt={revealed ? tauntFor(state.answers[state.answers.length - 1]?.roll ?? 0)[lang] : undefined}
+          lang={lang}
+          reduceMotion={settings.reduceMotion}
+        />
+      )}
       <MewyBuddy mood={mood} />
       {revealed && state.picked === current.answer && <ComboPop streak={state.streak} />}
       <h2 style={{ textAlign: 'center' }}>

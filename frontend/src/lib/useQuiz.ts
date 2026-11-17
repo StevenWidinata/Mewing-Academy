@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Question } from '../../../shared/types';
 import { recordAnswer } from '../state/progress';
+import type { Answer } from './boss';
 import { sfx } from './sound';
 import { useSettings } from '../state/settings';
 
@@ -13,9 +14,11 @@ export interface QuizState {
   streak: number;
   /** One entry per answered question: true = right. */
   results: boolean[];
+  /** Same order as results, with answer time and a saved random roll (boss damage/taunts). */
+  answers: Answer[];
 }
 
-const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [] };
+const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [], answers: [] };
 
 /**
  * Side effects (saving progress, sounds, onFinish) run in the event handler,
@@ -27,6 +30,12 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
   const [state, setState] = useState<QuizState>(START);
 
   const current = questions[state.index];
+
+  // When the current question appeared, to measure how fast it was answered.
+  const shownAt = useRef(0);
+  useEffect(() => {
+    shownAt.current = performance.now();
+  }, [state.index, state.done]);
 
   const pick = useCallback(
     (choice: number) => {
@@ -42,6 +51,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
         correctCount: state.correctCount + (correct ? 1 : 0),
         streak: correct ? state.streak + 1 : 0,
         results: [...state.results, correct],
+        answers: [...state.answers, { correct, ms: performance.now() - shownAt.current, roll: Math.random() }],
       });
     },
     [questions, settings.sound, state],
