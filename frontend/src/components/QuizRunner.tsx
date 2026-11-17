@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import type { Question } from '../../../shared/types';
 import { questionToSpeech, speak } from '../lib/speak';
 import { useQuiz } from '../lib/useQuiz';
+import type { SessionMode } from '../lib/sessions';
 import { useSettings } from '../state/settings';
 import { BossBar, BossSprite, ComboPop } from './Boss';
 import { bossState, tauntFor } from '../lib/boss';
@@ -22,13 +23,17 @@ interface Props {
   renderDone: (correct: number, total: number, restart: () => void) => ReactNode;
   /** Show a boss with an HP bar that right answers knock down. */
   boss?: boolean;
+  /** How this round is saved in the play history. */
+  mode?: SessionMode;
 }
 
 /** Plays a list of questions (camera, tap or keyboard). Shared by Hand Quiz and Daily Challenge. */
-export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Props) {
+export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode = 'quiz' }: Props) {
   const { tr, settings } = useSettings();
   const lang = settings.lang;
-  const { state, current, pick, next, restart, total } = useQuiz(questions, onFinish);
+  const { state, current, pick, next, restart, total } = useQuiz(questions, onFinish, mode);
+  const pickByHand = useCallback((i: number) => pick(i, true), [pick]);
+  const pickByTap = useCallback((i: number) => pick(i), [pick]);
   const [hover, setHover] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 });
   const onHover = useCallback((index: number | null, progress: number) => setHover({ index, progress }), []);
   const [camStatus, setCamStatus] = useState<VisionStatus>('idle');
@@ -111,7 +116,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
       <div className="play-grid">
         <CameraStage
           choiceCount={current.choices.length}
-          onConfirm={pick}
+          onConfirm={pickByHand}
           onHover={onHover}
           paused={revealed}
           numericChoices={hasNumberLabels(current.choices.map((c) => c.label[lang]))}
@@ -119,7 +124,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
         />
         <div>
           <AnswerModeHint tapEnabled={tapEnabled} />
-          <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pick} tapEnabled={tapEnabled} />
+          <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pickByTap} tapEnabled={tapEnabled} />
           {revealed && (
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <p style={{ fontFamily: 'var(--font-read)', fontSize: '1.1rem' }}>

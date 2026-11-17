@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Question } from '../../../shared/types';
-import { recordAnswer } from '../state/progress';
+import { recordAnswer, recordSession } from '../state/progress';
 import type { Answer } from './boss';
+import { buildSession, type SessionMode } from './sessions';
 import { sfx } from './sound';
 import { useSettings } from '../state/settings';
 
@@ -25,7 +26,7 @@ const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false,
  * never inside a setState updater: React StrictMode calls updaters twice,
  * which used to count every answer twice in dev.
  */
-export function useQuiz(questions: Question[], onFinish?: (correct: number, total: number) => void) {
+export function useQuiz(questions: Question[], onFinish?: (correct: number, total: number) => void, mode: SessionMode = 'quiz') {
   const { settings } = useSettings();
   const [state, setState] = useState<QuizState>(START);
 
@@ -38,7 +39,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
   }, [state.index, state.done]);
 
   const pick = useCallback(
-    (choice: number) => {
+    (choice: number, byHand = false) => {
       if (state.picked != null || state.done) return;
       const q = questions[state.index];
       const correct = choice === q.answer;
@@ -51,7 +52,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
         correctCount: state.correctCount + (correct ? 1 : 0),
         streak: correct ? state.streak + 1 : 0,
         results: [...state.results, correct],
-        answers: [...state.answers, { correct, ms: performance.now() - shownAt.current, roll: Math.random() }],
+        answers: [...state.answers, { correct, ms: performance.now() - shownAt.current, roll: Math.random(), byHand }],
       });
     },
     [questions, settings.sound, state],
@@ -61,12 +62,18 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
     if (state.done) return;
     if (state.index >= questions.length - 1) {
       sfx.star(settings.sound);
+      recordSession(
+        buildSession(
+          mode,
+          questions.map((q, i) => ({ topic: q.topic, difficulty: q.difficulty, correct: !!state.answers[i]?.correct, byHand: !!state.answers[i]?.byHand })),
+        ),
+      );
       onFinish?.(state.correctCount, questions.length);
       setState({ ...state, done: true });
     } else {
       setState({ ...state, index: state.index + 1, picked: null });
     }
-  }, [questions.length, onFinish, settings.sound, state]);
+  }, [questions, onFinish, settings.sound, state, mode]);
 
   const restart = useCallback(() => setState(START), []);
 

@@ -26,6 +26,8 @@ export interface Answer {
   correct: boolean;
   ms: number;
   roll: number;
+  /** Answered with a hand gesture (camera) rather than a tap/key. */
+  byHand?: boolean;
 }
 
 export interface Hit {

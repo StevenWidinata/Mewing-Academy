@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import type { TopicId } from '../../../shared/types';
+import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
 import { unlockKeys } from './rewards';
 
 export interface Progress {
@@ -8,10 +9,12 @@ export interface Progress {
   lastPlayed: string | null; // YYYY-MM-DD
   streak: number;
   lastDaily: string | null; // YYYY-MM-DD of the last finished Daily Challenge
+  /** Finished rounds, newest last (for the parent dashboard). */
+  sessions: SessionLog[];
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [] };
 
 function read(): Progress {
   try {
@@ -64,6 +67,13 @@ export function recordAnswer(topic: TopicId, correct: boolean) {
     lastPlayed: now,
     streak,
   });
+}
+
+/** Saves a finished round (keeps the newest MAX_SESSIONS). */
+export function recordSession(session: Omit<SessionLog, 'at'>) {
+  if (!session.total) return;
+  const entry: SessionLog = { ...session, at: new Date().toISOString() };
+  write({ ...current, sessions: [...current.sessions, entry].slice(-MAX_SESSIONS) });
 }
 
 export const DAILY_BONUS = 2;

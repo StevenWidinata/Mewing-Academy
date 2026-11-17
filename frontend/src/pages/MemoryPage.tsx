@@ -14,7 +14,8 @@ import { SpriteScene } from '../components/Sprite';
 import { fetchMemoryRound } from '../lib/api';
 import { questionToSpeech } from '../lib/speak';
 import { sfx } from '../lib/sound';
-import { recordAnswer } from '../state/progress';
+import { recordAnswer, recordSession } from '../state/progress';
+import { buildSession, type SessionItem } from '../lib/sessions';
 import { useSettings } from '../state/settings';
 
 type Phase = 'ready' | 'study' | 'quiz' | 'done';
@@ -31,6 +32,7 @@ export function MemoryPage() {
   const [hover, setHover] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 });
   const timers = useRef<number[]>([]);
   const [camStatus, setCamStatus] = useState<VisionStatus>('idle');
+  const [items, setItems] = useState<SessionItem[]>([]);
   const tapEnabled = camStatus !== 'running';
 
   const clearTimers = () => {
@@ -46,6 +48,7 @@ export function MemoryPage() {
     setQIndex(0);
     setPicked(null);
     setCorrect(0);
+    setItems([]);
     setPhase('study');
     const seconds = Math.round(r.studyMs / 1000);
     setCountdown(seconds);
@@ -59,11 +62,12 @@ export function MemoryPage() {
   }, [level, settings.sound]);
 
   const pick = useCallback(
-    (choice: number) => {
+    (choice: number, byHand = false) => {
       if (picked != null || !round) return;
       const q = round.questions[qIndex];
       const isRight = choice === q.answer;
       setPicked(choice);
+      setItems((list) => [...list, { topic: 'memory', difficulty: round.level, correct: isRight, byHand }]);
       if (isRight) {
         setCorrect((c) => c + 1);
         sfx.correct(settings.sound);
@@ -78,11 +82,12 @@ export function MemoryPage() {
     if (qIndex >= round.questions.length - 1) {
       setPhase('done');
       sfx.star(settings.sound);
+      recordSession(buildSession('memory', items));
     } else {
       setQIndex((i) => i + 1);
       setPicked(null);
     }
-  }, [round, qIndex, settings.sound]);
+  }, [round, qIndex, settings.sound, items]);
 
   if (phase === 'ready' || !round) {
     return (
@@ -144,7 +149,7 @@ export function MemoryPage() {
       <div className="play-grid play-grid--memory">
         <CameraStage
           choiceCount={q.choices.length}
-          onConfirm={pick}
+          onConfirm={(i) => pick(i, true)}
           onHover={(i, p) => setHover({ index: i, progress: p })}
           paused={revealed}
           numericChoices={hasNumberLabels(q.choices.map((c) => c.label[settings.lang]))}

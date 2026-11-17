@@ -35,6 +35,7 @@ export function DailyPage() {
   return (
     <QuizRunner
       key={run}
+      mode="daily"
       questions={questions}
       onFinish={() => setBonus(completeDaily())}
       renderDone={(correct, total) => (
