@@ -9,6 +9,11 @@ export const STRINGS = {
   },
   // Navigation
   navHome: { en: 'Home', id: 'Beranda' },
+  navGroupPlay: { en: 'Play', id: 'Main' },
+  navGroupLearn: { en: 'Learn', id: 'Belajar' },
+  navGroupMe: { en: 'Me', id: 'Aku' },
+  navMenu: { en: 'Menu', id: 'Menu' },
+  navClose: { en: 'Close menu', id: 'Tutup menu' },
   navLessons: { en: 'Lessons', id: 'Pelajaran' },
   navQuiz: { en: 'Hand Quiz', id: 'Kuis Tangan' },
   navMemory: { en: 'Memory', id: 'Ingatan' },
