@@ -1,45 +1,20 @@
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TOPICS, type TopicId } from '../../../shared/types';
+import { ParentAccount } from '../components/ParentAccount';
+import { ParentGate } from '../components/ParentGate';
+import { isUnlocked, lock } from '../state/parentLock';
 import { useProgress } from '../state/progress';
 import { badgeFor, topicTitle, unlockKeys } from '../state/rewards';
 import { useSettings } from '../state/settings';
-
-// Grown-up check numbers, picked once per page load (outside render).
-const A = 6 + Math.floor(Math.random() * 4);
-const B = 6 + Math.floor(Math.random() * 4);
 
 export function ParentsPage() {
   const { settings, tr } = useSettings();
   const L = settings.lang;
   const progress = useProgress();
-  const [open, setOpen] = useState(false);
-  const [answer, setAnswer] = useState('');
-  const [wrong, setWrong] = useState(false);
+  const [open, setOpen] = useState(isUnlocked);
 
-  if (!open) {
-    const submit = (e: FormEvent) => {
-      e.preventDefault();
-      if (Number(answer) === A * B) setOpen(true);
-      else setWrong(true);
-    };
-    return (
-      <section style={{ maxWidth: 480, margin: '0 auto', textAlign: 'center' }}>
-        <h1>👪 {tr('navParents')}</h1>
-        <form className="card" onSubmit={submit}>
-          <p style={{ fontFamily: 'var(--font-read)' }}>{L === 'en' ? 'Grown-ups only! Please answer:' : 'Khusus orang dewasa! Jawab dulu:'}</p>
-          <label htmlFor="gate" style={{ fontFamily: 'var(--font-pixel)', fontSize: '1rem', display: 'block', marginBottom: '0.75rem' }}>
-            {A} × {B} = ?
-          </label>
-          <input id="gate" inputMode="numeric" value={answer} onChange={(e) => setAnswer(e.target.value)} autoComplete="off" style={{ width: 120, textAlign: 'center' }} />
-          <div style={{ marginTop: '0.75rem' }}>
-            <button type="submit" className="btn">{L === 'en' ? 'Enter' : 'Masuk'}</button>
-          </div>
-          {wrong && <p role="alert" style={{ fontFamily: 'var(--font-read)' }}>{L === 'en' ? 'Not quite. Try again.' : 'Belum tepat. Coba lagi.'}</p>}
-        </form>
-      </section>
-    );
-  }
+  if (!open) return <ParentGate onUnlock={() => setOpen(true)} />;
 
   const ids: TopicId[] = [...TOPICS.map((t) => t.id), 'memory'];
   const rows = ids.map((id) => ({ id, s: progress.byTopic[id] })).filter((r) => r.s && r.s.total > 0);
@@ -120,6 +95,13 @@ export function ParentsPage() {
           </p>
         )}
       </div>
+
+      <ParentAccount
+        onLock={() => {
+          lock();
+          setOpen(false);
+        }}
+      />
 
       <p style={{ fontFamily: 'var(--font-read)', fontSize: '0.85rem', opacity: 0.85 }}>
         🔒 {L === 'en' ? 'All progress is stored only on this device. Nothing is uploaded.' : 'Semua progres hanya disimpan di perangkat ini. Tidak ada yang diunggah.'}

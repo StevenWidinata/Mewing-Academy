@@ -1778,3 +1778,12 @@ main > section > h1:first-child::after {
   background: var(--yellow);
   animation: twinkle 1.2s ease-in-out infinite;
 }
+
+/* Parent dashboard: the full reset sits in a clearly marked danger zone */
+.danger-zone {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  border: 3px dashed var(--red);
+  background: rgba(232, 59, 59, 0.08);
+}

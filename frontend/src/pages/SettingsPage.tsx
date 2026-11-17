@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Lang } from '../../../shared/types';
+import { ParentsLinkCard } from '../components/ParentsLinkCard';
 import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
 const THEMES: { id: ThemeId; name: { en: string; id: string }; swatch: string; ink: string }[] = [
@@ -102,6 +103,7 @@ export function SettingsPage() {
           <Toggle on={settings.autoRead} onToggle={() => set('autoRead', !settings.autoRead)} labelOn={tr('on')} labelOff={tr('off')} />
         </Row>
       </div>
+      <ParentsLinkCard />
     </section>
   );
 }

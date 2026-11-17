@@ -1,4 +1,5 @@
 import { TOPICS } from '../../../shared/types';
+import { ParentsLinkCard } from '../components/ParentsLinkCard';
 import { useProgress } from '../state/progress';
 import { badgeFor, nextBadge, topicTitle } from '../state/rewards';
 import { useSettings } from '../state/settings';
@@ -54,6 +55,9 @@ export function ProgressPage() {
           })}
         </div>
       )}
+
+      <ParentsLinkCard />
     </section>
   );
 }
+
