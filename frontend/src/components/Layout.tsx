@@ -56,7 +56,7 @@ export function Layout() {
             <span style={{ fontFamily: 'var(--font-pixel)', color: 'var(--accent)', fontSize: '1.1rem', display: 'block', textShadow: 'var(--heading-shadow)' }}>
               {tr('appName')}
             </span>
-            <span style={{ fontFamily: 'var(--font-read)', fontSize: '0.85rem', color: 'var(--white)' }}>{tr('tagline')}</span>
+            <span className="chip" style={{ fontFamily: 'var(--font-read)', fontSize: '0.85rem', marginTop: 4 }}>{tr('tagline')}</span>
           </span>
         </NavLink>
 
@@ -84,7 +84,7 @@ export function Layout() {
             to={item.to}
             end={item.to === '/'}
             className="btn btn--ghost navlink"
-            style={({ isActive }) => ({ fontSize: '0.7rem', background: isActive ? 'var(--yellow)' : 'var(--panel-light)', color: isActive ? 'var(--ink)' : 'var(--white)' })}
+            style={({ isActive }) => ({ fontSize: '0.7rem', background: isActive ? 'var(--yellow)' : 'var(--btn-ghost)', color: isActive ? 'var(--ink)' : 'var(--btn-ghost-text)' })}
           >
             {tr(item.key)}
           </NavLink>
@@ -98,12 +98,12 @@ export function Layout() {
       <WatcherMewy />
       <PawTrail />
 
-      <footer style={{ marginTop: '3rem', textAlign: 'center', fontSize: '0.75rem', fontFamily: 'var(--font-read)', opacity: 0.8 }}>
-        <p>{tr('cameraPrivacy')}</p>
+      <footer className="site-footer">
+        <p><span className="chip">{tr('cameraPrivacy')}</span></p>
         <p>
-          <NavLink to="/parents">👪 {tr('navParents')}</NavLink>
+          <span className="chip"><NavLink to="/parents">👪 {tr('navParents')}</NavLink></span>
         </p>
-        <p>Mewing Academy · 2026</p>
+        <p><span className="chip">Mewing Academy · 2026</span></p>
       </footer>
     </div>
     </>

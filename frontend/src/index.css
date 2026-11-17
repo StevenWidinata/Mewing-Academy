@@ -37,7 +37,13 @@
   --glow-cyan: 0 0 0 rgba(0, 0, 0, 0);
   --heading-shadow: 3px 3px 0 #0c0820;
   /* Content "screen" behind every page (translucent over the 3D background) */
-  --surface: rgba(14, 9, 36, 0.62);
+  --surface: rgba(14, 9, 36, 0.92);
+  /* Unselected / secondary buttons: must stand out from --surface (>= 3:1) */
+  --btn-ghost: #d9ccff;
+  --btn-ghost-text: #1a1430;
+  /* Small labels that sit on the busy background */
+  --chip-bg: #0c0820;
+  --chip-text: #fdf6e3;
   /* Frame color for the arcade cabinet around the content */
   --frame: #7b5cff;
   --frame-dark: #3a2a7a;
@@ -59,7 +65,11 @@
   --frame-dark: #1d5a8f;
   --shadow: #2a5a80;
   --heading-shadow: 2px 2px 0 rgba(255, 255, 255, 0.9);
-  --surface: rgba(255, 255, 255, 0.72);
+  --surface: rgba(255, 255, 255, 0.94);
+  --btn-ghost: #1d5a8f;
+  --btn-ghost-text: #ffffff;
+  --chip-bg: #ffffff;
+  --chip-text: #14304d;
 }
 :root[data-theme='mint'] {
   --bg: #d6f5e3;
@@ -75,7 +85,11 @@
   --frame-dark: #1b6b43;
   --shadow: #2e6b4a;
   --heading-shadow: 2px 2px 0 rgba(255, 255, 255, 0.9);
-  --surface: rgba(255, 255, 255, 0.72);
+  --surface: rgba(255, 255, 255, 0.94);
+  --btn-ghost: #1b6b43;
+  --btn-ghost-text: #ffffff;
+  --chip-bg: #ffffff;
+  --chip-text: #13402a;
 }
 :root[data-theme='sunset'] {
   --bg: #ffe3d1;
@@ -91,7 +105,11 @@
   --frame-dark: #a8441f;
   --shadow: #8a3b1f;
   --heading-shadow: 2px 2px 0 rgba(255, 255, 255, 0.9);
-  --surface: rgba(255, 255, 255, 0.72);
+  --surface: rgba(255, 255, 255, 0.94);
+  --btn-ghost: #a8441f;
+  --btn-ghost-text: #ffffff;
+  --chip-bg: #ffffff;
+  --chip-text: #4a2318;
 }
 
 /* ---- Accessibility: easy-to-read font swaps pixel font everywhere ---- */
@@ -122,6 +140,10 @@
   --panel-glow: #000000;
   --grad-hero: #000000;
   --surface: #000000;
+  --btn-ghost: #000000;
+  --btn-ghost-text: #ffffff;
+  --chip-bg: #000000;
+  --chip-text: #ffffff;
 }
 
 /* Reduced / calm motion */
@@ -225,8 +247,20 @@ a {
   background: var(--cyan);
 }
 .btn--ghost {
-  background: var(--panel-light);
-  color: var(--white);
+  background: var(--btn-ghost);
+  color: var(--btn-ghost-text);
+}
+:root[data-contrast='high'] .btn--ghost {
+  border-color: #ffffff;
+}
+
+/* Small label with its own background so it never melts into the page */
+.chip {
+  display: inline-block;
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  border: 2px solid var(--ink);
+  padding: 0.15rem 0.6rem;
 }
 .btn:disabled {
   opacity: 0.5;
@@ -360,7 +394,7 @@ select {
   box-shadow: 6px 6px 0 var(--shadow), 0 0 14px rgba(39, 224, 216, 0.5);
 }
 .btn--ghost:hover {
-  background: var(--panel);
+  filter: brightness(1.08);
   box-shadow: 6px 6px 0 var(--shadow), 0 0 14px rgba(155, 77, 224, 0.5);
 }
 
@@ -499,6 +533,8 @@ main > section {
   --text: #fdf6e3;
   --white: #fdf6e3;
   --panel-light: #413085;
+  --btn-ghost: #413085;
+  --btn-ghost-text: #fdf6e3;
   --shadow: #0c0820;
   color: var(--text);
   position: fixed;
@@ -627,6 +663,21 @@ main > section > h1:first-child::after {
   position: relative;
   z-index: 1;
 }
+/* Footer lines get chips so they stay readable over the moving background */
+.site-footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-family: var(--font-read);
+}
+.site-footer p {
+  margin: 0.5rem 0;
+}
+.site-footer .chip a {
+  color: inherit;
+  font-weight: 700;
+}
+
 .fun-bg {
   --mx: 0;
   --my: 0;
@@ -640,6 +691,8 @@ main > section > h1:first-child::after {
 .fun-bg__world {
   position: absolute;
   inset: -8%;
+  /* Calmer: the fun background stays behind the content, never competes */
+  opacity: 0.6;
   transform-style: preserve-3d;
   transform: rotateX(calc(var(--my) * -8deg)) rotateY(calc(var(--mx) * 10deg));
   transition: transform 0.4s ease-out;

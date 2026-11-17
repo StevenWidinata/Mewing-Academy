@@ -20,7 +20,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 
 function Toggle({ on, onToggle, labelOn, labelOff }: { on: boolean; onToggle: () => void; labelOn: string; labelOff: string }) {
   return (
-    <button type="button" role="switch" aria-checked={on} className="btn" onClick={onToggle} style={{ background: on ? 'var(--green)' : 'var(--panel-light)', color: on ? 'var(--ink)' : 'var(--white)', fontSize: '0.7rem' }}>
+    <button type="button" role="switch" aria-checked={on} className="btn" onClick={onToggle} style={{ background: on ? 'var(--green)' : 'var(--btn-ghost)', color: on ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: '0.7rem' }}>
       {on ? labelOn : labelOff}
     </button>
   );
@@ -35,7 +35,7 @@ export function SettingsPage() {
       <div style={{ display: 'grid', gap: '1rem', maxWidth: 640 }}>
         <Row label={tr('settingsLang')}>
           {(['en', 'id'] as Lang[]).map((l) => (
-            <button key={l} type="button" className="btn" aria-pressed={settings.lang === l} onClick={() => set('lang', l)} style={{ background: settings.lang === l ? 'var(--yellow)' : 'var(--panel-light)', color: settings.lang === l ? 'var(--ink)' : 'var(--white)', fontSize: '0.7rem' }}>
+            <button key={l} type="button" className="btn" aria-pressed={settings.lang === l} onClick={() => set('lang', l)} style={{ background: settings.lang === l ? 'var(--yellow)' : 'var(--btn-ghost)', color: settings.lang === l ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: '0.7rem' }}>
               {l === 'en' ? '🇬🇧 English' : '🇮🇩 Indonesia'}
             </button>
           ))}
@@ -62,7 +62,7 @@ export function SettingsPage() {
 
         <Row label={tr('settingsTextSize')}>
           {sizes.map((s) => (
-            <button key={s} type="button" className="btn" aria-pressed={settings.textSize === s} onClick={() => set('textSize', s)} style={{ background: settings.textSize === s ? 'var(--yellow)' : 'var(--panel-light)', color: settings.textSize === s ? 'var(--ink)' : 'var(--white)', fontSize: s === 'normal' ? '0.7rem' : s === 'large' ? '0.85rem' : '1rem' }}>
+            <button key={s} type="button" className="btn" aria-pressed={settings.textSize === s} onClick={() => set('textSize', s)} style={{ background: settings.textSize === s ? 'var(--yellow)' : 'var(--btn-ghost)', color: settings.textSize === s ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: s === 'normal' ? '0.7rem' : s === 'large' ? '0.85rem' : '1rem' }}>
               A
             </button>
           ))}

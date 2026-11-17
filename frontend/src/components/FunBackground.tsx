@@ -12,7 +12,7 @@ const COLORS = ['#ffcc00', '#27e0d8', '#ff5ca8', '#9b4de0', '#3bb54a'];
 const LAYERS = [
   { depth: -260, move: 14, count: 26, size: [3, 6] },
   { depth: -120, move: 30, count: 14, size: [8, 14] },
-  { depth: 0, move: 55, count: 6, size: [26, 46] },
+  { depth: 0, move: 55, count: 3, size: [26, 40] },
 ].map((l, li) => ({
   ...l,
   items: Array.from({ length: l.count }, () => ({

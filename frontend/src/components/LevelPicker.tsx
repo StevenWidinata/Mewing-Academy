@@ -17,7 +17,7 @@ export function LevelPicker({ value, onChange }: { value: Difficulty; onChange: 
           className="btn"
           aria-pressed={value === d}
           onClick={() => onChange(d)}
-          style={{ background: value === d ? 'var(--pink)' : 'var(--panel-light)', color: value === d ? 'var(--ink)' : 'var(--white)', fontSize: '0.7rem' }}
+          style={{ background: value === d ? 'var(--pink)' : 'var(--btn-ghost)', color: value === d ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: '0.7rem' }}
         >
           {'⭐'.repeat(d)} {tr(key)}
         </button>

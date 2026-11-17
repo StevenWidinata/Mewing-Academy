@@ -88,6 +88,18 @@ const PAIRS: [fg: string, bg: string, min: number][] = [
   ['--accent', '--grad-hero', LARGE], // page banners and hero title
   ['--ink', '--yellow', NORMAL], // main buttons
   ['--ink', '--cyan', NORMAL], // secondary buttons
+  ['--btn-ghost-text', '--btn-ghost', NORMAL], // ghost / unselected buttons
+  ['--chip-text', '--chip-bg', NORMAL], // label chips
+];
+
+/**
+ * Non-text contrast (WCAG 1.4.11): a button must stand out from the page
+ * panel through its fill or its 4px border (every .btn has an --ink border).
+ */
+const SHAPES: [fill: string, border: string, bg: string][] = [
+  ['--btn-ghost', '--ink', '--surface'],
+  ['--yellow', '--ink', '--surface'],
+  ['--cyan', '--ink', '--surface'],
 ];
 
 describe('theme contrast (WCAG)', () => {
@@ -105,6 +117,27 @@ describe('theme contrast (WCAG)', () => {
           const r = ratio(f, b);
           if (r < min) fails.push(`${fg} on ${bg}: ${r.toFixed(2)} < ${min}`);
         }
+      }
+      expect(fails).toEqual([]);
+    });
+
+    it(`${theme}: buttons stand out from the page`, () => {
+      if (theme.includes('high-contrast')) return; // HC uses white borders instead of fills
+      const fails: string[] = [];
+      for (const [fill, border, bg] of SHAPES) {
+        const f = colors(resolve(vars, vars[fill]))[0];
+        const e = colors(resolve(vars, vars[border]))[0];
+        for (const b of backgrounds(vars, bg)) {
+          const r = Math.max(ratio(f, b), ratio(e, b));
+          if (r < 3) fails.push(`${fill} (border ${border}) on ${bg}: ${r.toFixed(2)} < 3`);
+        }
+      }
+      // Ghost buttons must ALSO differ by fill: in dark themes their ink border
+      // melts into the dark panel, which was the original complaint.
+      const ghost = colors(resolve(vars, vars['--btn-ghost']))[0];
+      for (const b of backgrounds(vars, '--surface')) {
+        const r = ratio(ghost, b);
+        if (r < 3) fails.push(`--btn-ghost fill on --surface: ${r.toFixed(2)} < 3`);
       }
       expect(fails).toEqual([]);
     });

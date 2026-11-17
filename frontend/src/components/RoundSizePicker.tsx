@@ -19,7 +19,7 @@ export function RoundSizePicker() {
               className="btn"
               aria-pressed={active}
               onClick={() => set('roundSize', n)}
-              style={{ background: active ? 'var(--pink)' : 'var(--panel-light)', color: active ? 'var(--ink)' : 'var(--white)', fontSize: '0.75rem', minWidth: 64 }}
+              style={{ background: active ? 'var(--pink)' : 'var(--btn-ghost)', color: active ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: '0.75rem', minWidth: 64 }}
             >
               {n}
             </button>
