@@ -1787,3 +1787,285 @@ main > section > h1:first-child::after {
   border: 3px dashed var(--red);
   background: rgba(232, 59, 59, 0.08);
 }
+
+/* ============ Charts (parent dashboard) ============ */
+/* Single-series color validated with the dataviz validator per surface:
+   #3987e5 on the dark card, #2a78d6 on the light themes. */
+:root {
+  --viz-series: #3987e5;
+  --viz-grid: rgba(253, 246, 227, 0.16);
+  --viz-ring: #2a2057;
+  --viz-tip-bg: #fdf6e3;
+  --viz-tip-text: #1a1430;
+}
+:root[data-theme='sky'],
+:root[data-theme='mint'],
+:root[data-theme='sunset'] {
+  --viz-series: #2a78d6;
+  --viz-grid: rgba(0, 0, 0, 0.14);
+  --viz-ring: #ffffff;
+  --viz-tip-bg: #1a1430;
+  --viz-tip-text: #fdf6e3;
+}
+:root[data-contrast='high'] {
+  --viz-series: #ffe600;
+  --viz-grid: rgba(255, 255, 255, 0.45);
+  --viz-ring: #000000;
+  --viz-tip-bg: #ffffff;
+  --viz-tip-text: #000000;
+}
+.viz {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.viz svg {
+  display: block;
+  overflow: visible;
+  /* Never wider than the card; the ResizeObserver then redraws at the real width */
+  max-width: 100%;
+}
+.viz-grid {
+  stroke: var(--viz-grid);
+  stroke-width: 1;
+}
+.viz-baseline {
+  stroke: var(--text);
+  stroke-opacity: 0.5;
+  stroke-width: 1;
+}
+.viz-axis {
+  fill: var(--text);
+  fill-opacity: 0.8;
+  font-family: var(--font-read);
+  font-size: 11px;
+}
+.viz-value {
+  fill: var(--text);
+  font-family: var(--font-read);
+  font-weight: 700;
+  font-size: 12px;
+}
+.viz-bar {
+  fill: var(--viz-series);
+}
+.viz-line {
+  fill: none;
+  stroke: var(--viz-series);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.viz-area {
+  fill: var(--viz-series);
+  fill-opacity: 0.1;
+}
+.viz-dot {
+  fill: var(--viz-series);
+  stroke: var(--viz-ring);
+  stroke-width: 2;
+}
+.viz-crosshair {
+  stroke: var(--text);
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+.viz svg :focus-visible {
+  outline: 2px solid var(--focus);
+}
+.viz-tip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  z-index: 5;
+  min-width: max-content;
+  padding: 0.35rem 0.55rem;
+  font-family: var(--font-read);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  background: var(--viz-tip-bg);
+  color: var(--viz-tip-text);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.viz-table {
+  margin-top: 0.5rem;
+  font-family: var(--font-read);
+  font-size: 0.85rem;
+}
+.viz-table summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.viz-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.4rem;
+}
+.viz-table th,
+.viz-table td {
+  text-align: left;
+  padding: 0.2rem 0.4rem;
+  border-bottom: 1px solid var(--viz-grid);
+}
+
+/* ============ Parent dashboard layout ============ */
+.dashboard {
+  display: grid;
+  gap: 1.25rem;
+}
+/* Grid items default to min-width:auto, which let a chart push the page wide */
+.dashboard > *,
+.dashboard__charts > *,
+.insight-grid > *,
+.stat-row > * {
+  min-width: 0;
+}
+.dashboard > h1 {
+  margin-bottom: 0 !important;
+}
+.dashboard__intro {
+  font-family: var(--font-read);
+  font-size: 1.05rem;
+  margin: 0;
+}
+.dashboard__h2 {
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+}
+.dashboard__charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 1.25rem;
+}
+.dashboard__charthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.dashboard__select select {
+  font-family: var(--font-read);
+  font-size: 0.9rem;
+  padding: 0.3rem 0.5rem;
+  border: 3px solid var(--ink);
+  background: var(--btn-ghost);
+  color: var(--btn-ghost-text);
+}
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+  gap: 0.75rem;
+}
+.stat-tile {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.15rem;
+  font-family: var(--font-read);
+  padding: 0.9rem 0.5rem !important;
+}
+.stat-tile > span:first-child {
+  font-size: 1.5rem;
+}
+.stat-tile strong {
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+}
+.insight h3 {
+  font-family: var(--font-read);
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+  text-shadow: none;
+}
+.insight p {
+  font-family: var(--font-read);
+  margin: 0 0 0.75rem;
+}
+.insight--focus {
+  border-left: 8px solid #ff8a1f;
+}
+.insight--strength {
+  border-left: 8px solid var(--green);
+}
+.insight--habit {
+  border-left: 8px solid var(--cyan);
+}
+.insight__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.insight__actions .btn {
+  font-size: 0.6rem;
+}
+.topic-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.topic-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.3fr) minmax(80px, 2fr) max-content minmax(120px, auto) minmax(110px, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-top: 1px solid var(--viz-grid);
+  font-family: var(--font-read);
+}
+.topic-row__name {
+  font-weight: 700;
+}
+.topic-row__bar {
+  height: 12px;
+  background: var(--viz-grid);
+  border-radius: 0 4px 4px 0;
+}
+.topic-row__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--viz-series);
+  border-radius: 0 4px 4px 0;
+}
+.topic-row__meta {
+  font-size: 0.85rem;
+}
+.tag {
+  justify-self: start;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.1rem 0.5rem;
+  border: 2px solid var(--ink);
+  color: #1a1430;
+}
+.tag--good {
+  background: #9fe6a8;
+}
+.tag--ok {
+  background: #d9ccff;
+}
+.tag--focus {
+  background: #ffc58a;
+}
+.tag--new {
+  background: #e6e2d6;
+}
+@media (max-width: 720px) {
+  .topic-row {
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem 0.75rem;
+  }
+  .topic-row__bar {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+}
