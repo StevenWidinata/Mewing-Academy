@@ -141,7 +141,7 @@ export function MemoryPage() {
       <h3 style={{ textAlign: 'center', color: 'var(--white)' }}>
         {q.prompt[settings.lang]} <SpeakButton text={questionToSpeech(q, settings.lang)} small />
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 360px) 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="play-grid play-grid--memory">
         <CameraStage
           choiceCount={q.choices.length}
           onConfirm={pick}

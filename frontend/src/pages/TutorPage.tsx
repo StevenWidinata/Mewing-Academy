@@ -49,7 +49,7 @@ export function TutorPage() {
         ref={listRef}
         aria-live="polite"
         className="pixel-panel"
-        style={{ height: 380, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--bg)' }}
+        style={{ height: 'min(380px, 55dvh)', minHeight: 240, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--bg)' }}
       >
         {messages.map((m, i) => (
           <div key={i} style={{ display: 'flex', gap: '0.5rem', flexDirection: m.from === 'you' ? 'row-reverse' : 'row' }}>

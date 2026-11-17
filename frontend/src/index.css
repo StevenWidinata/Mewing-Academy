@@ -1383,8 +1383,38 @@ main > section > h1:first-child::after {
 }
 
 /* ============ Boss battle + combo meter ============ */
+/* Camera + answers: side by side when there is room, stacked on phones */
+.play-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (min-width: 721px) {
+  .play-grid--memory {
+    grid-template-columns: minmax(260px, 360px) 1fr;
+  }
+}
+@media (max-width: 720px) {
+  /* Less padding inside the page frame so content gets the width */
+  .app-shell {
+    padding: 0.6rem !important;
+  }
+  #main {
+    padding: 1.6rem 0.75rem 1rem;
+  }
+  main > section > h1:first-child {
+    font-size: 1.1rem;
+    overflow-wrap: anywhere;
+  }
+  .choice-btn {
+    padding: 1em 0.6em !important;
+  }
+}
+
 .boss {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   max-width: 460px;

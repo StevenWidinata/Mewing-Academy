@@ -27,7 +27,7 @@ export function LessonDetailPage() {
     <section>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
         <TopicIcon emoji={meta.emoji} size={48} />
-        <h1 style={{ margin: 0 }}>{meta.title[settings.lang]}</h1>
+        <h1 style={{ margin: 0, minWidth: 0, overflowWrap: 'anywhere' }}>{meta.title[settings.lang]}</h1>
       </div>
 
       {/* Road of modules, connected by a dotted line */}

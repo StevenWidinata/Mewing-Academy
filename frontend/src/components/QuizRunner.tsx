@@ -90,7 +90,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false }: Pr
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="play-grid">
         <CameraStage
           choiceCount={current.choices.length}
           onConfirm={pick}
