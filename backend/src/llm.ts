@@ -5,7 +5,7 @@ import type { Lang, TutorReply } from '../../shared/types';
  * Optional real-LLM tutor. If MEWING_LLM_API_KEY is set, we call an
  * OpenAI-compatible chat endpoint with a strict kid-safe system prompt and a
  * short timeout. On any problem (no key, network error, unsafe/empty reply) we
- * fall back to the deterministic rule-based tutor in shared/tutor.ts, so the
+ * fall back to the deterministic rule-based tutor in shared/tutor/, so the
  * app is always safe and always works.
  */
 
