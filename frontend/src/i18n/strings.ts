@@ -107,7 +107,8 @@ export const STRINGS = {
   tutorPlaceholder: { en: 'Type your question...', id: 'Tulis pertanyaanmu...' },
   tutorSend: { en: 'Send', id: 'Kirim' },
   tutorThinking: { en: 'Mewy is thinking...', id: 'Mewy sedang berpikir...' },
-  tutorConfident: { en: 'How sure I am', id: 'Seberapa yakin aku' },
+  tutorMedium: { en: "💡 Here's what I know!", id: '💡 Ini yang aku tahu!' },
+  tutorUnknown: { en: "🤔 I'm still learning about that! Try one of these:", id: '🤔 Aku masih belajar soal itu! Coba tanya ini:' },
 
   // Progress
   progressTitle: { en: 'My Stars', id: 'Bintangku' },

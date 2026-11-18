@@ -8,7 +8,22 @@ interface Msg {
   from: 'you' | 'mewy';
   text: string;
   confidence?: number;
+  intent?: string;
 }
+
+/** How Mewy shows how sure it is, without a number meter. */
+type Sureness = 'sure' | 'medium' | 'unknown';
+function sureness(intent: string | undefined, confidence: number | undefined): Sureness {
+  if (intent === 'unknown' || !confidence) return 'unknown';
+  return confidence >= 0.75 ? 'sure' : 'medium';
+}
+
+const SUGGESTIONS: { en: string; id: string }[] = [
+  { en: 'How many legs does a dog have?', id: 'Anjing kakinya berapa?' },
+  { en: 'What color do red and blue make?', id: 'Merah dicampur biru jadi warna apa?' },
+  { en: 'What is 7 + 5?', id: 'Berapa 7 + 5?' },
+  { en: 'How many planets are there?', id: 'Ada berapa planet?' },
+];
 
 export function TutorPage() {
   const { tr, settings } = useSettings();
@@ -22,18 +37,22 @@ export function TutorPage() {
     fetchConfig().then((c) => setSmart(Boolean(c?.llm)));
   }, []);
 
-  const send = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
+  const ask = async (raw: string) => {
+    const text = raw.trim();
     if (!text || busy) return;
     setMessages((m) => [...m, { from: 'you', text }]);
     setInput('');
     setBusy(true);
     const reply = await askTutor(text, settings.lang);
-    setMessages((m) => [...m, { from: 'mewy', text: reply.reply, confidence: reply.confidence }]);
+    setMessages((m) => [...m, { from: 'mewy', text: reply.reply, confidence: reply.confidence, intent: reply.intent }]);
     setBusy(false);
     requestAnimationFrame(() => listRef.current?.scrollTo(0, listRef.current.scrollHeight));
   };
+  const send = (e: React.FormEvent) => {
+    e.preventDefault();
+    void ask(input);
+  };
+  const L = settings.lang;
 
   return (
     <section>
@@ -64,11 +83,22 @@ export function TutorPage() {
                 fontFamily: 'var(--font-read)',
               }}
             >
-              {m.text}
-              {m.from === 'mewy' && m.confidence != null && (
-                <div style={{ marginTop: 6, fontSize: '0.7rem', opacity: 0.85 }}>
-                  {tr('tutorConfident')}: {'●'.repeat(Math.round(m.confidence * 5)).padEnd(5, '○')}
-                </div>
+              {m.from === 'mewy' && m.confidence != null && sureness(m.intent, m.confidence) === 'medium' && (
+                <div className="tutor-sure">{tr('tutorMedium')}</div>
+              )}
+              {m.from === 'mewy' && m.confidence != null && sureness(m.intent, m.confidence) === 'unknown' ? (
+                <>
+                  <div className="tutor-sure">{tr('tutorUnknown')}</div>
+                  <div className="tutor-chips">
+                    {SUGGESTIONS.map((q) => (
+                      <button key={q.en} type="button" className="btn btn--ghost tutor-chip" disabled={busy} onClick={() => void ask(q[L])}>
+                        {q[L]}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                m.text
               )}
             </div>
           </div>

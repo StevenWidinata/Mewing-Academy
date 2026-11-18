@@ -2134,3 +2134,24 @@ main > section > h1:first-child::after {
   height: 100%;
   background: var(--green);
 }
+
+/* ---- Ask Mewy: gentle "how sure" line + suggestion chips ---- */
+.tutor-sure {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.tutor-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+.tutor-chip {
+  font-family: var(--font-read);
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 0.35em 0.7em;
+  border-width: 3px;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
