@@ -1,3 +1,4 @@
+import { NUMBER_LESSONS } from './lessonsNumbers';
 import { MORE_LESSONS } from './moreTopics';
 import type { ColorId, SpriteGroup, Text, TopicId } from './types';
 
@@ -46,84 +47,6 @@ export type LessonTopic = Exclude<TopicId, 'memory'>;
 const g = (sprite: SpriteGroup['sprite'], color: ColorId, count: number): SpriteGroup => ({ sprite, color, count });
 
 export const LESSONS: Record<LessonTopic, LessonModule[]> = {
-  counting: [
-    {
-      id: 'count-1',
-      title: { en: '1. Count to 5', id: '1. Berhitung sampai 5' },
-      goal: { en: 'Touch and say each number.', id: 'Sentuh dan sebut tiap angka.' },
-      steps: [
-        {
-          text: { en: 'Point at each apple and say: one, two, three.', id: 'Tunjuk tiap apel dan sebut: satu, dua, tiga.' },
-          visual: [g('apple', 'red', 3)],
-        },
-        {
-          text: { en: 'The LAST number you say is how many there are.', id: 'Angka TERAKHIR yang kamu sebut adalah jumlahnya.' },
-          visual: [g('apple', 'red', 5)],
-          example: { en: 'Here there are 5 apples.', id: 'Di sini ada 5 apel.' },
-        },
-      ],
-    },
-    {
-      id: 'count-2',
-      title: { en: '2. More or Fewer', id: '2. Lebih Banyak atau Sedikit' },
-      goal: { en: 'Compare two groups.', id: 'Membandingkan dua kelompok.' },
-      steps: [
-        {
-          text: { en: 'More means a bigger number. Which has more?', id: 'Lebih banyak berarti angka lebih besar. Mana yang lebih banyak?' },
-          visual: [g('star', 'blue', 2), g('star', 'orange', 4)],
-          example: { en: '4 is more than 2.', id: '4 lebih banyak dari 2.' },
-        },
-      ],
-    },
-    {
-      id: 'count-3',
-      title: { en: '3. What Comes Next', id: '3. Angka Berikutnya' },
-      goal: { en: 'Know the number order.', id: 'Tahu urutan angka.' },
-      steps: [
-        {
-          text: { en: 'Numbers go in order: 1, 2, 3, 4, 5... After 3 comes 4.', id: 'Angka berurutan: 1, 2, 3, 4, 5... Setelah 3 adalah 4.' },
-          example: { en: 'After 6 comes 7.', id: 'Setelah 6 adalah 7.' },
-        },
-      ],
-    },
-  ],
-  math: [
-    {
-      id: 'math-1',
-      title: { en: '1. Adding (+)', id: '1. Menambah (+)' },
-      goal: { en: 'Put groups together.', id: 'Menggabungkan kelompok.' },
-      steps: [
-        {
-          text: { en: 'Adding means putting things together. 2 and 1 more...', id: 'Menambah berarti menggabungkan. 2 dan 1 lagi...' },
-          visual: [g('ball', 'blue', 2), g('ball', 'green', 1)],
-          example: { en: '2 + 1 = 3', id: '2 + 1 = 3' },
-        },
-      ],
-    },
-    {
-      id: 'math-2',
-      title: { en: '2. Taking Away (−)', id: '2. Mengurang (−)' },
-      goal: { en: 'Take some away.', id: 'Mengambil sebagian.' },
-      steps: [
-        {
-          text: { en: 'Start with 5 balls, take away 2. Count what is left.', id: 'Mulai dengan 5 bola, ambil 2. Hitung sisanya.' },
-          visual: [g('ball', 'blue', 3)],
-          example: { en: '5 − 2 = 3', id: '5 − 2 = 3' },
-        },
-      ],
-    },
-    {
-      id: 'math-3',
-      title: { en: '3. Story Problems', id: '3. Soal Cerita' },
-      goal: { en: 'Find the maths in a story.', id: 'Menemukan hitungan dalam cerita.' },
-      steps: [
-        {
-          text: { en: '"You have 3 apples and get 2 more." That is 3 + 2.', id: '"Kamu punya 3 apel dan dapat 2 lagi." Itu 3 + 2.' },
-          example: { en: '3 + 2 = 5 apples.', id: '3 + 2 = 5 apel.' },
-        },
-      ],
-    },
-  ],
   colors: [
     {
       id: 'color-1',
@@ -154,40 +77,6 @@ export const LESSONS: Record<LessonTopic, LessonModule[]> = {
         {
           text: { en: 'Red + yellow = orange. Blue + yellow = green. Red + blue = purple.', id: 'Merah + kuning = oranye. Biru + kuning = hijau. Merah + biru = ungu.' },
           visual: [g('ball', 'red', 1), g('ball', 'yellow', 1), g('ball', 'orange', 1)],
-        },
-      ],
-    },
-  ],
-  shapes: [
-    {
-      id: 'shape-1',
-      title: { en: '1. Basic Shapes', id: '1. Bentuk Dasar' },
-      goal: { en: 'Know circle, square, triangle.', id: 'Mengenal lingkaran, persegi, segitiga.' },
-      steps: [
-        {
-          text: { en: 'A circle is round, a square has 4 sides, a triangle has 3.', id: 'Lingkaran bulat, persegi punya 4 sisi, segitiga punya 3.' },
-          visual: [g('ball', 'blue', 1), g('square', 'red', 1), g('triangle', 'green', 1)],
-        },
-      ],
-    },
-    {
-      id: 'shape-2',
-      title: { en: '2. Counting Corners', id: '2. Menghitung Sudut' },
-      goal: { en: 'Corners are the pointy bits.', id: 'Sudut adalah bagian lancip.' },
-      steps: [
-        {
-          text: { en: 'A triangle has 3 corners. A square has 4. A circle has 0!', id: 'Segitiga 3 sudut. Persegi 4 sudut. Lingkaran 0!' },
-          visual: [g('triangle', 'yellow', 1), g('square', 'purple', 1)],
-        },
-      ],
-    },
-    {
-      id: 'shape-3',
-      title: { en: '3. Shapes Around Us', id: '3. Bentuk di Sekitar Kita' },
-      goal: { en: 'Find shapes in real life.', id: 'Menemukan bentuk di kehidupan.' },
-      steps: [
-        {
-          text: { en: 'A wheel is a circle. A window can be a square. A roof is a triangle.', id: 'Roda itu lingkaran. Jendela bisa persegi. Atap itu segitiga.' },
         },
       ],
     },
@@ -256,44 +145,8 @@ export const LESSONS: Record<LessonTopic, LessonModule[]> = {
       ],
     },
   ],
-  patterns: [
-    {
-      id: 'pattern-1',
-      title: { en: '1. Repeating Colors', id: '1. Warna Berulang' },
-      goal: { en: 'Find what repeats.', id: 'Temukan yang berulang.' },
-      steps: [
-        {
-          text: { en: 'Red, blue, red, blue... The colors take turns!', id: 'Merah, biru, merah, biru... Warnanya bergantian!' },
-          visual: [g('ball', 'red', 1), g('ball', 'blue', 1), g('ball', 'red', 1), g('ball', 'blue', 1)],
-          example: { en: 'Next is red.', id: 'Selanjutnya merah.' },
-        },
-      ],
-    },
-    {
-      id: 'pattern-2',
-      title: { en: '2. Shape Patterns', id: '2. Pola Bentuk' },
-      goal: { en: 'Shapes can repeat too.', id: 'Bentuk juga bisa berulang.' },
-      steps: [
-        {
-          text: { en: 'Square, triangle, square, triangle... What comes next?', id: 'Persegi, segitiga, persegi, segitiga... Apa selanjutnya?' },
-          visual: [g('square', 'green', 1), g('triangle', 'green', 1), g('square', 'green', 1), g('triangle', 'green', 1)],
-          example: { en: 'A square!', id: 'Persegi!' },
-        },
-      ],
-    },
-    {
-      id: 'pattern-3',
-      title: { en: '3. Number Patterns', id: '3. Pola Angka' },
-      goal: { en: 'Count by 2s, 5s and 10s.', id: 'Berhitung lompat 2, 5, dan 10.' },
-      steps: [
-        {
-          text: { en: '2, 4, 6, 8... each number jumps up by 2.', id: '2, 4, 6, 8... setiap angka melompat naik 2.' },
-          example: { en: 'Next is 10.', id: 'Selanjutnya 10.' },
-        },
-      ],
-    },
-  ],
   ...MORE_LESSONS,
+  ...NUMBER_LESSONS,
 };
 
 export function getLessons(topic: LessonTopic): LessonModule[] {
