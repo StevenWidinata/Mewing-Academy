@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Lang } from '../../../shared/types';
 import { t, type StringKey } from '../i18n/strings';
 import type { FurId, ItemId } from './rewards';
+import { BREAK_CHOICES, type BreakMinutes } from '../lib/breakTime';
 import { HOLD_SPEEDS, type HoldSpeed } from './holdSpeed';
 import { ROUND_SIZES, type RoundSize } from './roundSize';
 
@@ -31,6 +32,8 @@ export interface Settings {
   cameraTutorialDone: boolean;
   /** How long to hold fingers still before the answer counts. */
   holdSpeed: HoldSpeed;
+  /** Parent-set stretch break after this many minutes of play (0 = off). */
+  breakMinutes: BreakMinutes;
 }
 
 const DEFAULTS: Settings = {
@@ -50,6 +53,7 @@ const DEFAULTS: Settings = {
   roundSize: 5,
   cameraTutorialDone: false,
   holdSpeed: 'normal',
+  breakMinutes: 0,
 };
 
 const KEY = 'mewing.settings.v1';
@@ -63,6 +67,7 @@ function load(): Settings {
       const merged = { ...DEFAULTS, ...saved };
       if (!ROUND_SIZES.includes(merged.roundSize)) merged.roundSize = DEFAULTS.roundSize;
       if (!HOLD_SPEEDS.includes(merged.holdSpeed)) merged.holdSpeed = DEFAULTS.holdSpeed;
+      if (!BREAK_CHOICES.includes(merged.breakMinutes)) merged.breakMinutes = DEFAULTS.breakMinutes;
       return merged;
     }
   } catch {

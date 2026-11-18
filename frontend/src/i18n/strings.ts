@@ -191,6 +191,10 @@ export const STRINGS = {
   dailyBonus: { en: '+2 bonus stars!', id: '+2 bintang bonus!' },
   navParents: { en: 'Parents & Teachers', id: 'Orang Tua & Guru' },
 
+  // Break reminder
+  breakTitle: { en: 'Stretch break time!', id: 'Waktunya istirahat!' },
+  breakBack: { en: "I'm back!", id: 'Aku kembali!' },
+
   // Settings
   settingsLang: { en: 'Language', id: 'Bahasa' },
   settingsTheme: { en: 'Look', id: 'Tampilan' },

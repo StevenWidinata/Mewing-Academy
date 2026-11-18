@@ -5,6 +5,7 @@ import { useSettings } from '../state/settings';
 import { classify, poseFor, type Classification } from '../vision/fingers';
 import { LETTERS } from './ChoiceGrid';
 import { HandPose } from './HandPose';
+import { isOnBreak } from '../lib/breakTime';
 import { useHandModelPreload } from '../vision/preload';
 import { useVision, type VisionFrame, type VisionStatus } from '../vision/useVision';
 
@@ -91,6 +92,12 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
 
   const handleFrame = useCallback(
     (frame: VisionFrame) => {
+      // Stretch break on screen: nothing counts until the child is back.
+      if (isOnBreak()) {
+        candidate.current = null;
+        onHover?.(null, 0);
+        return;
+      }
       const step = tutorialRef.current;
       if (step != null) {
         // Practice mode: answers do not count yet.

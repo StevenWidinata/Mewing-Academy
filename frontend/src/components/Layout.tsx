@@ -10,6 +10,7 @@ import { MusicButton, PawTrail } from './FunExtras';
 import { WatcherMewy } from './WatcherMewy';
 import { Mewy } from './Mewy';
 import { RewardToast } from './RewardToast';
+import { BreakReminder } from './BreakReminder';
 import { TitleScreen } from './TitleScreen';
 import { MobileMenu, NavBar } from './NavBar';
 
@@ -67,6 +68,7 @@ export function Layout() {
         <Outlet />
       </main>
       <RewardToast />
+      <BreakReminder />
       <WatcherMewy />
       <PawTrail />
 

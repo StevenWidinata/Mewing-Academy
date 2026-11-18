@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { resetProgress } from '../state/progress';
 import { checkPin, isValidPin, setPin } from '../state/parentLock';
+import { BREAK_CHOICES } from '../lib/breakTime';
 import { useSettings } from '../state/settings';
 
 const T = {
@@ -19,6 +20,12 @@ const T = {
   resetBtn: { en: 'Delete all progress', id: 'Hapus semua progres' },
   resetDone: { en: 'All progress was reset.', id: 'Semua progres sudah dihapus.' },
   wrongPin: { en: 'Wrong PIN.', id: 'PIN salah.' },
+  breakTitle: { en: '⏰ Break reminder', id: '⏰ Pengingat istirahat' },
+  breakText: {
+    en: 'After this much play, Mewy asks for a 1-minute stretch break. Only time with the app open counts.',
+    id: 'Setelah bermain selama ini, Mewy mengajak istirahat peregangan 1 menit. Hanya waktu saat aplikasi terbuka yang dihitung.',
+  },
+  breakOff: { en: 'Off', id: 'Mati' },
   mustBe4: { en: 'The new PIN must be 4 digits.', id: 'PIN baru harus 4 angka.' },
 };
 
@@ -33,7 +40,7 @@ const digits = (v: string) => v.replace(/\D/g, '').slice(0, 4);
 
 /** Lock, change PIN and the (deliberately hard to reach) full reset. */
 export function ParentAccount({ onLock }: { onLock: () => void }) {
-  const { settings } = useSettings();
+  const { settings, set } = useSettings();
   const L = settings.lang;
   const [cur, setCur] = useState('');
   const [next, setNext] = useState('');
@@ -69,6 +76,28 @@ export function ParentAccount({ onLock }: { onLock: () => void }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
         <h2 style={{ fontSize: '0.9rem', margin: 0 }}>{T.title[L]}</h2>
         <button type="button" className="btn btn--ghost" onClick={onLock}>{T.lock[L]}</button>
+      </div>
+
+      <div style={{ display: 'grid', gap: '0.5rem' }}>
+        <strong style={{ fontFamily: 'var(--font-read)' }}>{T.breakTitle[L]}</strong>
+        <p style={{ fontFamily: 'var(--font-read)', margin: 0 }}>{T.breakText[L]}</p>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }} role="group" aria-label={T.breakTitle[L]}>
+          {BREAK_CHOICES.map((m) => {
+            const active = settings.breakMinutes === m;
+            return (
+              <button
+                key={m}
+                type="button"
+                className="btn"
+                aria-pressed={active}
+                onClick={() => set('breakMinutes', m)}
+                style={{ background: active ? 'var(--yellow)' : 'var(--btn-ghost)', color: active ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: '0.65rem' }}
+              >
+                {m === 0 ? T.breakOff[L] : `${m} min`}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <form onSubmit={change} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
