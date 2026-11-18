@@ -8,8 +8,13 @@ import { TopicIcon } from '../components/TopicIcon';
 import { useSettings } from '../state/settings';
 
 export function LessonDetailPage() {
-  const { tr, settings } = useSettings();
   const { topic } = useParams();
+  // A fresh page per topic, so an open lesson never carries over to another topic.
+  return <LessonDetail key={topic} topic={topic} />;
+}
+
+function LessonDetail({ topic }: { topic: string | undefined }) {
+  const { tr, settings } = useSettings();
   const [open, setOpen] = useState<number | null>(null);
   const [done, setDone] = useState<Set<string>>(() => new Set());
   const L = settings.lang;
