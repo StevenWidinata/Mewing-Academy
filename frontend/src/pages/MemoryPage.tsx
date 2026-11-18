@@ -10,6 +10,7 @@ import { Confetti } from '../components/Confetti';
 import { LevelPicker } from '../components/LevelPicker';
 import { MewyBuddy } from '../components/MewyBuddy';
 import { ModelPreloadBar } from '../components/ModelPreloadBar';
+import { WhyPanel } from '../components/WhyPanel';
 import { LootBanner } from '../components/BagStrip';
 import type { Bag } from '../lib/bag';
 import { SpeakButton } from '../components/SpeakButton';
@@ -170,6 +171,7 @@ export function MemoryPage() {
                 {picked === q.answer ? `✅ ${tr('correct')}` : `❌ ${tr('notQuite')}`}
                 {q.explain && ` — ${q.explain[settings.lang]}`}
               </p>
+              <WhyPanel key={qIndex} question={q} wrong={picked !== q.answer} />
               <button type="button" className="btn" onClick={next} autoFocus>{tr('next')}</button>
             </div>
           )}

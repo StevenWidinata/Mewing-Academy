@@ -13,6 +13,7 @@ import type { VisionStatus } from '../vision/useVision';
 import { AnswerModeHint } from './AnswerModeHint';
 import { QuizProgress } from './QuizProgress';
 import { RoundRecap } from './RoundRecap';
+import { WhyPanel } from './WhyPanel';
 import { LootBanner } from './BagStrip';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
@@ -161,6 +162,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
                 {state.picked === current.answer ? `✅ ${tr('correct')}` : `❌ ${tr('notQuite')}`}
                 {current.explain && ` — ${current.explain[lang]}`}
               </p>
+              <WhyPanel key={state.index} question={current} wrong={state.picked !== current.answer} />
               <button type="button" className="btn" onClick={next} autoFocus>{tr('next')}</button>
             </div>
           )}

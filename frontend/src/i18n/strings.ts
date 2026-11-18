@@ -129,6 +129,8 @@ export const STRINGS = {
   tutorUnknown: { en: "🤔 I'm still learning about that! Try one of these:", id: '🤔 Aku masih belajar soal itu! Coba tanya ini:' },
 
   // Round recap + fix my mistakes
+  whyBtn: { en: 'Why?', id: 'Kenapa?' },
+  whyLesson: { en: 'Learn more in the lesson', id: 'Pelajari lagi di pelajaran' },
   recapTitle: { en: 'My answers', id: 'Jawabanku' },
   recapYours: { en: 'You picked', id: 'Pilihanmu' },
   recapRight: { en: 'Right answer', id: 'Jawaban benar' },

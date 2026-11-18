@@ -3432,3 +3432,69 @@ main > section > h1:first-child::after {
   animation: none;
   transition: none;
 }
+
+/* ---- "Why?" after a quiz answer ---- */
+.why {
+  margin: 0.25rem auto 0.9rem;
+  max-width: 560px;
+}
+.why__btn {
+  font-size: 0.6rem;
+}
+.why__panel {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  text-align: left;
+  font-family: var(--font-read);
+  background: var(--bg-2);
+  border: 3px dashed var(--accent);
+  animation: slideUp 0.25s ease both;
+}
+.why__panel p {
+  margin: 0;
+}
+.why__answer {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.why__pic {
+  font-size: 1.6rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.why__gone {
+  opacity: 0.3;
+  text-decoration: line-through;
+}
+.why__jumps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.why__num {
+  padding: 2px 8px;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: var(--ink);
+  background: #fdf6e3;
+  border: 2px solid var(--ink);
+}
+.why__num.is-next {
+  background: var(--yellow);
+}
+.why__step {
+  font-weight: 700;
+  color: var(--green);
+}
+.why__visual {
+  padding: 0.4rem;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+}
+.why__link {
+  font-weight: 700;
+  color: var(--accent);
+}
