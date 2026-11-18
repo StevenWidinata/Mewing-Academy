@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { Lang } from '../../../shared/types';
 import { ParentsLinkCard } from '../components/ParentsLinkCard';
+import { HOLD_MS, HOLD_SPEEDS } from '../state/holdSpeed';
 import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
 const THEMES: { id: ThemeId; name: { en: string; id: string }; swatch: string; ink: string }[] = [
@@ -101,6 +102,23 @@ export function SettingsPage() {
         </Row>
         <Row label={`🔊 ${tr('settingsAutoRead')}`}>
           <Toggle on={settings.autoRead} onToggle={() => set('autoRead', !settings.autoRead)} labelOn={tr('on')} labelOff={tr('off')} />
+        </Row>
+        <Row label={`✋ ${tr('settingsHoldSpeed')}`}>
+          {HOLD_SPEEDS.map((h) => {
+            const active = settings.holdSpeed === h;
+            return (
+              <button
+                key={h}
+                type="button"
+                className="btn"
+                aria-pressed={active}
+                onClick={() => set('holdSpeed', h)}
+                style={{ background: active ? 'var(--yellow)' : 'var(--btn-ghost)', color: active ? 'var(--ink)' : 'var(--btn-ghost-text)', fontSize: '0.65rem' }}
+              >
+                {tr(h === 'slow' ? 'holdSlow' : h === 'normal' ? 'holdNormal' : 'holdFast')} · {(HOLD_MS[h] / 1000).toFixed(1)}s
+              </button>
+            );
+          })}
         </Row>
         <Row label={`📷 ${tr('settingsCamTutorial')}`}>
           {settings.cameraTutorialDone ? (

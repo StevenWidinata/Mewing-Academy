@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Lang } from '../../../shared/types';
 import { t, type StringKey } from '../i18n/strings';
 import type { FurId, ItemId } from './rewards';
+import { HOLD_SPEEDS, type HoldSpeed } from './holdSpeed';
 import { ROUND_SIZES, type RoundSize } from './roundSize';
 
 export type ThemeId = 'purple' | 'sky' | 'mint' | 'sunset';
@@ -28,6 +29,8 @@ export interface Settings {
   roundSize: RoundSize;
   /** The first-time "show 1, 2, 3, 4 fingers" camera practice was finished or skipped. */
   cameraTutorialDone: boolean;
+  /** How long to hold fingers still before the answer counts. */
+  holdSpeed: HoldSpeed;
 }
 
 const DEFAULTS: Settings = {
@@ -46,6 +49,7 @@ const DEFAULTS: Settings = {
   mewyItem: null,
   roundSize: 5,
   cameraTutorialDone: false,
+  holdSpeed: 'normal',
 };
 
 const KEY = 'mewing.settings.v1';
@@ -58,6 +62,7 @@ function load(): Settings {
       const { fingerMode: _removed, ...saved } = JSON.parse(raw) as Partial<Settings> & { fingerMode?: unknown };
       const merged = { ...DEFAULTS, ...saved };
       if (!ROUND_SIZES.includes(merged.roundSize)) merged.roundSize = DEFAULTS.roundSize;
+      if (!HOLD_SPEEDS.includes(merged.holdSpeed)) merged.holdSpeed = DEFAULTS.holdSpeed;
       return merged;
     }
   } catch {

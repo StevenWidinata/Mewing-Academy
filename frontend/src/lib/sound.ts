@@ -26,6 +26,11 @@ export const sfx = {
     if (!enabled) return;
     tone(200, 220, 'sawtooth', 0.12);
   },
+  /** Rising blip while fingers are held still: step 1, 2, 3 go up in pitch. */
+  holdTick(enabled: boolean, step: number) {
+    if (!enabled) return;
+    tone(392 + step * 131, 45, 'square', 0.06);
+  },
   tick(enabled: boolean) {
     if (!enabled) return;
     tone(440, 50, 'square', 0.06);

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { sfx } from '../lib/sound';
+import { HOLD_MS } from '../state/holdSpeed';
 import { useSettings } from '../state/settings';
 import { classify, poseFor, type Classification } from '../vision/fingers';
 import { LETTERS } from './ChoiceGrid';
 import { HandPose } from './HandPose';
 import { useVision, type VisionFrame, type VisionStatus } from '../vision/useVision';
 
-const HOLD_MS = 1200; // how long a finger pose must be held to confirm
 /** First-time camera practice: show 1, 2, 3, then 4 fingers. */
 const TUTORIAL_STEPS = 4;
 
@@ -23,6 +23,15 @@ interface Props {
   onStatusChange?: (status: VisionStatus) => void;
 }
 
+/** A short phone vibration, where supported. */
+function buzz(ms: number) {
+  try {
+    navigator.vibrate?.(ms);
+  } catch {
+    /* not supported */
+  }
+}
+
 type Readout = Pick<Classification, 'answer' | 'pose' | 'reason'>;
 const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false, false], reason: 'no-hand' };
 const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
@@ -34,9 +43,11 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
   const tutorialRef = useRef<number | null>(null);
   const [tutorialProgress, setTutorialProgress] = useState(0);
   const soundRef = useRef(settings.sound);
+  const holdMsRef = useRef(HOLD_MS[settings.holdSpeed]);
   useEffect(() => {
     soundRef.current = settings.sound;
-  }, [settings.sound]);
+    holdMsRef.current = HOLD_MS[settings.holdSpeed];
+  }, [settings.sound, settings.holdSpeed]);
   // Only re-render when what we show changes, not on every camera frame.
   const [readout, setReadout] = useState<Readout>(EMPTY_READOUT);
   const lastKey = useRef(readoutKey(EMPTY_READOUT));
@@ -50,6 +61,16 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
   // Hold tracking lives in refs so the rAF loop doesn't re-render every frame.
   const candidate = useRef<number | null>(null);
   const holdStart = useRef(0);
+  // Quarter marks already signalled for the current hold (rising ticks + a tiny buzz).
+  const ticks = useRef(0);
+  const holdFeedback = useCallback((progress: number) => {
+    const quarter = Math.min(3, Math.floor(progress * 4));
+    while (ticks.current < quarter) {
+      ticks.current += 1;
+      sfx.holdTick(soundRef.current, ticks.current);
+      buzz(10);
+    }
+  }, []);
   const confirmed = useRef(false);
   const pausedRef = useRef(paused);
   useEffect(() => {
@@ -83,10 +104,13 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         if (candidate.current !== step) {
           candidate.current = step;
           holdStart.current = performance.now();
+          ticks.current = 0;
         }
-        const progress = Math.min(1, (performance.now() - holdStart.current) / HOLD_MS);
+        const progress = Math.min(1, (performance.now() - holdStart.current) / holdMsRef.current);
         setTutorialProgress(Math.round(progress * 10) / 10);
+        holdFeedback(progress);
         if (progress >= 1) {
+          buzz(35);
           candidate.current = null;
           setTutorialProgress(0);
           tutorialRef.current = step + 1;
@@ -122,17 +146,20 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
       if (candidate.current !== answer) {
         candidate.current = answer;
         holdStart.current = performance.now();
+        ticks.current = 0;
       }
       const held = performance.now() - holdStart.current;
-      const progress = Math.min(1, held / HOLD_MS);
+      const progress = Math.min(1, held / holdMsRef.current);
       onHover?.(answer, progress);
+      holdFeedback(progress);
       if (progress >= 1) {
+        buzz(35);
         confirmed.current = true;
         candidate.current = null;
         onConfirm(answer);
       }
     },
-    [choiceCount, onConfirm, onHover, showReadout, finishTutorial],
+    [choiceCount, onConfirm, onHover, showReadout, finishTutorial, holdFeedback],
   );
 
   const { videoRef, status, start, stop } = useVision({ onFrame: handleFrame });
