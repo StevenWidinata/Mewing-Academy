@@ -1,4 +1,4 @@
-import { TOPICS, type Text } from '../../../shared/types';
+import { TOPICS, type Text, type TopicId } from '../../../shared/types';
 import type { Progress } from '../state/progress';
 import { WEEKLY_GOAL, weekStart } from './weekly';
 
@@ -18,7 +18,19 @@ export type StickerId =
   | 'hard-star'
   | 'daily-5'
   | 'weekly'
-  | 'stars-100';
+  | 'stars-100'
+  | 'number-prodigy'
+  | 'word-wizard'
+  | 'nature-explorer'
+  | 'color-artist'
+  | 'early-bird'
+  | 'night-owl'
+  | 'lightning'
+  | 'sharpshooter'
+  | 'comeback'
+  | 'bookworm'
+  | 'curious-cat'
+  | 'shopper';
 
 export interface Sticker {
   id: StickerId;
@@ -31,6 +43,42 @@ export interface Sticker {
 
 const T = (en: string, id: string): Text => ({ en, id });
 const playedTopics = (p: Progress) => TOPICS.filter((t) => (p.byTopic[t.id]?.total ?? 0) > 0).length;
+
+/** Topic-group prodigies: 85%+ over at least 30 answers in the group. */
+export const PRODIGY_AT = 0.85;
+export const PRODIGY_MIN = 30;
+export const TOPIC_GROUPS: Record<'numbers' | 'words' | 'nature' | 'art', TopicId[]> = {
+  numbers: ['counting', 'math', 'skipcount', 'patterns', 'time'],
+  words: ['letters', 'opposites', 'feelings'],
+  nature: ['animals', 'weather', 'space', 'food'],
+  art: ['colors', 'shapes', 'body', 'transport'],
+};
+function groupStrong(p: Progress, group: keyof typeof TOPIC_GROUPS): boolean {
+  let correct = 0;
+  let total = 0;
+  for (const t of TOPIC_GROUPS[group]) {
+    correct += p.byTopic[t]?.correct ?? 0;
+    total += p.byTopic[t]?.total ?? 0;
+  }
+  return total >= PRODIGY_MIN && correct / total >= PRODIGY_AT;
+}
+
+/** Early Bird / Night Owl from the hour a round ends (Night Owl stops at 8 pm on purpose). */
+export function timeSticker(hour: number): StickerId | null {
+  if (hour < 8) return 'early-bird';
+  if (hour >= 18 && hour < 20) return 'night-owl';
+  return null;
+}
+
+/** Lightning Fingers: 5 right answers in a row, each under 5 seconds. */
+export function hasLightningRun(answers: { correct: boolean; ms: number }[], run = 5, ms = 5000): boolean {
+  let n = 0;
+  for (const a of answers) {
+    n = a.correct && a.ms < ms ? n + 1 : 0;
+    if (n >= run) return true;
+  }
+  return false;
+}
 
 export const STICKERS: Sticker[] = [
   { id: 'first-star', emoji: '🌟', name: T('First Star', 'Bintang Pertama'), how: T('Get your first right answer.', 'Jawab benar untuk pertama kali.'), check: (p) => p.stars >= 1 },
@@ -75,6 +123,48 @@ export const STICKERS: Sticker[] = [
     },
   },
   { id: 'stars-100', emoji: '💫', name: T('Star Collector', 'Kolektor Bintang'), how: T('Collect 100 stars.', 'Kumpulkan 100 bintang.'), check: (p) => p.stars >= 100 },
+  {
+    id: 'number-prodigy',
+    emoji: '🔢',
+    name: T('Number Prodigy', 'Jenius Angka'),
+    how: T('Get 85% right over 30 answers in counting, plus & minus, skip counting, patterns and time.', 'Benar 85% dari 30 jawaban di berhitung, tambah & kurang, hitung loncat, pola, dan jam.'),
+    check: (p) => groupStrong(p, 'numbers'),
+  },
+  {
+    id: 'word-wizard',
+    emoji: '🔤',
+    name: T('Word Wizard', 'Penyihir Kata'),
+    how: T('Get 85% right over 30 answers in letters, opposites and feelings.', 'Benar 85% dari 30 jawaban di huruf, lawan kata, dan perasaan.'),
+    check: (p) => groupStrong(p, 'words'),
+  },
+  {
+    id: 'nature-explorer',
+    emoji: '🌿',
+    name: T('Nature Explorer', 'Penjelajah Alam'),
+    how: T('Get 85% right over 30 answers in animals, weather, space and fruits & veggies.', 'Benar 85% dari 30 jawaban di hewan, cuaca, luar angkasa, dan buah & sayur.'),
+    check: (p) => groupStrong(p, 'nature'),
+  },
+  {
+    id: 'color-artist',
+    emoji: '🎨',
+    name: T('Color Artist', 'Seniman Warna'),
+    how: T('Get 85% right over 30 answers in colors, shapes, my body and vehicles.', 'Benar 85% dari 30 jawaban di warna, bentuk, tubuhku, dan kendaraan.'),
+    check: (p) => groupStrong(p, 'art'),
+  },
+  { id: 'early-bird', emoji: '🐦', name: T('Early Bird', 'Burung Pagi'), how: T('Finish a round before 8 in the morning.', 'Selesaikan satu ronde sebelum jam 8 pagi.') },
+  { id: 'night-owl', emoji: '🦉', name: T('Night Owl', 'Burung Hantu'), how: T('Finish a round between 6 and 8 in the evening.', 'Selesaikan satu ronde antara jam 6 dan 8 malam.') },
+  { id: 'lightning', emoji: '⚡', name: T('Lightning Fingers', 'Jari Kilat'), how: T('Get 5 right answers in a row, each in under 5 seconds.', 'Jawab benar 5 kali berturut-turut, masing-masing kurang dari 5 detik.') },
+  {
+    id: 'sharpshooter',
+    emoji: '🎯',
+    name: T('Sharpshooter', 'Penembak Jitu'),
+    how: T('Finish 3 perfect rounds.', 'Selesaikan 3 ronde sempurna.'),
+    check: (p) => p.sessions.filter((s) => s.total >= 5 && s.correct === s.total).length >= 3,
+  },
+  { id: 'comeback', emoji: '💪', name: T('Comeback Kid', 'Pantang Menyerah'), how: T('Fix 10 mistakes in "Fix my mistakes".', 'Perbaiki 10 kesalahan di "Perbaiki kesalahanku".'), check: (p) => p.fixedCount >= 10 },
+  { id: 'bookworm', emoji: '📚', name: T('Bookworm', 'Kutu Buku'), how: T('Finish 10 lessons.', 'Selesaikan 10 pelajaran.'), check: (p) => p.lessonsDone.length >= 10 },
+  { id: 'curious-cat', emoji: '🐱', name: T('Curious Cat', 'Kucing Penasaran'), how: T('Ask Mewy 20 questions.', 'Tanya Mewy 20 kali.'), check: (p) => p.tutorQuestions >= 20 },
+  { id: 'shopper', emoji: '🛍️', name: T('Shopper', 'Si Pembeli'), how: T("Buy your first thing in Mewy's closet.", 'Beli barang pertama di Lemari Mewy.'), check: (p) => p.purchases >= 1 },
 ];
 
 /** Pure: the sticker list after adding any that `p` has now earned. Same array if nothing new. */

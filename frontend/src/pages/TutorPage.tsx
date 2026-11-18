@@ -4,6 +4,7 @@ import { MAX_MESSAGE_LENGTH } from '../../../shared/tutor';
 import { TOPICS, type TopicMeta } from '../../../shared/types';
 import { Mewy } from '../components/Mewy';
 import { askTutor, fetchConfig } from '../lib/api';
+import { noteTutorQuestion } from '../state/progress';
 import { useSettings } from '../state/settings';
 
 interface Msg {
@@ -44,6 +45,7 @@ export function TutorPage() {
     const text = raw.trim();
     if (!text || busy) return;
     setMessages((m) => [...m, { from: 'you', text }]);
+    noteTutorQuestion();
     setInput('');
     setBusy(true);
     const reply = await askTutor(text, settings.lang);

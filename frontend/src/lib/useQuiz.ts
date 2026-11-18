@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Question } from '../../../shared/types';
-import { recordAnswer, recordSession, trackMistake } from '../state/progress';
+import { earnSticker, recordAnswer, recordSession, trackMistake } from '../state/progress';
+import { hasLightningRun } from './stickers';
 import type { Answer } from './boss';
 import type { Bag } from './bag';
 import { buildSession, type SessionMode } from './sessions';
@@ -75,6 +76,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
           questions.map((q, i) => ({ topic: q.topic, difficulty: q.difficulty, correct: !!state.answers[i]?.correct, byHand: !!state.answers[i]?.byHand })),
         ),
       );
+      if (hasLightningRun(state.answers)) earnSticker('lightning');
       onFinish?.(state.correctCount, questions.length);
       setState({ ...state, done: true, loot });
     } else {

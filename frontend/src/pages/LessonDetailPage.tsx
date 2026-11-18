@@ -5,6 +5,7 @@ import { isQuizTopic } from '../../../shared/questions';
 import { TOPICS } from '../../../shared/types';
 import { LessonPlayer } from '../components/LessonPlayer';
 import { TopicIcon } from '../components/TopicIcon';
+import { finishLesson, useProgress } from '../state/progress';
 import { useSettings } from '../state/settings';
 
 export function LessonDetailPage() {
@@ -16,7 +17,8 @@ export function LessonDetailPage() {
 function LessonDetail({ topic }: { topic: string | undefined }) {
   const { tr, settings } = useSettings();
   const [open, setOpen] = useState<number | null>(null);
-  const [done, setDone] = useState<Set<string>>(() => new Set());
+  const { lessonsDone } = useProgress();
+  const done = new Set(lessonsDone);
   const L = settings.lang;
 
   if (!topic || !isQuizTopic(topic)) {
@@ -30,9 +32,7 @@ function LessonDetail({ topic }: { topic: string | undefined }) {
 
   const meta = TOPICS.find((t) => t.id === topic)!;
   const modules = getLessons(topic as LessonTopic);
-  const markDone = (i: number) => setDone((s) => new Set(s).add(modules[i].id));
   const close = () => {
-    if (open != null) markDone(open);
     setOpen(null);
     window.scrollTo({ top: 0 });
   };
@@ -50,10 +50,10 @@ function LessonDetail({ topic }: { topic: string | undefined }) {
           module={modules[open]}
           topic={topic}
           onExit={close}
+          onComplete={() => finishLesson(modules[open].id)}
           onNext={
             open + 1 < modules.length
               ? () => {
-                  markDone(open);
                   setOpen(open + 1);
                   window.scrollTo({ top: 0 });
                 }

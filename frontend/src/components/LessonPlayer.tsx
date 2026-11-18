@@ -38,12 +38,15 @@ export function LessonPlayer({
   topic,
   onExit,
   onNext,
+  onComplete,
 }: {
   module: LessonModule;
   topic: string;
   onExit: () => void;
   /** Opens the next module; absent on the last one. */
   onNext?: () => void;
+  /** Called once when the last page is reached. */
+  onComplete?: () => void;
 }) {
   const { tr, settings } = useSettings();
   const L = settings.lang;
@@ -60,6 +63,10 @@ export function LessonPlayer({
   }, [at, settings.autoRead, L, m, page]);
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
+
+  useEffect(() => {
+    if (page.kind === 'done') onComplete?.();
+  }, [page.kind, onComplete]);
 
   const go = (d: number) => setAt((x) => Math.max(0, Math.min(pages.length - 1, x + d)));
 

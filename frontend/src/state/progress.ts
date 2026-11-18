@@ -4,7 +4,7 @@ import { addToBag, itemsForSession, welcomeGift, type Bag } from '../lib/bag';
 import { addLevelStars, levelStarsFrom, type LevelStars } from '../lib/levelStars';
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
-import { withEarnedStickers, type StickerId } from '../lib/stickers';
+import { timeSticker, withEarnedStickers, type StickerId } from '../lib/stickers';
 import { addPlayDay, nextStreak } from '../lib/weekly';
 import { HAND_BONUS_EVERY, canAfford, legacyOwned, payFrom, priceOf, unlockKeys, withBuyHints } from './rewards';
 
@@ -34,10 +34,15 @@ export interface Progress {
   owned: string[];
   /** Shop keys whose "you can buy" pop-up was already shown. */
   buyHints: string[];
+  /** Badge counters: mistakes fixed, lessons finished, questions asked, things bought. */
+  fixedCount: number;
+  lessonsDone: string[];
+  tutorQuestions: number;
+  purchases: number;
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [] };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0 };
 
 /** Set when an older save got its one-time welcome gift on this load (shown as a pop-up). */
 let gotWelcomeGift = false;
@@ -127,11 +132,13 @@ export function recordSession(session: Omit<SessionLog, 'at'>): Bag {
   if (!session.total) return {};
   const entry: SessionLog = { ...session, at: new Date().toISOString() };
   const loot = itemsForSession(entry);
+  const timed = timeSticker(new Date().getHours());
   write({
     ...current,
     sessions: [...current.sessions, entry].slice(-MAX_SESSIONS),
     levelStars: addLevelStars(current.levelStars, entry),
     bag: addToBag(current.bag, loot),
+    stickers: timed && !current.stickers.includes(timed) ? [...current.stickers, timed] : current.stickers,
   });
   return loot;
 }
@@ -139,7 +146,7 @@ export function recordSession(session: Omit<SessionLog, 'at'>): Bag {
 /** Wrong answers are kept to practise later; a right answer clears that question. */
 export function trackMistake(q: Question, correct: boolean) {
   const next = correct ? removeMistake(current.mistakes, q) : addMistake(current.mistakes, q);
-  if (next !== current.mistakes) write({ ...current, mistakes: next });
+  if (next !== current.mistakes) write({ ...current, mistakes: next, fixedCount: current.fixedCount + (correct ? 1 : 0) });
 }
 
 /** Stickers earned by an event rather than by saved progress (e.g. beating the boss). */
@@ -152,8 +159,18 @@ export function earnSticker(id: StickerId) {
 export function buy(key: string): boolean {
   const price = priceOf(key);
   if (current.owned.includes(key) || !canAfford(current.bag, price)) return false;
-  write({ ...current, bag: payFrom(current.bag, price), owned: [...current.owned, key] });
+  write({ ...current, bag: payFrom(current.bag, price), owned: [...current.owned, key], purchases: current.purchases + 1 });
   return true;
+}
+
+/** A lesson module was played to its last page. */
+export function finishLesson(id: string) {
+  if (!current.lessonsDone.includes(id)) write({ ...current, lessonsDone: [...current.lessonsDone, id] });
+}
+
+/** Counts questions asked to Mewy (Curious Cat). */
+export function noteTutorQuestion() {
+  write({ ...current, tutorQuestions: current.tutorQuestions + 1 });
 }
 
 export const DAILY_BONUS = 2;
