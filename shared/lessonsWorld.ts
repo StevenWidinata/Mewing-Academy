@@ -16,6 +16,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   colors: [
     {
       id: 'color-1',
+      tryIt: { figure: 'mixer', config: {}, prompt: T('Pick two paints and see what color they make!', 'Pilih dua cat dan lihat warna apa yang terbentuk!') },
       title: T('1. Name the Colors', '1. Mengenal Warna'),
       goal: T('Learn 6 colors.', 'Mengenal 6 warna.'),
       steps: [
@@ -32,6 +33,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'color-2',
+      tryIt: { figure: 'plate', config: { mode: 'rainbow' }, prompt: T('Fill a plate with foods of 5 different colors.', 'Isi piring dengan makanan 5 warna berbeda.') },
       title: T('2. Colors Around Us', '2. Warna di Sekitar Kita'),
       goal: T('Match colors to things.', 'Mencocokkan warna dengan benda.'),
       steps: [
@@ -46,6 +48,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'color-3',
+      tryIt: { figure: 'mixer', config: {}, prompt: T('Mix blue and yellow. Then try red and blue!', 'Campur biru dan kuning. Lalu coba merah dan biru!') },
       title: T('3. Mixing Colors', '3. Mencampur Warna'),
       goal: T('Make new colors.', 'Membuat warna baru.'),
       steps: [
@@ -71,6 +74,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   animals: [
     {
       id: 'animal-1',
+      tryIt: { figure: 'legs', config: { mode: 'sounds' }, prompt: T('Tap each animal to hear what it says.', 'Ketuk setiap hewan untuk tahu suaranya.') },
       title: T('1. Animal Sounds', '1. Suara Hewan'),
       goal: T('Match sounds to animals.', 'Mencocokkan suara dengan hewan.'),
       steps: [
@@ -85,6 +89,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'animal-2',
+      tryIt: { figure: 'legs', config: { mode: 'homes' }, prompt: T('Tap each animal to see where it lives.', 'Ketuk setiap hewan untuk melihat tempat tinggalnya.') },
       title: T('2. Where Animals Live', '2. Tempat Tinggal Hewan'),
       goal: T('Water, land, or sky?', 'Air, darat, atau udara?'),
       steps: [
@@ -99,6 +104,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'animal-3',
+      tryIt: { figure: 'legs', config: { mode: 'legs' }, prompt: T('Tap each animal and count its legs.', 'Ketuk setiap hewan dan hitung kakinya.') },
       title: T('3. Legs and Fun Facts', '3. Kaki dan Fakta Seru'),
       goal: T('Amazing animal facts.', 'Fakta hewan yang menakjubkan.'),
       steps: [
@@ -116,6 +122,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   letters: [
     {
       id: 'letter-1',
+      tryIt: { figure: 'letters', config: { mode: 'abc' }, prompt: T('Walk through the alphabet, big and small letters.', 'Telusuri alfabet, huruf besar dan kecil.') },
       title: T('1. The Alphabet', '1. Alfabet'),
       goal: T('26 letters, A to Z.', '26 huruf, A sampai Z.'),
       steps: [
@@ -133,6 +140,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'letter-2',
+      tryIt: { figure: 'letters', config: { mode: 'bd' }, prompt: T('Learn the hand trick for b and d.', 'Pelajari trik tangan untuk b dan d.') },
       title: T('2. First Letters', '2. Huruf Awal'),
       goal: T('Hear the first sound.', 'Mendengar bunyi pertama.'),
       steps: [
@@ -147,6 +155,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'letter-3',
+      tryIt: { figure: 'letters', config: { mode: 'vowels' }, prompt: T('Find all 5 vowels in the alphabet.', 'Temukan 5 huruf vokal di alfabet.') },
       title: T('3. Vowels', '3. Huruf Vokal'),
       goal: T('The 5 special letters.', '5 huruf istimewa.'),
       steps: [
@@ -164,6 +173,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   food: [
     {
       id: 'food-1',
+      tryIt: { figure: 'plate', config: { mode: 'sort' }, prompt: T('Tap a food: is it a fruit or a vegetable?', 'Ketuk makanan: buah atau sayur?') },
       title: T('1. Fruits', '1. Buah'),
       goal: T('Fruits have seeds.', 'Buah punya biji.'),
       steps: [
@@ -178,6 +188,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'food-2',
+      tryIt: { figure: 'plate', config: { mode: 'veg' }, prompt: T('Tap each vegetable to learn its name.', 'Ketuk setiap sayur untuk tahu namanya.') },
       title: T('2. Vegetables', '2. Sayur'),
       goal: T('Plants we cook or eat fresh.', 'Tanaman yang dimasak atau dimakan segar.'),
       steps: [
@@ -192,6 +203,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'food-3',
+      tryIt: { figure: 'plate', config: { mode: 'rainbow' }, prompt: T('Make a rainbow plate with 5 colors!', 'Buat piring pelangi dengan 5 warna!') },
       title: T('3. Eat a Rainbow', '3. Makan Pelangi'),
       goal: T('Many colors keep you strong.', 'Banyak warna membuatmu kuat.'),
       steps: [
@@ -209,6 +221,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   body: [
     {
       id: 'body-1',
+      tryIt: { figure: 'bodymap', config: { mode: 'parts' }, prompt: T('Tap each body part and point to yours too!', 'Ketuk setiap bagian tubuh dan tunjuk milikmu juga!') },
       title: T('1. Name Your Body', '1. Bagian Tubuh'),
       goal: T('Point and say.', 'Tunjuk dan sebut.'),
       steps: [
@@ -223,6 +236,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'body-2',
+      tryIt: { figure: 'bodymap', config: { mode: 'senses' }, prompt: T('Tap each sense to see which body part does it.', 'Ketuk setiap indra untuk melihat bagian tubuh mana yang melakukannya.') },
       title: T('2. Five Senses', '2. Lima Indra'),
       goal: T('How we learn about the world.', 'Cara kita mengenal dunia.'),
       steps: [
@@ -237,6 +251,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'body-3',
+      tryIt: { figure: 'bodymap', config: { mode: 'inside' }, prompt: T('Tap the helpers inside your body.', 'Ketuk para pembantu di dalam tubuhmu.') },
       title: T('3. Inside Your Body', '3. Di Dalam Tubuh'),
       goal: T('Hard-working helpers.', 'Pembantu yang rajin.'),
       steps: [
@@ -254,6 +269,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   weather: [
     {
       id: 'weather-1',
+      tryIt: { figure: 'weather', config: { mode: 'cycle' }, prompt: T('Follow the water: from the sun to the rain.', 'Ikuti perjalanan air: dari matahari sampai hujan.') },
       title: T('1. Kinds of Weather', '1. Jenis Cuaca'),
       goal: T('Look at the sky.', 'Lihat langit.'),
       steps: [
@@ -268,6 +284,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'weather-2',
+      tryIt: { figure: 'weather', config: { mode: 'dress' }, prompt: T('Tap a weather to see what to wear.', 'Ketuk cuaca untuk melihat pakaian yang cocok.') },
       title: T('2. Dress for the Weather', '2. Pakaian Sesuai Cuaca'),
       goal: T('Stay safe and comfy.', 'Tetap aman dan nyaman.'),
       steps: [
@@ -282,6 +299,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'weather-3',
+      tryIt: { figure: 'weather', config: { mode: 'seasons' }, prompt: T('Tap each season, then Indonesia!', 'Ketuk setiap musim, lalu Indonesia!') },
       title: T('3. Seasons', '3. Musim'),
       goal: T('The year changes.', 'Tahun berganti musim.'),
       steps: [
@@ -299,6 +317,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   transport: [
     {
       id: 'transport-1',
+      tryIt: { figure: 'vehicles', config: { mode: 'sort' }, prompt: T('Land, water or sky? Sort each vehicle.', 'Darat, air, atau udara? Kelompokkan setiap kendaraan.') },
       title: T('1. On Land', '1. Di Darat'),
       goal: T('Roads and rails.', 'Jalan dan rel.'),
       steps: [
@@ -313,6 +332,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'transport-2',
+      tryIt: { figure: 'vehicles', config: { mode: 'sort' }, prompt: T('Sort the vehicles: which ones float or fly?', 'Kelompokkan kendaraan: mana yang mengapung atau terbang?') },
       title: T('2. Water and Sky', '2. Air dan Udara'),
       goal: T('Float or fly.', 'Mengapung atau terbang.'),
       steps: [
@@ -327,6 +347,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'transport-3',
+      tryIt: { figure: 'vehicles', config: { mode: 'helpers' }, prompt: T('Tap each helper vehicle to see its job.', 'Ketuk setiap kendaraan penolong untuk tahu tugasnya.') },
       title: T('3. Helper Vehicles', '3. Kendaraan Penolong'),
       goal: T('They help people.', 'Mereka menolong orang.'),
       steps: [
@@ -344,6 +365,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   opposites: [
     {
       id: 'opp-1',
+      tryIt: { figure: 'seesaw', config: {}, prompt: T('Tap a word to flip it to its opposite.', 'Ketuk kata untuk membaliknya ke lawan katanya.') },
       title: T('1. What Is an Opposite?', '1. Apa Itu Lawan Kata?'),
       goal: T('Words that are totally different.', 'Kata yang sangat berbeda.'),
       steps: [
@@ -360,6 +382,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'opp-2',
+      tryIt: { figure: 'seesaw', config: {}, prompt: T('Flip all the words. Can you say the opposite first?', 'Balik semua kata. Bisakah kamu menyebut lawannya dulu?') },
       title: T('2. Opposites Around You', '2. Lawan Kata di Sekitarmu'),
       goal: T('Look around!', 'Lihat sekitar!'),
       steps: [
@@ -374,6 +397,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'opp-3',
+      tryIt: { figure: 'seesaw', config: {}, prompt: T('Opposite game: say it, then flip to check!', 'Permainan lawan kata: sebut, lalu balik untuk mengecek!') },
       title: T('3. Opposite Game', '3. Permainan Lawan Kata'),
       goal: T('Say the opposite fast!', 'Sebut lawannya cepat!'),
       steps: [
@@ -391,6 +415,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   feelings: [
     {
       id: 'feel-1',
+      tryIt: { figure: 'faces', config: { mode: 'faces' }, prompt: T('Tap each face to name the feeling.', 'Ketuk setiap wajah untuk menyebut perasaannya.') },
       title: T('1. Name Your Feelings', '1. Kenali Perasaan'),
       goal: T('Faces tell feelings.', 'Wajah menunjukkan perasaan.'),
       steps: [
@@ -405,6 +430,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'feel-2',
+      tryIt: { figure: 'faces', config: { mode: 'faces' }, prompt: T('Tap a feeling to see a kind thing to do.', 'Ketuk perasaan untuk melihat hal baik yang bisa dilakukan.') },
       title: T('2. All Feelings Are Okay', '2. Semua Perasaan Boleh'),
       goal: T('Everyone feels them.', 'Semua orang merasakannya.'),
       steps: [
@@ -419,6 +445,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'feel-3',
+      tryIt: { figure: 'faces', config: { mode: 'breathe' }, prompt: T('Take 3 slow breaths with the circle.', 'Tarik napas pelan 3 kali bersama lingkaran.') },
       title: T('3. Be Kind', '3. Bersikap Baik'),
       goal: T('Help yourself and others.', 'Bantu diri sendiri dan orang lain.'),
       steps: [
@@ -436,6 +463,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
   space: [
     {
       id: 'space-1',
+      tryIt: { figure: 'planets', config: { mode: 'sky' }, prompt: T('Tap the Sun, Earth, Moon and stars.', 'Ketuk Matahari, Bumi, Bulan, dan bintang.') },
       title: T('1. Sun, Moon and Stars', '1. Matahari, Bulan, dan Bintang'),
       goal: T('Look up!', 'Lihat ke atas!'),
       steps: [
@@ -450,6 +478,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'space-2',
+      tryIt: { figure: 'planets', config: { mode: 'planets' }, prompt: T('Tap all 8 planets, in order from the Sun.', 'Ketuk 8 planet, berurutan dari Matahari.') },
       title: T('2. Our Planets', '2. Planet Kita'),
       goal: T('8 planets in order.', '8 planet berurutan.'),
       steps: [
@@ -464,6 +493,7 @@ export const WORLD_LESSONS: Record<WorldTopic, LessonModule[]> = {
     },
     {
       id: 'space-3',
+      tryIt: { figure: 'planets', config: { mode: 'rocket' }, prompt: T('Tap to explore how astronauts travel.', 'Ketuk untuk menjelajah cara astronot bepergian.') },
       title: T('3. Astronauts', '3. Astronot'),
       goal: T('Space explorers.', 'Penjelajah angkasa.'),
       steps: [

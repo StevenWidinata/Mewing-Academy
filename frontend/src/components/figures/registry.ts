@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import type { FigureConfig, FigureId } from '../../../../shared/lessons';
 import { Apples, Clock, Corners, Hopper, Pattern, TenFrame, Week } from './numbers';
+import { BodyMap, Faces, Legs, Letters, Mixer, Planets, Plate, Seesaw, Vehicles, Weather } from './world';
 
 /** Props every lesson figure gets: optional per-lesson settings (e.g. the target time). */
 export interface FigureProps {
@@ -16,6 +17,16 @@ export const FIGURES: Partial<Record<FigureId, ComponentType<FigureProps>>> = {
   week: Week,
   pattern: Pattern,
   corners: Corners,
+  mixer: Mixer,
+  legs: Legs,
+  letters: Letters,
+  plate: Plate,
+  bodymap: BodyMap,
+  weather: Weather,
+  vehicles: Vehicles,
+  seesaw: Seesaw,
+  faces: Faces,
+  planets: Planets,
 };
 
 export const hasFigure = (id: FigureId) => !!FIGURES[id];

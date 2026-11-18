@@ -38,6 +38,8 @@ describe('lessons', () => {
         expect(c.choices.length, where).toBeLessThanOrEqual(4);
         expect(c.answer, where).toBeGreaterThanOrEqual(0);
         expect(c.answer, where).toBeLessThan(c.choices.length);
+        expect(m.tryIt?.figure, `${where} needs a "Try it yourself!" figure`).toBeTruthy();
+        expect(m.tryIt!.prompt.en && m.tryIt!.prompt.id, where).toBeTruthy();
         const labels = c.choices.map((x) => x.en);
         expect(new Set(labels).size, `${where} duplicate choices`).toBe(labels.length);
       }
