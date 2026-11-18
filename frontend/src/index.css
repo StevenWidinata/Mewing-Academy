@@ -2475,3 +2475,55 @@ main > section > h1:first-child::after {
 .cam-tutorial__dots li.is-now {
   background: var(--yellow);
 }
+
+/* ---- Round recap ---- */
+.recap {
+  margin: 1.5rem auto 0;
+  max-width: 640px;
+  text-align: left;
+}
+.recap__summary {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.recap__list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.recap__item {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg-2);
+  border: 3px solid var(--ink);
+  border-left-width: 8px;
+  font-family: var(--font-read);
+}
+.recap__item.is-right {
+  border-left-color: var(--green);
+}
+.recap__item.is-wrong {
+  border-left-color: var(--red);
+}
+.recap__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.recap__q {
+  font-weight: 700;
+}
+.recap__yours {
+  text-decoration: line-through;
+  opacity: 0.85;
+}
+.recap__right {
+  font-weight: 700;
+}

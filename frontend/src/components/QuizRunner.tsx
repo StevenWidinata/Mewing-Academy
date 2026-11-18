@@ -10,6 +10,7 @@ import { hasNumberLabels } from '../vision/fingers';
 import type { VisionStatus } from '../vision/useVision';
 import { AnswerModeHint } from './AnswerModeHint';
 import { QuizProgress } from './QuizProgress';
+import { RoundRecap } from './RoundRecap';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
 import { Confetti } from './Confetti';
@@ -80,6 +81,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
           </div>
         )}
         {renderDone(state.correctCount, total, restart)}
+        <RoundRecap questions={questions} picks={state.picks} showFix={mode !== 'review'} />
       </section>
     );
   }

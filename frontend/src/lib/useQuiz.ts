@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Question } from '../../../shared/types';
-import { recordAnswer, recordSession } from '../state/progress';
+import { recordAnswer, recordSession, trackMistake } from '../state/progress';
 import type { Answer } from './boss';
 import { buildSession, type SessionMode } from './sessions';
 import { sfx } from './sound';
@@ -17,9 +17,11 @@ export interface QuizState {
   results: boolean[];
   /** Same order as results, with answer time and a saved random roll (boss damage/taunts). */
   answers: Answer[];
+  /** The choice picked for each answered question (for the round recap). */
+  picks: number[];
 }
 
-const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [], answers: [] };
+const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [], answers: [], picks: [] };
 
 /**
  * Side effects (saving progress, sounds, onFinish) run in the event handler,
@@ -44,6 +46,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
       const q = questions[state.index];
       const correct = choice === q.answer;
       recordAnswer(q.topic, correct);
+      trackMistake(q, correct);
       if (correct) sfx.correct(settings.sound);
       else sfx.wrong(settings.sound);
       setState({
@@ -53,6 +56,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
         streak: correct ? state.streak + 1 : 0,
         results: [...state.results, correct],
         answers: [...state.answers, { correct, ms: performance.now() - shownAt.current, roll: Math.random(), byHand }],
+        picks: [...state.picks, choice],
       });
     },
     [questions, settings.sound, state],

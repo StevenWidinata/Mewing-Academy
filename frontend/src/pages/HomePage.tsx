@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { TOPICS } from '../../../shared/types';
 import { Mewy } from '../components/Mewy';
+import { useProgress } from '../state/progress';
 import { TopicIcon } from '../components/TopicIcon';
 import { useSettings } from '../state/settings';
 
@@ -18,6 +19,7 @@ const GAMES: { to: string; emoji: string; key: 'navQuiz' | 'navMemory' | 'navTut
 
 export function HomePage() {
   const { tr, settings } = useSettings();
+  const mistakes = useProgress().mistakes.length;
   return (
     <section>
       <div className="hero" style={{ marginBottom: '2rem' }}>
@@ -46,6 +48,14 @@ export function HomePage() {
             <div style={{ marginTop: 8, color: 'var(--accent)' }}>{tr(g.key)}</div>
           </Link>
         ))}
+        {mistakes > 0 && (
+          <Link to="/review" className="card card--link" style={{ textDecoration: 'none', color: 'var(--white)', textAlign: 'center', fontFamily: 'var(--font-pixel)' }}>
+            <div className="tile-emoji" style={{ fontSize: '2.5rem' }}>🔧</div>
+            <div style={{ marginTop: 8, color: 'var(--accent)' }}>
+              {tr('fixMistakes')} ({mistakes})
+            </div>
+          </Link>
+        )}
       </div>
 
       <h2>{tr('chooseTopic')}</h2>

@@ -11,6 +11,7 @@ import { LessonsPage } from './pages/LessonsPage';
 import { MemoryPage } from './pages/MemoryPage';
 import { ProgressPage } from './pages/ProgressPage';
 import { QuizPage } from './pages/QuizPage';
+import { ReviewPage } from './pages/ReviewPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TutorPage } from './pages/TutorPage';
 
@@ -28,6 +29,7 @@ const router = createHashRouter([
       { path: 'tutor', element: <TutorPage /> },
       { path: 'closet', element: <ClosetPage /> },
       { path: 'daily', element: <DailyPage /> },
+      { path: 'review', element: <ReviewPage /> },
       { path: 'parents', element: <ParentsPage /> },
       { path: 'progress', element: <ProgressPage /> },
       { path: 'how-ai', element: <HowAiPage /> },

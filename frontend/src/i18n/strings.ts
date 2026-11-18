@@ -124,6 +124,19 @@ export const STRINGS = {
   tutorMedium: { en: "💡 Here's what I know!", id: '💡 Ini yang aku tahu!' },
   tutorUnknown: { en: "🤔 I'm still learning about that! Try one of these:", id: '🤔 Aku masih belajar soal itu! Coba tanya ini:' },
 
+  // Round recap + fix my mistakes
+  recapTitle: { en: 'My answers', id: 'Jawabanku' },
+  recapYours: { en: 'You picked', id: 'Pilihanmu' },
+  recapRight: { en: 'Right answer', id: 'Jawaban benar' },
+  fixMistakes: { en: 'Fix my mistakes', id: 'Perbaiki kesalahanku' },
+  reviewIntro: {
+    en: 'Let’s try the questions you missed. Get one right and it disappears!',
+    id: 'Ayo coba lagi soal yang tadi salah. Jawab dengan benar, soalnya hilang!',
+  },
+  reviewToFix: { en: 'questions to fix', id: 'soal untuk diperbaiki' },
+  reviewEmpty: { en: 'No mistakes to fix. Amazing!', id: 'Tidak ada kesalahan. Hebat!' },
+  reviewAllFixed: { en: '🎉 All mistakes fixed!', id: '🎉 Semua kesalahan sudah diperbaiki!' },
+
   // Progress
   progressTitle: { en: 'My Stars', id: 'Bintangku' },
   progressEmpty: { en: 'Play a game to earn your first star!', id: 'Main dulu untuk dapat bintang pertama!' },

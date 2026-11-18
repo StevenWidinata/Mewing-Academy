@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { TOPICS } from '../../../shared/types';
 import { ParentsLinkCard } from '../components/ParentsLinkCard';
 import { useProgress } from '../state/progress';
@@ -24,6 +25,16 @@ export function ProgressPage() {
           <div style={{ fontFamily: 'var(--font-read)' }}>{tr('progressStreak')}</div>
         </div>
       </div>
+
+      {progress.mistakes.length > 0 && (
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <span style={{ fontSize: '2rem' }} aria-hidden="true">🔧</span>
+          <p style={{ flex: 1, minWidth: 180, margin: 0, fontFamily: 'var(--font-read)', fontSize: '1.05rem' }}>
+            {progress.mistakes.length} {tr('reviewToFix')}
+          </p>
+          <Link to="/review" className="btn">{tr('fixMistakes')}</Link>
+        </div>
+      )}
 
       {entries.length === 0 ? (
         <p style={{ fontFamily: 'var(--font-read)', fontSize: '1.1rem' }}>{tr('progressEmpty')}</p>

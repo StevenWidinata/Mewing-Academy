@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
-import type { TopicId } from '../../../shared/types';
+import type { Question, TopicId } from '../../../shared/types';
+import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
 import { unlockKeys } from './rewards';
 
@@ -11,10 +12,12 @@ export interface Progress {
   lastDaily: string | null; // YYYY-MM-DD of the last finished Daily Challenge
   /** Finished rounds, newest last (for the parent dashboard). */
   sessions: SessionLog[];
+  /** Missed questions to practise again in "Fix my mistakes" (oldest first). */
+  mistakes: Question[];
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [] };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [] };
 
 function read(): Progress {
   try {
@@ -74,6 +77,12 @@ export function recordSession(session: Omit<SessionLog, 'at'>) {
   if (!session.total) return;
   const entry: SessionLog = { ...session, at: new Date().toISOString() };
   write({ ...current, sessions: [...current.sessions, entry].slice(-MAX_SESSIONS) });
+}
+
+/** Wrong answers are kept to practise later; a right answer clears that question. */
+export function trackMistake(q: Question, correct: boolean) {
+  const next = correct ? removeMistake(current.mistakes, q) : addMistake(current.mistakes, q);
+  if (next !== current.mistakes) write({ ...current, mistakes: next });
 }
 
 export const DAILY_BONUS = 2;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Progress } from './progress';
 import { badgeFor, isFurUnlocked, isItemUnlocked, nextBadge, unlockKeys } from './rewards';
 
-const p = (stars: number, byTopic: Progress['byTopic'] = {}): Progress => ({ stars, byTopic, lastPlayed: null, streak: 0, lastDaily: null, sessions: [] });
+const p = (stars: number, byTopic: Progress['byTopic'] = {}): Progress => ({ stars, byTopic, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [] });
 
 describe('rewards', () => {
   it('unlocks a topic outfit after 5 correct answers in that topic', () => {
