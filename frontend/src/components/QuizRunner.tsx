@@ -4,8 +4,9 @@ import { questionToSpeech, speak } from '../lib/speak';
 import { useQuiz } from '../lib/useQuiz';
 import type { SessionMode } from '../lib/sessions';
 import { useSettings } from '../state/settings';
-import { BossBar, BossSprite, ComboPop } from './Boss';
-import { bossState, tauntFor } from '../lib/boss';
+import { BossBar, BossPortrait, ComboPop } from './Boss';
+import { bossState } from '../lib/boss';
+import { BOSSES, bossTaunt, pickBoss, pickSecondBoss, readLastBoss, saveLastBoss } from '../lib/bosses';
 import { earnSticker } from '../state/progress';
 import { hasNumberLabels } from '../vision/fingers';
 import type { VisionStatus } from '../vision/useVision';
@@ -42,6 +43,16 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
   const tapEnabled = camStatus !== 'running';
   const difficulties = useMemo(() => questions.map((q) => q.difficulty), [questions]);
   const fight = useMemo(() => bossState(difficulties, state.answers), [difficulties, state.answers]);
+  // A random boss each round (never the same twice in a row) and a different face boss for phase 2.
+  const [bossIds] = useState(() => {
+    const main = pickBoss(readLastBoss());
+    return { main, second: pickSecondBoss(main) };
+  });
+  useEffect(() => {
+    if (boss) saveLastBoss(bossIds.main);
+  }, [boss, bossIds.main]);
+  const mainBoss = BOSSES[bossIds.main];
+  const secondBoss = BOSSES[bossIds.second];
 
   // Sticker book: beating the boss (and both bosses) at the end of a round.
   useEffect(() => {
@@ -74,18 +85,23 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
         {boss && (
           <div className="boss-result">
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-              <BossSprite size={fight.bigBossBeaten ? 56 : 88} face={fight.bigBossBeaten ? 'hurt' : 'smug'} />
-              {fight.phase === 2 && <BossSprite size={fight.defeated ? 36 : 56} face={fight.defeated ? 'hurt' : 'smug'} mini />}
+              <BossPortrait boss={mainBoss} width={fight.bigBossBeaten ? 72 : 96} face={fight.bigBossBeaten ? 'hurt' : 'smug'} ko={fight.bigBossBeaten} />
+              {fight.phase === 2 && <BossPortrait boss={secondBoss} width={fight.defeated ? 56 : 72} face={fight.defeated ? 'hurt' : 'smug'} ko={fight.defeated} />}
             </div>
             <p style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.8rem' }}>
               {!fight.bigBossBeaten
-                ? lang === 'en' ? 'The boss got away... try again!' : 'Bosnya kabur... coba lagi!'
+                ? lang === 'en' ? `${mainBoss.name.en} got away... try again!` : `${mainBoss.name.id} kabur... coba lagi!`
                 : fight.phase === 2 && fight.defeated
-                  ? lang === 'en' ? '🏆🏆 DOUBLE WIN! Both bosses defeated!' : '🏆🏆 MENANG GANDA! Dua bos dikalahkan!'
+                  ? lang === 'en'
+                    ? `🏆🏆 DOUBLE WIN! ${mainBoss.name.en} and ${secondBoss.name.en} defeated!`
+                    : `🏆🏆 MENANG GANDA! ${mainBoss.name.id} dan ${secondBoss.name.id} dikalahkan!`
                   : fight.phase === 2
-                    ? lang === 'en' ? '🏆 BOSS DEFEATED! (Mini Muddle ran away)' : '🏆 BOS DIKALAHKAN! (Bingung Kecil kabur)'
-                    : lang === 'en' ? '🏆 BOSS DEFEATED!' : '🏆 BOS DIKALAHKAN!'}
+                    ? lang === 'en'
+                      ? `🏆 ${mainBoss.name.en} DEFEATED! (${secondBoss.name.en} ran away)`
+                      : `🏆 ${mainBoss.name.id} DIKALAHKAN! (${secondBoss.name.id} kabur)`
+                    : lang === 'en' ? `🏆 ${mainBoss.name.en} DEFEATED!` : `🏆 ${mainBoss.name.id} DIKALAHKAN!`}
             </p>
+            {fight.bigBossBeaten && <p className="chip" style={{ fontFamily: 'var(--font-read)' }}>💬 {(fight.phase === 2 && fight.defeated ? secondBoss : mainBoss).ko[lang]}</p>}
           </div>
         )}
         {renderDone(state.correctCount, total, restart)}
@@ -104,9 +120,11 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
       {boss && (
         <BossBar
           state={fight}
+          main={mainBoss}
+          second={secondBoss}
           reaction={!revealed ? 'none' : state.picked === current.answer ? 'hit' : 'miss'}
           answerKey={state.answers.length}
-          taunt={revealed ? tauntFor(state.answers[state.answers.length - 1]?.roll ?? 0)[lang] : undefined}
+          taunt={revealed ? bossTaunt(fight.phase === 2 ? secondBoss : mainBoss, state.answers[state.answers.length - 1]?.roll ?? 0)[lang] : undefined}
           lang={lang}
           reduceMotion={settings.reduceMotion}
         />

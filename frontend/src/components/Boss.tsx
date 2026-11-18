@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { Lang } from '../../../shared/types';
 import type { BossState } from '../lib/boss';
+import type { BossInfo } from '../lib/bosses';
 
 export type BossFace = 'normal' | 'hurt' | 'smug';
 
@@ -54,18 +55,64 @@ export function BossSprite({ size = 96, face = 'normal', mini = false }: { size?
   );
 }
 
+/** Pixel sunglasses drawn over a photo boss's eyes when it gloats. */
+function PixelShades() {
+  return (
+    <svg viewBox="0 0 16 5" preserveAspectRatio="none" aria-hidden="true" style={{ width: '100%', height: '100%', shapeRendering: 'crispEdges' }}>
+      <rect x="0" y="0" width="16" height="1" fill="#1a1430" />
+      <rect x="0" y="1" width="7" height="3" fill="#1a1430" />
+      <rect x="9" y="1" width="7" height="3" fill="#1a1430" />
+      <rect x="1" y="4" width="5" height="1" fill="#1a1430" />
+      <rect x="10" y="4" width="5" height="1" fill="#1a1430" />
+      <rect x="1" y="1" width="2" height="1" fill="#fdf6e3" />
+      <rect x="10" y="1" width="2" height="1" fill="#fdf6e3" />
+    </svg>
+  );
+}
+
+/** A boss picture: Muddle's pixel sprite, or a team photo in an 8-bit frame with effects. */
+export function BossPortrait({ boss, width = 84, face = 'normal', mini = false, ko = false }: { boss: BossInfo; width?: number; face?: BossFace; mini?: boolean; ko?: boolean }) {
+  if (!boss.photo) return <BossSprite size={width} face={face} mini={mini} />;
+  const eyes = boss.eyes ?? { x: 0.5, y: 0.4, w: 0.6 };
+  return (
+    <span className={`boss-photo${ko ? ' boss-photo--ko' : ''}`} style={{ width, height: Math.round(width * 1.25) }}>
+      <img src={`${import.meta.env.BASE_URL}${boss.photo}`} alt={boss.name.en} width={width} height={Math.round(width * 1.25)} draggable={false} />
+      {face === 'smug' && !ko && (
+        <span
+          className="boss-photo__shades"
+          style={{ left: `${(eyes.x - eyes.w / 2) * 100}%`, top: `${eyes.y * 100}%`, width: `${eyes.w * 100}%`, height: `${eyes.w * 25}%` }}
+        >
+          <PixelShades />
+        </span>
+      )}
+      {face === 'hurt' && !ko && (
+        <span className="boss-photo__dizzy" aria-hidden="true">
+          💫
+        </span>
+      )}
+      {ko && (
+        <span className="boss-photo__ko" style={{ fontSize: width < 80 ? '0.5rem' : '0.75rem' }}>
+          K.O.!
+        </span>
+      )}
+    </span>
+  );
+}
+
 const T = {
-  big: { en: 'BOSS: Muddle Slime', id: 'BOS: Slime Bingung' },
-  mini: { en: 'MINI BOSS: Mini Muddle', id: 'BOS MINI: Bingung Kecil' },
+  boss: { en: 'BOSS', id: 'BOS' },
+  boss2: { en: 'BOSS 2', id: 'BOS 2' },
   hint: { en: 'Right answers deal damage. Fast and combo answers hit harder!', id: 'Jawaban benar memberi damage. Cepat dan beruntun lebih kuat!' },
-  ko: { en: 'K.O.! But wait... Mini Muddle jumps out!', id: 'K.O.! Tapi tunggu... Bingung Kecil muncul!' },
-  won: { en: 'Defeated! 🎉', id: 'Kalah! 🎉' },
+  ko: { en: 'K.O.! But wait... {name} jumps in!', id: 'K.O.! Tapi tunggu... {name} datang!' },
   crit: { en: 'CRITICAL!', id: 'KRITIS!' },
   quick: { en: '⚡ QUICK!', id: '⚡ CEPAT!' },
 };
 
 interface BarProps {
   state: BossState;
+  /** The round's main boss and the one that jumps in after an early knock-out. */
+  main: BossInfo;
+  second: BossInfo;
   /** What the last answer did, while its result is shown. */
   reaction: 'none' | 'hit' | 'miss';
   /** Changes on every answer so the hit/miss animation replays. */
@@ -76,7 +123,7 @@ interface BarProps {
 }
 
 /** Boss card: sprite with reacting face, numeric HP bar, damage numbers and taunts. */
-export function BossBar({ state, reaction, answerKey, taunt, lang, reduceMotion = false }: BarProps) {
+export function BossBar({ state, main, second, reaction, answerKey, taunt, lang, reduceMotion = false }: BarProps) {
   const spriteRef = useRef<HTMLDivElement | null>(null);
   // Show the big boss falling first; Mini Muddle appears on the next question.
   const showKo = reaction === 'hit' && state.koOnLast;
@@ -86,6 +133,7 @@ export function BossBar({ state, reaction, answerKey, taunt, lang, reduceMotion 
   const pct = maxHp ? Math.round((hp / maxHp) * 100) : 0;
   const face: BossFace = reaction === 'hit' ? 'hurt' : reaction === 'miss' ? 'smug' : 'normal';
   const done = state.defeated && !showKo;
+  const boss = mini ? second : main;
 
   // Replay a short animation on every answer without remounting the sprite
   // (remounting made the boss blink in and out).
@@ -95,9 +143,9 @@ export function BossBar({ state, reaction, answerKey, taunt, lang, reduceMotion 
     const frames: Keyframe[] =
       reaction === 'hit'
         ? [
-            { transform: 'translateX(0)', filter: 'brightness(3) hue-rotate(90deg)' },
-            { transform: 'translateX(-8px) skewX(12deg)', filter: 'brightness(1.6) hue-rotate(-60deg)' },
-            { transform: 'translateX(8px) skewX(-12deg)', filter: 'brightness(2)' },
+            { transform: 'translateX(0)', filter: 'brightness(1.6) sepia(1) saturate(6) hue-rotate(-50deg)' },
+            { transform: 'translateX(-8px) rotate(-4deg)', filter: 'brightness(1.3) sepia(1) saturate(4) hue-rotate(-50deg)' },
+            { transform: 'translateX(8px) rotate(4deg)', filter: 'brightness(1.4)' },
             { transform: 'translateX(-3px)', filter: 'none' },
             { transform: 'none', filter: 'none' },
           ]
@@ -116,7 +164,7 @@ export function BossBar({ state, reaction, answerKey, taunt, lang, reduceMotion 
     <div className={`boss${mini ? ' boss--mini' : ''}${showKo || done ? ' boss--ko' : ''}`} aria-live="polite">
       <div className="boss__stage">
         <div ref={spriteRef} className="boss__sprite">
-          <BossSprite size={mini ? 56 : 72} face={face} mini={mini} />
+          <BossPortrait boss={boss} width={mini ? 64 : 84} face={face} mini={mini && !boss.photo} ko={showKo || done} />
         </div>
         {reaction === 'hit' && state.lastHit && (
           <span key={answerKey} className="boss__dmg" aria-label={`-${state.lastHit.damage} HP`}>
@@ -132,14 +180,16 @@ export function BossBar({ state, reaction, answerKey, taunt, lang, reduceMotion 
         )}
       </div>
       <div className="boss__info">
-        <strong className="boss__name">{mini ? T.mini[lang] : T.big[lang]}</strong>
+        <strong className="boss__name">
+          {mini ? T.boss2[lang] : T.boss[lang]}: {boss.name[lang]}
+        </strong>
         <div className="boss__hpbar" role="meter" aria-valuemin={0} aria-valuemax={maxHp} aria-valuenow={hp} aria-label="Boss HP">
           <div className="boss__hpfill" style={{ width: `${pct}%`, background: pct > 50 ? 'var(--green)' : pct > 20 ? 'var(--yellow)' : 'var(--red)' }} />
           <span className="boss__hptext">
             {hp} / {maxHp} HP
           </span>
         </div>
-        <small>{showKo ? T.ko[lang] : done ? T.won[lang] : T.hint[lang]}</small>
+        <small>{showKo ? T.ko[lang].replace('{name}', second.name[lang]) : done ? `💥 ${boss.ko[lang]}` : T.hint[lang]}</small>
       </div>
     </div>
   );

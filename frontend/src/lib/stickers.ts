@@ -34,8 +34,8 @@ const playedTopics = (p: Progress) => TOPICS.filter((t) => (p.byTopic[t.id]?.tot
 
 export const STICKERS: Sticker[] = [
   { id: 'first-star', emoji: '🌟', name: T('First Star', 'Bintang Pertama'), how: T('Get your first right answer.', 'Jawab benar untuk pertama kali.'), check: (p) => p.stars >= 1 },
-  { id: 'boss-ko', emoji: '👊', name: T('Boss Buster', 'Penakluk Bos'), how: T('Knock out Muddle in the Hand Quiz.', 'Kalahkan Muddle di Kuis Tangan.') },
-  { id: 'double-win', emoji: '🏆', name: T('Double Win', 'Menang Ganda'), how: T('Beat Muddle AND Mini Muddle in one round.', 'Kalahkan Muddle DAN Bingung Kecil dalam satu ronde.') },
+  { id: 'boss-ko', emoji: '👊', name: T('Boss Buster', 'Penakluk Bos'), how: T('Knock out a boss in the Hand Quiz.', 'Kalahkan bos di Kuis Tangan.') },
+  { id: 'double-win', emoji: '🏆', name: T('Double Win', 'Menang Ganda'), how: T('Beat 2 bosses in one round.', 'Kalahkan 2 bos dalam satu ronde.') },
   {
     id: 'perfect',
     emoji: '💯',

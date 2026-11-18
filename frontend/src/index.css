@@ -2800,3 +2800,65 @@ main > section > h1:first-child::after {
   user-select: all;
   justify-self: start;
 }
+
+/* ---- Team-photo bosses ---- */
+.boss-photo {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  border: 4px solid var(--ink);
+  outline: 3px solid var(--yellow);
+  outline-offset: -7px;
+  box-shadow: 4px 4px 0 var(--shadow), 0 0 0 7px var(--frame);
+  background: var(--ink);
+  overflow: hidden;
+}
+.boss-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: auto;
+  user-select: none;
+}
+.boss-photo__shades {
+  position: absolute;
+  transform: translateY(-50%);
+  animation: shadesDrop 0.35s steps(3) both;
+}
+@keyframes shadesDrop {
+  from { transform: translateY(-260%); }
+  to { transform: translateY(-50%); }
+}
+.boss-photo__dizzy {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  font-size: 1.3rem;
+  transform: translateX(-50%);
+  animation: dizzySpin 0.8s linear infinite;
+}
+@keyframes dizzySpin {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+.boss-photo--ko img {
+  filter: grayscale(1) contrast(0.9) brightness(0.85);
+}
+.boss-photo__ko {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  padding: 2px 6px;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #ffffff;
+  background: var(--red);
+  border: 3px solid var(--ink);
+  white-space: nowrap;
+}
+:root[data-motion='reduced'] .boss-photo__shades,
+:root[data-motion='reduced'] .boss-photo__dizzy {
+  animation: none;
+}

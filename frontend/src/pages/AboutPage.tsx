@@ -26,7 +26,7 @@ const HEAD = {
 };
 
 const DO: { to: string; emoji: string; title: Text; text: Text }[] = [
-  { to: '/quiz', emoji: '✋', title: T('Beat the boss with your fingers', 'Kalahkan bos dengan jarimu'), text: T('Show 1 to 4 fingers to the camera to answer and knock out Muddle!', 'Tunjukkan 1 sampai 4 jari ke kamera untuk menjawab dan kalahkan Muddle!') },
+  { to: '/quiz', emoji: '✋', title: T('Beat the boss with your fingers', 'Kalahkan bos dengan jarimu'), text: T('Show 1 to 4 fingers to the camera to answer and knock out the bosses!', 'Tunjukkan 1 sampai 4 jari ke kamera untuk menjawab dan kalahkan para bos!') },
   { to: '/lessons', emoji: '📚', title: T('Learn step by step', 'Belajar langkah demi langkah'), text: T('Short lessons with pictures, read-aloud and a quick check.', 'Pelajaran singkat dengan gambar, dibacakan, dan cek cepat.') },
   { to: '/memory', emoji: '🧠', title: T('Train your memory', 'Latih ingatanmu'), text: T('Look closely, remember, then answer.', 'Lihat baik-baik, ingat, lalu jawab.') },
   { to: '/tutor', emoji: '💬', title: T('Ask Mewy anything', 'Tanya Mewy apa saja'), text: T('How many legs does a spider have? Mewy knows!', 'Laba-laba kakinya berapa? Mewy tahu!') },
