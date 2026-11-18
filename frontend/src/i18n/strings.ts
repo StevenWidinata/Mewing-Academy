@@ -161,6 +161,20 @@ export const STRINGS = {
   on: { en: 'On', id: 'Nyala' },
   off: { en: 'Off', id: 'Mati' },
 
+  // Lesson player
+  lessonPick: { en: 'Pick a lesson to start. Each one is short!', id: 'Pilih pelajaran untuk mulai. Semuanya singkat!' },
+  lessonStep: { en: 'Step', id: 'Langkah' },
+  lessonSteps: { en: 'steps', id: 'langkah' },
+  lessonOf: { en: 'of', id: 'dari' },
+  lessonReadToMe: { en: 'Read to me', id: 'Bacakan' },
+  lessonMistakes: { en: 'Common mistakes', id: 'Kesalahan umum' },
+  lessonCheck: { en: 'Quick check', id: 'Cek cepat' },
+  lessonTryAgain: { en: 'Not yet! Look again and try another one.', id: 'Belum tepat! Lihat lagi dan coba yang lain.' },
+  lessonDone: { en: 'Lesson complete! Great job!', id: 'Pelajaran selesai! Hebat!' },
+  lessonNext: { en: 'Next lesson', id: 'Pelajaran berikutnya' },
+  lessonPractice: { en: 'Practice in the quiz', id: 'Latihan di kuis' },
+  lessonAll: { en: 'All lessons', id: 'Semua pelajaran' },
+
   // How AI
   howAiTitle: { en: 'How does the AI work?', id: 'Bagaimana AI bekerja?' },
 

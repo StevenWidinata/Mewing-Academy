@@ -12,6 +12,24 @@ export interface LessonStep {
   text: Text;
   visual?: SpriteGroup[];
   example?: Text;
+  /** Big picture for the step (when there is no sprite visual). */
+  emoji?: string;
+  /** What "Read to me" says, if it should differ from `text` (e.g. spelled-out symbols). */
+  narration?: Text;
+}
+
+/** A mix-up kids often make, shown as ❌ wrong vs ✅ right. */
+export interface LessonMistake {
+  wrong: Text;
+  right: Text;
+  why: Text;
+}
+
+/** One quick question at the end of a module. `answer` indexes `choices`. */
+export interface LessonCheck {
+  prompt: Text;
+  choices: Text[];
+  answer: number;
 }
 
 export interface LessonModule {
@@ -19,6 +37,8 @@ export interface LessonModule {
   title: Text;
   goal: Text;
   steps: LessonStep[];
+  mistakes?: LessonMistake[];
+  check?: LessonCheck;
 }
 
 export type LessonTopic = Exclude<TopicId, 'memory'>;
