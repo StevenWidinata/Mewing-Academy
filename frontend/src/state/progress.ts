@@ -3,6 +3,7 @@ import type { Question, TopicId } from '../../../shared/types';
 import { addLevelStars, levelStarsFrom, type LevelStars } from '../lib/levelStars';
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
+import { addPlayDay, nextStreak } from '../lib/weekly';
 import { HAND_BONUS_EVERY, unlockKeys } from './rewards';
 
 export interface Progress {
@@ -19,10 +20,14 @@ export interface Progress {
   handAnswers: number;
   /** World map: levels cleared with 80%+ per topic. */
   levelStars: LevelStars;
+  /** Days with at least one answer (newest last), for the weekly goal. */
+  playDays: string[];
+  /** Monday of the week whose streak shield was used. */
+  shieldWeek: string | null;
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {} };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null };
 
 function read(): Progress {
   try {
@@ -32,6 +37,11 @@ function read(): Progress {
       const merged = { ...EMPTY, ...saved };
       // Saves from before level stars existed: rebuild them from the history.
       if (!saved.levelStars) merged.levelStars = levelStarsFrom(merged.sessions);
+      // ...and play days for the weekly goal.
+      if (!saved.playDays) {
+        merged.playDays = merged.sessions.reduce<string[]>((days, s) => addPlayDay(days, s.at.slice(0, 10)), []);
+        if (merged.lastPlayed) merged.playDays = addPlayDay(merged.playDays, merged.lastPlayed);
+      }
       return merged;
     }
   } catch {
@@ -60,11 +70,6 @@ function write(next: Progress) {
 }
 
 export const today = () => new Date().toISOString().slice(0, 10);
-const dayBefore = (d: string) => {
-  const date = new Date(d);
-  date.setDate(date.getDate() - 1);
-  return date.toISOString().slice(0, 10);
-};
 
 export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
   const prev = current;
@@ -73,10 +78,7 @@ export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
   const handBonus = handAnswers > prev.handAnswers && handAnswers % HAND_BONUS_EVERY === 0 ? 1 : 0;
   const topicStats = prev.byTopic[topic] ?? { correct: 0, total: 0 };
   const now = today();
-  let streak = prev.streak;
-  if (prev.lastPlayed !== now) {
-    streak = prev.lastPlayed === dayBefore(now) ? prev.streak + 1 : 1;
-  }
+  const { streak, shieldWeek } = nextStreak(prev, now);
   write({
     ...prev,
     stars: prev.stars + (correct ? 1 : 0) + handBonus,
@@ -84,6 +86,8 @@ export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
     byTopic: { ...prev.byTopic, [topic]: { correct: topicStats.correct + (correct ? 1 : 0), total: topicStats.total + 1 } },
     lastPlayed: now,
     streak,
+    shieldWeek,
+    playDays: addPlayDay(prev.playDays, now),
   });
 }
 

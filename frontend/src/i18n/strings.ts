@@ -146,6 +146,16 @@ export const STRINGS = {
   progressReset: { en: 'Clear my stars', id: 'Hapus bintangku' },
   handHero: { en: 'Hand Hero answers', id: 'Jawaban Pahlawan Tangan' },
   handHeroNext: { en: 'Right camera answers to the next +1 ⭐', id: 'Jawaban kamera benar menuju +1 ⭐ berikutnya' },
+  weeklyGoal: { en: 'This week', id: 'Minggu ini' },
+  weeklyDays: { en: 'play days', id: 'hari main' },
+  shieldReady: {
+    en: 'Streak shield ready: miss 1 day this week and your streak stays safe!',
+    id: 'Perisai siap: bolos 1 hari minggu ini, hari beruntunmu tetap aman!',
+  },
+  shieldUsed: {
+    en: 'Streak shield used this week. It comes back on Monday!',
+    id: 'Perisai sudah dipakai minggu ini. Kembali lagi hari Senin!',
+  },
   progressStreak: { en: 'Day streak', id: 'Hari beruntun' },
 
   // Closet / rewards

@@ -1,4 +1,5 @@
 import { TOPICS, type Lang, type Text, type TopicId } from '../../../shared/types';
+import { WEEKLY_GOAL, weekStart } from '../lib/weekly';
 import type { Progress } from './progress';
 
 /**
@@ -88,6 +89,11 @@ export function unlockKeys(p: Progress): string[] {
   for (const b of HAND_BADGES) if (hands >= b.need) keys.push(`hand:${b.tier}`);
   // Only the latest bonus, so each new one pops up once.
   if (hands >= HAND_BONUS_EVERY) keys.push(`handbonus:${Math.floor(hands / HAND_BONUS_EVERY)}`);
+  // Weekly goal reached, and the streak shield saving a streak.
+  const perWeek = new Map<string, number>();
+  for (const d of p.playDays ?? []) perWeek.set(weekStart(d), (perWeek.get(weekStart(d)) ?? 0) + 1);
+  for (const [week, n] of perWeek) if (n >= WEEKLY_GOAL) keys.push(`week:${week}`);
+  if (p.shieldWeek) keys.push(`shield:${p.shieldWeek}`);
   return keys;
 }
 
@@ -109,6 +115,12 @@ export function describeUnlock(key: string, lang: Lang): string {
   if (kind === 'hand') {
     const hb = HAND_BADGES.find((x) => x.tier === a);
     return `✋ ${lang === 'en' ? 'Hand Hero' : 'Pahlawan Tangan'} ${hb?.emoji ?? ''}`;
+  }
+  if (kind === 'week') {
+    return lang === 'en' ? '🎯 Weekly goal reached: 3 play days!' : '🎯 Target mingguan tercapai: 3 hari bermain!';
+  }
+  if (kind === 'shield') {
+    return lang === 'en' ? '🛡️ Your streak shield saved your streak!' : '🛡️ Perisai menyelamatkan hari beruntunmu!';
   }
   if (kind === 'handbonus') {
     return lang === 'en' ? `✋ +1 ⭐ Hand Hero bonus!` : `✋ +1 ⭐ bonus Pahlawan Tangan!`;

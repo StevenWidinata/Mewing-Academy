@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { TOPICS } from '../../../shared/types';
 import { ParentsLinkCard } from '../components/ParentsLinkCard';
+import { WeeklyGoal } from '../components/WeeklyGoal';
 import { useProgress } from '../state/progress';
 import { HAND_BONUS_EVERY, badgeFor, handBadge, nextBadge, topicTitle } from '../state/rewards';
 import { useSettings } from '../state/settings';
@@ -33,6 +34,8 @@ export function ProgressPage() {
           </div>
         </div>
       </div>
+
+      <WeeklyGoal />
 
       {progress.mistakes.length > 0 && (
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
