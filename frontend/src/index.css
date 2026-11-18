@@ -2645,3 +2645,50 @@ main > section > h1:first-child::after {
   margin: 0;
   font-family: var(--font-read);
 }
+
+/* ---- Hand model preload ---- */
+.preload {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 520px;
+  margin: 1.25rem auto 0;
+  text-align: left;
+}
+.preload__body {
+  flex: 1;
+  min-width: 0;
+}
+.preload__title {
+  margin: 0;
+  font-family: var(--font-read);
+  font-weight: 700;
+}
+.preload__bar {
+  display: block;
+  height: 10px;
+  margin: 6px 0;
+  background: var(--chip-bg);
+  border: 2px solid var(--ink);
+  overflow: hidden;
+}
+.preload__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--cyan);
+  transition: width 0.2s linear;
+}
+.preload__bar > span.is-unknown {
+  width: 40%;
+  animation: preloadSlide 1.2s linear infinite;
+}
+@keyframes preloadSlide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+.preload__tip {
+  margin: 0;
+  font-family: var(--font-read);
+  font-size: 0.9rem;
+  opacity: 0.9;
+}

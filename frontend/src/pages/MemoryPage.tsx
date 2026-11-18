@@ -9,6 +9,7 @@ import { ChoiceGrid } from '../components/ChoiceGrid';
 import { Confetti } from '../components/Confetti';
 import { LevelPicker } from '../components/LevelPicker';
 import { MewyBuddy } from '../components/MewyBuddy';
+import { ModelPreloadBar } from '../components/ModelPreloadBar';
 import { SpeakButton } from '../components/SpeakButton';
 import { SpriteScene } from '../components/Sprite';
 import { fetchMemoryRound } from '../lib/api';
@@ -95,6 +96,7 @@ export function MemoryPage() {
         <h1>🧠 {tr('navMemory')}</h1>
         <p style={{ fontFamily: 'var(--font-read)', fontSize: '1.1rem' }}>{tr('memoryWatch')} {tr('memoryRemember')}</p>
         <LevelPicker value={level} onChange={setLevel} />
+        <ModelPreloadBar />
         <div style={{ marginTop: '1.5rem' }}>
           <button type="button" className="btn" onClick={begin}>{tr('start')}</button>
         </div>

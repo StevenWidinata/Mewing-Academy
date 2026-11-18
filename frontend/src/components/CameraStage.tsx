@@ -5,6 +5,7 @@ import { useSettings } from '../state/settings';
 import { classify, poseFor, type Classification } from '../vision/fingers';
 import { LETTERS } from './ChoiceGrid';
 import { HandPose } from './HandPose';
+import { useHandModelPreload } from '../vision/preload';
 import { useVision, type VisionFrame, type VisionStatus } from '../vision/useVision';
 
 /** First-time camera practice: show 1, 2, 3, then 4 fingers. */
@@ -38,6 +39,7 @@ const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number)
 
 export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false, onStatusChange }: Props) {
   const { tr, settings, set } = useSettings();
+  const preload = useHandModelPreload();
   // null = no practice; 0..3 = the finger count being practised; 4 = finished.
   const [tutorial, setTutorial] = useState<number | null>(null);
   const tutorialRef = useRef<number | null>(null);
@@ -192,7 +194,7 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         {status !== 'running' && (
           <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', textAlign: 'center', padding: '1rem', fontFamily: 'var(--font-read)' }}>
             {status === 'loading'
-              ? tr('cameraLoading')
+              ? `${tr('cameraLoading')}${preload.status === 'loading' && preload.progress != null ? ` ${Math.round(preload.progress * 100)}%` : ''}`
               : status === 'denied'
                 ? tr('cameraDenied')
                 : status === 'insecure'

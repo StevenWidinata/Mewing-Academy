@@ -1,5 +1,6 @@
 import { FilesetResolver, HandLandmarker, type HandLandmarkerResult } from '@mediapipe/tasks-vision';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { HAND_MODEL_URL, preloadHandModel } from './preload';
 
 export type VisionStatus =
   | 'idle'
@@ -56,7 +57,6 @@ interface Options {
 // BASE_URL is "/" in dev and "/<repo>/" on GitHub Pages.
 const BASE = import.meta.env.BASE_URL;
 const WASM_PATH = `${BASE}wasm`;
-const HAND_MODEL = `${BASE}models/hand_landmarker.task`;
 
 /**
  * Owns the webcam stream and the MediaPipe hand landmarker. Everything runs
@@ -141,10 +141,11 @@ export function useVision({ onFrame }: Options) {
 
       try {
         if (!handRef.current) {
-          const fileset = await FilesetResolver.forVisionTasks(WASM_PATH);
+          // Reuse the background download if it finished (or join it if it is running).
+          const [fileset, bytes] = await Promise.all([FilesetResolver.forVisionTasks(WASM_PATH), preloadHandModel(true)]);
           handRef.current = await createWithFallback((delegate) =>
             HandLandmarker.createFromOptions(fileset, {
-              baseOptions: { modelAssetPath: HAND_MODEL, delegate },
+              baseOptions: bytes ? { modelAssetBuffer: bytes.slice(), delegate } : { modelAssetPath: HAND_MODEL_URL, delegate },
               runningMode: 'VIDEO',
               numHands: 1,
             }),

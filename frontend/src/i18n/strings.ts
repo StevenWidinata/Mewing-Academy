@@ -56,6 +56,8 @@ export const STRINGS = {
     en: '📷 Turn on the camera for the real game! For now, tap an answer.',
     id: '📷 Nyalakan kamera untuk main yang seru! Untuk sementara, ketuk jawaban.',
   },
+  preloadLoading: { en: 'Getting the camera AI ready...', id: 'Menyiapkan AI kamera...' },
+  preloadDone: { en: 'Camera AI is ready!', id: 'AI kamera sudah siap!' },
   cameraStart: { en: 'Turn on camera', id: 'Nyalakan kamera' },
   cameraStop: { en: 'Turn off camera', id: 'Matikan kamera' },
   cameraLoading: { en: 'Waking up the camera AI...', id: 'Membangunkan AI kamera...' },

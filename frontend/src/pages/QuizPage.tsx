@@ -6,6 +6,7 @@ import { AdaptiveTip } from '../components/AdaptiveTip';
 import { LevelPicker } from '../components/LevelPicker';
 import { RoundSizePicker } from '../components/RoundSizePicker';
 import { MewyBuddy } from '../components/MewyBuddy';
+import { ModelPreloadBar } from '../components/ModelPreloadBar';
 import { QuizRunner } from '../components/QuizRunner';
 import { TopicIcon } from '../components/TopicIcon';
 import { fetchQuestions } from '../lib/api';
@@ -54,6 +55,7 @@ export function QuizPage() {
         </div>
         <LevelPicker value={level} onChange={changeLevel} />
         <RoundSizePicker />
+        <ModelPreloadBar />
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginTop: '1.5rem', flexWrap: 'wrap' }}>
           <button type="button" className="btn" onClick={() => start(topic, level)} style={{ fontSize: '0.9rem', padding: '1em 1.6em' }}>
             ▶ {tr('start')}
