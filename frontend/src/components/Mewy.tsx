@@ -1,3 +1,4 @@
+import { STAGES, type StageId } from '../lib/mewyStage';
 import { FURS, type FurId, type ItemId } from '../state/rewards';
 import { useSettings } from '../state/settings';
 
@@ -127,9 +128,11 @@ interface Props {
   mood?: Mood;
   /** Where the eyes look, each -1..1 (pixels on the 16-wide grid). */
   look?: { x: number; y: number };
+  /** Growth stage (from the best streak); today's kitten when left out. */
+  stage?: StageId;
 }
 
-export function Mewy({ size = 64, title = 'Mewy the mascot', fur, item, mood = 'idle', look }: Props) {
+export function Mewy({ size = 64, title = 'Mewy the mascot', fur, item, mood = 'idle', look, stage = 'kitten' }: Props) {
   const { settings } = useSettings();
   const furId = fur ?? settings.mewyFur;
   const outfit = item === undefined ? settings.mewyItem : item;
@@ -141,9 +144,24 @@ export function Mewy({ size = 64, title = 'Mewy the mascot', fur, item, mood = '
     for (let y = y1; y <= y2; y++) for (let x = x1; x <= x2; x++) cells.push([x, y, c]);
   };
 
+  const grown = stage === 'teen' || stage === 'adult' || stage === 'legend';
+  // Legend: a starry cape behind everything.
+  if (stage === 'legend') {
+    r(0, 6, 1, 15, '#3a2a7a'); r(14, 6, 14, 15, '#3a2a7a'); r(2, 13, 13, 15, '#3a2a7a');
+    r(0, 8, 0, 8, GOLD); r(1, 12, 1, 12, GOLD); r(14, 10, 14, 10, GOLD); r(4, 14, 4, 14, GOLD); r(11, 14, 11, 14, GOLD);
+  }
   if (outfit) drawItemBehind(outfit, r);
-  // Ears
-  r(2, 1, 3, 3, f.main); r(12, 1, 13, 3, f.main); r(3, 2, 3, 3, PINK); r(12, 2, 12, 3, PINK);
+  // Grown-up: a long tail curling up on the right.
+  if (stage === 'adult' || stage === 'legend') {
+    r(14, 12, 15, 12, f.main); r(15, 8, 15, 11, f.main); r(15, 7, 15, 7, f.shade);
+  }
+  // Ears (baby: small and round; teen and up: tall and pointy)
+  if (stage === 'baby') {
+    r(3, 2, 4, 3, f.main); r(11, 2, 12, 3, f.main); r(3, 3, 3, 3, PINK); r(12, 3, 12, 3, PINK);
+  } else {
+    r(2, 1, 3, 3, f.main); r(12, 1, 13, 3, f.main); r(3, 2, 3, 3, PINK); r(12, 2, 12, 3, PINK);
+    if (grown) { r(2, -1, 2, 0, f.main); r(13, -1, 13, 0, f.main); }
+  }
   // Head
   r(3, 3, 12, 12, f.main); r(2, 5, 2, 10, f.main); r(13, 5, 13, 10, f.main);
   r(3, 11, 12, 12, f.shade);
@@ -163,12 +181,17 @@ export function Mewy({ size = 64, title = 'Mewy the mascot', fur, item, mood = '
   else if (mood === 'think') { r(7, 9, 8, 10, K); }
   else { r(6, 9, 6, 9, K); r(9, 9, 9, 9, K); r(7, 9, 8, 9, K); }
 
+  // Baby: rosy cheeks.
+  if (stage === 'baby') { r(3, 9, 4, 9, '#ff9ccf'); r(11, 9, 12, 9, '#ff9ccf'); }
+
   if (outfit) drawItem(outfit, r);
+  const scale = STAGES.find((s) => s.id === stage)?.scale ?? 1;
 
   return (
     <svg
-      width={size}
-      height={size * 1.25}
+      className={stage === 'legend' ? 'mewy--legend' : undefined}
+      width={size * scale}
+      height={size * scale * 1.25}
       viewBox="0 -4 16 20"
       role="img"
       aria-label={title}

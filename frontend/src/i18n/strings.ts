@@ -176,6 +176,12 @@ export const STRINGS = {
   shopNeed: { en: 'Need', id: 'Kurang' },
   shopWear: { en: 'Wear', id: 'Pakai' },
   shopWearing: { en: 'Wearing', id: 'Dipakai' },
+  mewyAge: { en: "Mewy's age", id: 'Umur Mewy' },
+  mewyAgeNext: {
+    en: 'Next: {stage} at a {n}-day streak (best so far {b}, now {c})',
+    id: 'Berikutnya: {stage} di {n} hari beruntun (terbaik {b}, sekarang {c})',
+  },
+  mewyAgeTop: { en: 'Mewy is a Legend! The highest stage. 🏆', id: 'Mewy sudah Legenda! Tahap tertinggi. 🏆' },
   bagTitle: { en: 'My bag', id: 'Tasku' },
   bagEmpty: { en: 'Finish a game round to earn your first items!', id: 'Selesaikan satu ronde permainan untuk dapat item pertamamu!' },
   lootTitle: { en: 'You got:', id: 'Kamu dapat:' },

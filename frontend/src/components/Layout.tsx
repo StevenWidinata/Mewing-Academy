@@ -10,6 +10,7 @@ import { MusicButton, PawTrail } from './FunExtras';
 import { WatcherMewy } from './WatcherMewy';
 import { Mewy } from './Mewy';
 import { RewardToast } from './RewardToast';
+import { stageFor } from '../lib/mewyStage';
 import { BreakReminder } from './BreakReminder';
 import { TitleScreen } from './TitleScreen';
 import { MobileMenu, NavBar } from './NavBar';
@@ -18,7 +19,7 @@ const STARTED_KEY = 'mewing.started';
 
 export function Layout() {
   const { tr, settings, set } = useSettings();
-  const { stars } = useProgress();
+  const { stars, bestStreak } = useProgress();
   useCardTilt();
   useMusic();
   const [started, setStarted] = useState(() => sessionStorage.getItem(STARTED_KEY) === '1');
@@ -38,7 +39,7 @@ export function Layout() {
 
       <header className="site-header">
         <NavLink to="/" className="site-header__brand">
-          <Mewy size={56} />
+          <Mewy size={56} stage={stageFor(bestStreak).id} />
           <span>
             <span className="site-header__name">{tr('appName')}</span>
             <span className="chip site-header__tagline">{tr('tagline')}</span>

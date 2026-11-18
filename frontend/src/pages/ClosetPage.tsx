@@ -4,6 +4,8 @@ import type { Text } from '../../../shared/types';
 import { BagStrip } from '../components/BagStrip';
 import { Mewy } from '../components/Mewy';
 import { StickerBook } from '../components/StickerBook';
+import { MewyAge } from '../components/MewyAge';
+import { stageFor } from '../lib/mewyStage';
 import { BAG_ITEMS, type Bag, type BagKind } from '../lib/bag';
 import { sfx } from '../lib/sound';
 import { buy, useProgress } from '../state/progress';
@@ -110,8 +112,9 @@ export function ClosetPage() {
 
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <div className="hero" style={{ flex: '0 0 220px' }}>
-          <Mewy size={170} mood="happy" />
+          <Mewy size={160} mood="happy" stage={stageFor(progress.bestStreak).id} />
           <p style={{ fontFamily: 'var(--font-read)', margin: '0.5rem 0 0' }}>⭐ {progress.stars}</p>
+          <MewyAge showMewy={false} />
         </div>
 
         <div style={{ flex: '1 1 320px', display: 'grid', gap: '1.5rem', minWidth: 0 }}>

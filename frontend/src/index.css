@@ -3018,3 +3018,44 @@ main > section > h1:first-child::after {
 .price__chip.is-ok {
   background: var(--green);
 }
+
+/* ---- Mewy growing up ---- */
+.mewy--legend {
+  filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.85)) drop-shadow(0 0 14px rgba(155, 77, 224, 0.6));
+}
+.mewy-age {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+}
+.mewy-age__body {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-family: var(--font-read);
+}
+.mewy-age__name {
+  font-size: 1.05rem;
+}
+.mewy-age__bar {
+  width: 100%;
+}
+.mewy-age__next {
+  font-size: 0.85rem;
+}
+.hero .mewy-age {
+  margin-top: 0.5rem;
+}
+.evolve {
+  display: inline-block;
+  animation: evolveFlash 1.2s ease-out both;
+}
+@keyframes evolveFlash {
+  0% { filter: brightness(4) saturate(0); transform: scale(0.6); }
+  40% { filter: brightness(2.5); transform: scale(1.2); }
+  100% { filter: none; transform: scale(1); }
+}
+:root[data-motion='reduced'] .evolve {
+  animation: none;
+}

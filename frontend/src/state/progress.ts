@@ -39,10 +39,12 @@ export interface Progress {
   lessonsDone: string[];
   tutorQuestions: number;
   purchases: number;
+  /** Longest day streak ever: Mewy's growth stage never goes back down. */
+  bestStreak: number;
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0 };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0, bestStreak: 0 };
 
 /** Set when an older save got its one-time welcome gift on this load (shown as a pop-up). */
 let gotWelcomeGift = false;
@@ -69,6 +71,7 @@ function read(): Progress {
       }
       // Shop: keep everything the old free rules had unlocked, without pop-ups.
       if (!saved.owned) merged.owned = legacyOwned(merged);
+      merged.bestStreak = Math.max(saved.bestStreak ?? 0, merged.streak);
       if (!saved.buyHints) merged.buyHints = withBuyHints({ ...merged, buyHints: [] });
       return merged;
     }
@@ -122,6 +125,7 @@ export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
     byTopic: { ...prev.byTopic, [topic]: { correct: topicStats.correct + (correct ? 1 : 0), total: topicStats.total + 1 } },
     lastPlayed: now,
     streak,
+    bestStreak: Math.max(prev.bestStreak, streak),
     shieldWeek,
     playDays: addPlayDay(prev.playDays, now),
   });

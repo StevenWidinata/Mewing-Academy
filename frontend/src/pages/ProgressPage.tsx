@@ -3,6 +3,7 @@ import { TOPICS } from '../../../shared/types';
 import { ParentsLinkCard } from '../components/ParentsLinkCard';
 import { WeeklyGoal } from '../components/WeeklyGoal';
 import { BagStrip } from '../components/BagStrip';
+import { MewyAge } from '../components/MewyAge';
 import { useProgress } from '../state/progress';
 import { HAND_BONUS_EVERY, badgeFor, handBadge, nextBadge, topicTitle } from '../state/rewards';
 import { useSettings } from '../state/settings';
@@ -36,6 +37,10 @@ export function ProgressPage() {
         </div>
       </div>
 
+      <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <h2 style={{ fontSize: '0.9rem', marginTop: 0 }}>🌱 {tr('mewyAge')}</h2>
+        <MewyAge />
+      </div>
       <WeeklyGoal />
       <BagStrip />
 

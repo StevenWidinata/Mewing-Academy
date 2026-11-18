@@ -1,5 +1,6 @@
 import { TOPICS, type Lang, type Text, type TopicId } from '../../../shared/types';
 import { BAG_ITEMS, type Bag, type BagKind } from '../lib/bag';
+import { STAGES } from '../lib/mewyStage';
 import { STICKERS } from '../lib/stickers';
 import { WEEKLY_GOAL, weekStart } from '../lib/weekly';
 import type { Progress } from './progress';
@@ -157,6 +158,7 @@ export function unlockKeys(p: Progress): string[] {
   for (const [week, n] of perWeek) if (n >= WEEKLY_GOAL) keys.push(`week:${week}`);
   if (p.shieldWeek) keys.push(`shield:${p.shieldWeek}`);
   for (const s of p.stickers ?? []) keys.push(`sticker:${s}`);
+  for (const st of STAGES) if (st.min > 0 && (p.bestStreak ?? 0) >= st.min) keys.push(`stage:${st.id}`);
   return keys;
 }
 
@@ -178,6 +180,10 @@ export function describeUnlock(key: string, lang: Lang): string {
   if (kind === 'hand') {
     const hb = HAND_BADGES.find((x) => x.tier === a);
     return `✋ ${lang === 'en' ? 'Hand Hero' : 'Pahlawan Tangan'} ${hb?.emoji ?? ''}`;
+  }
+  if (kind === 'stage') {
+    const st = STAGES.find((x) => x.id === a);
+    return st ? (lang === 'en' ? `🌱 Mewy grew up: ${st.emoji} ${st.name.en}!` : `🌱 Mewy tumbuh: ${st.emoji} ${st.name.id}!`) : key;
   }
   if (kind === 'canbuy') {
     const it = a === 'item' ? ITEMS.find((i) => i.id === b) : null;
