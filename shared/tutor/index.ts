@@ -1,6 +1,7 @@
 import type { Lang, TutorReply } from '../types';
 import { FALLBACK, PRIVACY } from './facts';
 import { matchIntent } from './match';
+import { smartReply } from './smart';
 
 export { levenshtein, matchIntent, tokenize } from './match';
 
@@ -44,8 +45,10 @@ export function tutorReply(message: string, lang: Lang): TutorReply {
   const text = message.slice(0, MAX_MESSAGE_LENGTH);
   if (PRIVACY_RE.test(text)) return { reply: PRIVACY[lang], intent: 'privacy', confidence: 1 };
   const math = solveMath(text, lang);
-  if (math) return { reply: math, intent: 'math', confidence: 1 };
+  if (math) return { reply: math, intent: 'math', confidence: 1, lesson: 'math' };
+  const smart = smartReply(text, lang);
+  if (smart) return smart;
   const { intent, confidence } = matchIntent(text);
   if (!intent) return { reply: FALLBACK[lang], intent: 'unknown', confidence: 0 };
-  return { reply: intent.reply[lang], intent: intent.id, confidence };
+  return { reply: intent.reply[lang], intent: intent.id, confidence, lesson: intent.lesson };
 }

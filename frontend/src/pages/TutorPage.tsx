@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MAX_MESSAGE_LENGTH } from '../../../shared/tutor';
+import { TOPICS, type TopicMeta } from '../../../shared/types';
 import { Mewy } from '../components/Mewy';
 import { askTutor, fetchConfig } from '../lib/api';
 import { useSettings } from '../state/settings';
@@ -9,6 +11,7 @@ interface Msg {
   text: string;
   confidence?: number;
   intent?: string;
+  lesson?: TopicMeta['id'];
 }
 
 /** How Mewy shows how sure it is, without a number meter. */
@@ -44,7 +47,7 @@ export function TutorPage() {
     setInput('');
     setBusy(true);
     const reply = await askTutor(text, settings.lang);
-    setMessages((m) => [...m, { from: 'mewy', text: reply.reply, confidence: reply.confidence, intent: reply.intent }]);
+    setMessages((m) => [...m, { from: 'mewy', text: reply.reply, confidence: reply.confidence, intent: reply.intent, lesson: reply.lesson }]);
     setBusy(false);
     requestAnimationFrame(() => listRef.current?.scrollTo(0, listRef.current.scrollHeight));
   };
@@ -99,6 +102,13 @@ export function TutorPage() {
                 </>
               ) : (
                 m.text
+              )}
+              {m.from === 'mewy' && m.lesson && (
+                <div style={{ marginTop: 8 }}>
+                  <Link to={`/lessons/${m.lesson}`} className="chip tutor-lesson">
+                    📚 {tr('tutorLearnMore')}: {TOPICS.find((x) => x.id === m.lesson)?.title[L]}
+                  </Link>
+                </div>
               )}
             </div>
           </div>

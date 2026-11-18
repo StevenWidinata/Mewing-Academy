@@ -47,8 +47,10 @@ export interface MemoryRound {
 export interface TutorReply {
   reply: string;
   intent: string;
-  /** 0..1, how sure the matcher is. Shown to kids as "how sure am I". */
+  /** 0..1, how sure the matcher is. Shown to kids as a gentle hint, never a number. */
   confidence: number;
+  /** Lesson that teaches more about the answer. */
+  lesson?: Exclude<TopicId, 'memory'>;
 }
 
 export const COLORS: Record<ColorId, { hex: string; name: Text }> = {

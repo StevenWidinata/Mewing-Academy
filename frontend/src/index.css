@@ -2155,3 +2155,10 @@ main > section > h1:first-child::after {
   border-width: 3px;
   box-shadow: 2px 2px 0 var(--shadow);
 }
+.tutor-lesson {
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.tutor-lesson:hover {
+  text-decoration: underline;
+}

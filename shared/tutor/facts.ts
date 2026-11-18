@@ -1,4 +1,4 @@
-import type { Text } from '../types';
+import type { Text, TopicId } from '../types';
 
 /** Pre-written, age-appropriate replies the matcher can pick from. */
 
@@ -6,6 +6,8 @@ export interface Intent {
   id: string;
   keywords: string[];
   reply: Text;
+  /** Lesson to suggest after this answer. */
+  lesson?: Exclude<TopicId, 'memory'>;
 }
 
 export const INTENTS: Intent[] = [
@@ -27,6 +29,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'colors',
+    lesson: 'colors',
     keywords: ['color', 'colour', 'colors', 'rainbow', 'warna', 'pelangi', 'mix', 'campur'],
     reply: {
       en: 'The 3 primary colors are red, yellow and blue. Mix red + yellow = orange, blue + yellow = green, red + blue = purple. A rainbow has 7 colors!',
@@ -35,6 +38,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'shapes',
+    lesson: 'shapes',
     keywords: ['shape', 'shapes', 'triangle', 'square', 'circle', 'corner', 'bentuk', 'segitiga', 'persegi', 'lingkaran', 'sudut'],
     reply: {
       en: 'A triangle has 3 sides and 3 corners. A square has 4 equal sides. A circle is round and has no corners at all!',
@@ -43,6 +47,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'spider',
+    lesson: 'animals',
     keywords: ['spider', 'legs', 'insect', 'laba', 'kaki', 'serangga'],
     reply: {
       en: 'Spiders have 8 legs. Insects like ants and butterflies have 6 legs. So a spider is not an insect!',
@@ -51,6 +56,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'animals',
+    lesson: 'animals',
     keywords: ['animal', 'animals', 'cat', 'dog', 'cow', 'elephant', 'fish', 'bird', 'hewan', 'binatang', 'kucing', 'anjing', 'sapi', 'gajah', 'ikan', 'burung'],
     reply: {
       en: 'Fun fact: elephants are the biggest land animals, fish breathe with gills, and birds have hollow bones to help them fly!',
@@ -59,6 +65,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'dinosaurs',
+    lesson: 'animals',
     keywords: ['dinosaur', 'dinosaurs', 'dino', 'trex', 'rex', 'dinosaurus'],
     reply: {
       en: 'Dinosaurs lived millions of years ago. T-Rex had teeth as big as bananas! Birds today are relatives of dinosaurs.',
@@ -67,6 +74,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'letters',
+    lesson: 'letters',
     keywords: ['letter', 'letters', 'alphabet', 'vowel', 'vowels', 'abc', 'huruf', 'alfabet', 'vokal'],
     reply: {
       en: 'There are 26 letters in the alphabet. The vowels are A, E, I, O, U. Every word needs at least one vowel sound!',
@@ -75,6 +83,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'counting',
+    lesson: 'counting',
     keywords: ['count', 'counting', 'number', 'numbers', 'hitung', 'berhitung', 'angka'],
     reply: {
       en: 'Counting tip: touch each thing once and say a number: 1, 2, 3... The last number you say is how many there are!',
@@ -83,6 +92,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'space',
+    lesson: 'space',
     keywords: ['space', 'planet', 'planets', 'sun', 'moon', 'star', 'stars', 'earth', 'angkasa', 'matahari', 'bulan', 'bintang', 'bumi'],
     reply: {
       en: 'The Sun is a star! There are 8 planets. We live on Earth, the third planet from the Sun. The Moon goes around the Earth.',
@@ -99,6 +109,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'patterns',
+    lesson: 'patterns',
     keywords: ['pattern', 'patterns', 'repeat', 'pola', 'berulang'],
     reply: {
       en: 'A pattern is something that repeats, like red, blue, red, blue. Find what repeats, then guess what comes next!',

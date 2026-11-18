@@ -49,8 +49,8 @@ describe('tutor', () => {
 
   it('matches intents with typos', () => {
     expect(levenshtein('elefant', 'elephant')).toBe(2);
-    expect(tutorReply('tell me about the elefant', 'en').intent).toBe('animals');
-    expect(tutorReply('warna pelangi apa saja?', 'id').intent).toBe('colors');
+    expect(tutorReply('tell me about the elefant', 'en').intent).toBe('animals:elephant');
+    expect(tutorReply('warna pelangi apa saja?', 'id').reply).toContain('nila');
   });
 
   it('protects personal information', () => {
