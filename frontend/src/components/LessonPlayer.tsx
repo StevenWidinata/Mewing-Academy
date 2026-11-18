@@ -5,13 +5,16 @@ import type { Text } from '../../../shared/types';
 import { canSpeak, speak } from '../lib/speak';
 import { sfx } from '../lib/sound';
 import { useSettings } from '../state/settings';
+import { Figure } from './figures/Figure';
+import { hasFigure } from './figures/registry';
 import { MewyBuddy } from './MewyBuddy';
 import { SpriteScene } from './Sprite';
 
-type Page = { kind: 'step'; index: number } | { kind: 'mistakes' } | { kind: 'check' } | { kind: 'done' };
+type Page = { kind: 'step'; index: number } | { kind: 'try' } | { kind: 'mistakes' } | { kind: 'check' } | { kind: 'done' };
 
 function pagesOf(m: LessonModule): Page[] {
   const pages: Page[] = m.steps.map((_, index) => ({ kind: 'step', index }));
+  if (m.tryIt && hasFigure(m.tryIt.figure)) pages.push({ kind: 'try' });
   if (m.mistakes?.length) pages.push({ kind: 'mistakes' });
   if (m.check) pages.push({ kind: 'check' });
   pages.push({ kind: 'done' });
@@ -24,6 +27,7 @@ function speechFor(m: LessonModule, page: Page, L: 'en' | 'id'): string {
     const s = m.steps[page.index];
     return [(s.narration ?? s.text)[L], s.example?.[L]].filter(Boolean).join('. ');
   }
+  if (page.kind === 'try') return m.tryIt?.prompt[L] ?? '';
   if (page.kind === 'mistakes') {
     return (m.mistakes ?? []).map((x) => `${x.right[L]}. ${x.why[L]}`).join(' ');
   }
@@ -78,7 +82,13 @@ export function LessonPlayer({
   };
 
   const pageLabel = (p: Page): string =>
-    p.kind === 'step' ? `${tr('lessonStep')} ${p.index + 1}` : p.kind === 'mistakes' ? tr('lessonMistakes') : tr('lessonCheck');
+    p.kind === 'step'
+      ? `${tr('lessonStep')} ${p.index + 1}`
+      : p.kind === 'try'
+        ? tr('lessonTry')
+        : p.kind === 'mistakes'
+          ? tr('lessonMistakes')
+          : tr('lessonCheck');
 
   return (
     <div className="card lesson-player">
@@ -106,6 +116,14 @@ export function LessonPlayer({
 
       <div className="lesson-player__body" key={at}>
         {page.kind === 'step' && <StepView module={m} index={page.index} />}
+
+        {page.kind === 'try' && m.tryIt && (
+          <div>
+            <h3 className="lesson-player__h">🖐️ {tr('lessonTry')}</h3>
+            <p className="lesson-player__text">{m.tryIt.prompt[L]}</p>
+            <Figure id={m.tryIt.figure} config={m.tryIt.config} />
+          </div>
+        )}
 
         {page.kind === 'mistakes' && (
           <div>
@@ -190,10 +208,11 @@ export function LessonPlayer({
 }
 
 function StepView({ module: m, index }: { module: LessonModule; index: number }) {
-  const { settings } = useSettings();
+  const { tr, settings } = useSettings();
   const L = settings.lang;
   const s = m.steps[index];
   const t = (x?: Text) => x?.[L];
+  const [more, setMore] = useState(false);
   return (
     <div>
       {index === 0 && <p className="lesson-player__goal">🎯 {m.goal[L]}</p>}
@@ -210,6 +229,31 @@ function StepView({ module: m, index }: { module: LessonModule; index: number })
       )}
       <p className="lesson-player__text">{t(s.text)}</p>
       {s.example && <p className="lesson-player__example">{t(s.example)}</p>}
+      {s.more && (
+        <div className="lesson-more">
+          <button type="button" className="btn btn--ghost lesson-more__btn" aria-expanded={more} onClick={() => setMore((v) => !v)}>
+            🔍 {more ? tr('lessonLessDetail') : tr('lessonMoreDetail')}
+          </button>
+          {more && (
+            <div className="lesson-more__panel">
+              {s.more.emoji && <span className="lesson-more__emoji" aria-hidden="true">{s.more.emoji}</span>}
+              <p className="lesson-more__text">
+                {s.more.text[L]} {canSpeak && <SpeakInline text={s.more.text[L]} />}
+              </p>
+              {s.more.figure && <Figure id={s.more.figure} config={s.more.config} />}
+            </div>
+          )}
+        </div>
+      )}
     </div>
+  );
+}
+
+function SpeakInline({ text }: { text: string }) {
+  const { tr, settings } = useSettings();
+  return (
+    <button type="button" className="btn btn--secondary lesson-more__speak" aria-label={tr('readAloud')} onClick={() => speak(text, settings.lang)}>
+      🔊
+    </button>
   );
 }

@@ -9,6 +9,29 @@ import type { SpriteGroup, Text, TopicId } from './types';
  * separate from the question bank so the Lessons page teaches, and the quiz tests.
  */
 
+/** Interactive pictures, one kind per topic (drawn by the frontend). */
+export type FigureId =
+  | 'tenframe' | 'apples' | 'hopper' | 'clock' | 'pattern' | 'corners'
+  | 'mixer' | 'legs' | 'letterbd' | 'plate' | 'bodymap' | 'weather' | 'vehicles' | 'seesaw' | 'faces' | 'planets';
+
+/** Small per-lesson settings for a figure, e.g. { hour: 3 } or { op: 'minus' }. */
+export type FigureConfig = Record<string, string | number>;
+
+/** "Want to know more?": one extra fact with a picture or figure. */
+export interface LessonMore {
+  text: Text;
+  emoji?: string;
+  figure?: FigureId;
+  config?: FigureConfig;
+}
+
+/** "Try it yourself!": a hands-on page with an interactive figure. */
+export interface LessonTry {
+  figure: FigureId;
+  prompt: Text;
+  config?: FigureConfig;
+}
+
 export interface LessonStep {
   text: Text;
   visual?: SpriteGroup[];
@@ -17,6 +40,8 @@ export interface LessonStep {
   emoji?: string;
   /** What "Read to me" says, if it should differ from `text` (e.g. spelled-out symbols). */
   narration?: Text;
+  /** Extra detail for curious kids, behind a "Want to know more?" button. */
+  more?: LessonMore;
 }
 
 /** A mix-up kids often make, shown as ❌ wrong vs ✅ right. */
@@ -40,6 +65,8 @@ export interface LessonModule {
   steps: LessonStep[];
   mistakes?: LessonMistake[];
   check?: LessonCheck;
+  /** Hands-on page shown after the steps. */
+  tryIt?: LessonTry;
 }
 
 export type LessonTopic = Exclude<TopicId, 'memory'>;
