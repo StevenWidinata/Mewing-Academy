@@ -167,6 +167,8 @@ export const STRINGS = {
   closetNone: { en: 'No outfit', id: 'Tanpa baju' },
   closetLocked: { en: 'locked', id: 'terkunci' },
   closetPlay: { en: 'Play to unlock', id: 'Main untuk membuka' },
+  stickerBook: { en: 'Sticker book', id: 'Buku stiker' },
+  stickerGot: { en: 'Got it!', id: 'Sudah dapat!' },
   newUnlock: { en: 'New unlock!', id: 'Hadiah baru!' },
   openCloset: { en: 'Open closet', id: 'Buka lemari' },
   nextBadge: { en: 'Next badge', id: 'Lencana berikutnya' },

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Mewy } from '../components/Mewy';
+import { StickerBook } from '../components/StickerBook';
 import { FURS, ITEM_UNLOCK, ITEMS, correctIn, isFurUnlocked, isItemUnlocked, topicTitle } from '../state/rewards';
 import { useProgress } from '../state/progress';
 import { useSettings } from '../state/settings';
@@ -130,6 +131,8 @@ export function ClosetPage() {
               })}
             </div>
           </div>
+
+          <StickerBook />
         </div>
       </div>
     </section>

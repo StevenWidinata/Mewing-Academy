@@ -3,6 +3,7 @@ import type { Question, TopicId } from '../../../shared/types';
 import { addLevelStars, levelStarsFrom, type LevelStars } from '../lib/levelStars';
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
+import { withEarnedStickers, type StickerId } from '../lib/stickers';
 import { addPlayDay, nextStreak } from '../lib/weekly';
 import { HAND_BONUS_EVERY, unlockKeys } from './rewards';
 
@@ -24,10 +25,12 @@ export interface Progress {
   playDays: string[];
   /** Monday of the week whose streak shield was used. */
   shieldWeek: string | null;
+  /** Sticker book achievements earned, in order. */
+  stickers: StickerId[];
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [] };
 
 function read(): Progress {
   try {
@@ -42,6 +45,8 @@ function read(): Progress {
         merged.playDays = merged.sessions.reduce<string[]>((days, s) => addPlayDay(days, s.at.slice(0, 10)), []);
         if (merged.lastPlayed) merged.playDays = addPlayDay(merged.playDays, merged.lastPlayed);
       }
+      // ...and stickers already earned (quietly, without a pop-up for each).
+      if (!saved.stickers) merged.stickers = withEarnedStickers({ ...merged, stickers: [] });
       return merged;
     }
   } catch {
@@ -57,7 +62,8 @@ const listeners = new Set<() => void>();
 let toasts: string[] = [];
 const toastListeners = new Set<() => void>();
 
-function write(next: Progress) {
+function write(raw: Progress) {
+  const next = { ...raw, stickers: withEarnedStickers(raw) };
   const before = new Set(unlockKeys(current));
   current = next;
   localStorage.setItem(KEY, JSON.stringify(next));
@@ -106,6 +112,12 @@ export function recordSession(session: Omit<SessionLog, 'at'>) {
 export function trackMistake(q: Question, correct: boolean) {
   const next = correct ? removeMistake(current.mistakes, q) : addMistake(current.mistakes, q);
   if (next !== current.mistakes) write({ ...current, mistakes: next });
+}
+
+/** Stickers earned by an event rather than by saved progress (e.g. beating the boss). */
+export function earnSticker(id: StickerId) {
+  if (current.stickers.includes(id)) return;
+  write({ ...current, stickers: [...current.stickers, id] });
 }
 
 export const DAILY_BONUS = 2;

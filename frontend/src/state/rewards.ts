@@ -1,4 +1,5 @@
 import { TOPICS, type Lang, type Text, type TopicId } from '../../../shared/types';
+import { STICKERS } from '../lib/stickers';
 import { WEEKLY_GOAL, weekStart } from '../lib/weekly';
 import type { Progress } from './progress';
 
@@ -94,6 +95,7 @@ export function unlockKeys(p: Progress): string[] {
   for (const d of p.playDays ?? []) perWeek.set(weekStart(d), (perWeek.get(weekStart(d)) ?? 0) + 1);
   for (const [week, n] of perWeek) if (n >= WEEKLY_GOAL) keys.push(`week:${week}`);
   if (p.shieldWeek) keys.push(`shield:${p.shieldWeek}`);
+  for (const s of p.stickers ?? []) keys.push(`sticker:${s}`);
   return keys;
 }
 
@@ -115,6 +117,10 @@ export function describeUnlock(key: string, lang: Lang): string {
   if (kind === 'hand') {
     const hb = HAND_BADGES.find((x) => x.tier === a);
     return `✋ ${lang === 'en' ? 'Hand Hero' : 'Pahlawan Tangan'} ${hb?.emoji ?? ''}`;
+  }
+  if (kind === 'sticker') {
+    const st = STICKERS.find((x) => x.id === a);
+    return st ? `📒 ${st.emoji} ${st.name[lang]}` : key;
   }
   if (kind === 'week') {
     return lang === 'en' ? '🎯 Weekly goal reached: 3 play days!' : '🎯 Target mingguan tercapai: 3 hari bermain!';

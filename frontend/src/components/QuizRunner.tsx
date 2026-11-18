@@ -6,6 +6,7 @@ import type { SessionMode } from '../lib/sessions';
 import { useSettings } from '../state/settings';
 import { BossBar, BossSprite, ComboPop } from './Boss';
 import { bossState, tauntFor } from '../lib/boss';
+import { earnSticker } from '../state/progress';
 import { hasNumberLabels } from '../vision/fingers';
 import type { VisionStatus } from '../vision/useVision';
 import { AnswerModeHint } from './AnswerModeHint';
@@ -41,6 +42,13 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
   const tapEnabled = camStatus !== 'running';
   const difficulties = useMemo(() => questions.map((q) => q.difficulty), [questions]);
   const fight = useMemo(() => bossState(difficulties, state.answers), [difficulties, state.answers]);
+
+  // Sticker book: beating the boss (and both bosses) at the end of a round.
+  useEffect(() => {
+    if (!boss || !state.done) return;
+    if (fight.bigBossBeaten) earnSticker('boss-ko');
+    if (fight.phase === 2 && fight.defeated) earnSticker('double-win');
+  }, [boss, state.done, fight]);
 
   // Keyboard: 1-4 or A-D also answer, for kids without a camera.
   useEffect(() => {
