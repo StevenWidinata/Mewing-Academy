@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { getLessons, LESSONS, type LessonTopic } from '../../shared/lessons';
 import { QUIZ_TOPICS } from '../../shared/questions';
 
-const RICH: LessonTopic[] = ['counting', 'math', 'skipcount', 'time', 'patterns', 'shapes'];
+const RICH = QUIZ_TOPICS as readonly LessonTopic[];
 
 describe('lessons', () => {
   it('has at least 3 modules for every quiz topic, with bilingual content', () => {
@@ -22,7 +22,7 @@ describe('lessons', () => {
     }
   });
 
-  it('rich topics teach step by step with visuals, mistakes and a quick check', () => {
+  it('every topic teaches step by step with visuals, mistakes and a quick check', () => {
     for (const topic of RICH) {
       for (const m of getLessons(topic)) {
         const where = `${topic}/${m.id}`;
