@@ -2069,3 +2069,68 @@ main > section > h1:first-child::after {
     order: 3;
   }
 }
+
+/* ---- Closet: locked rewards link to where you earn them ---- */
+.closet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+}
+.closet-tile {
+  font-size: 0.6rem;
+  text-transform: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.closet-tile--locked {
+  border-style: dashed;
+}
+.closet-fur-locked {
+  position: relative;
+  display: inline-block;
+  filter: grayscale(0.7);
+}
+.closet-fur-locked > span {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  font-size: 1rem;
+}
+.closet-how {
+  font-family: var(--font-read);
+  font-size: 0.75rem;
+}
+.closet-go {
+  font-size: 0.55rem;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.15s, opacity 0.15s;
+}
+.closet-tile--locked:hover .closet-go,
+.closet-tile--locked:focus-visible .closet-go {
+  max-height: 3em;
+  opacity: 1;
+}
+@media (hover: none) {
+  .closet-go {
+    max-height: none;
+    opacity: 1;
+  }
+}
+.mini-bar {
+  display: block;
+  width: 80%;
+  height: 8px;
+  background: var(--chip-bg);
+  border: 2px solid var(--ink);
+}
+.mini-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+}
