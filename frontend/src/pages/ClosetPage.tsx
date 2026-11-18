@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Mewy } from '../components/Mewy';
 import { StickerBook } from '../components/StickerBook';
+import { BagStrip } from '../components/BagStrip';
 import { FURS, ITEM_UNLOCK, ITEMS, correctIn, isFurUnlocked, isItemUnlocked, topicTitle } from '../state/rewards';
 import { useProgress } from '../state/progress';
 import { useSettings } from '../state/settings';
@@ -35,6 +36,7 @@ export function ClosetPage() {
         </div>
 
         <div style={{ flex: '1 1 320px', display: 'grid', gap: '1.5rem' }}>
+          <BagStrip />
           <div className="card">
             <h2 style={{ fontSize: '0.95rem' }}>{tr('closetItems')}</h2>
             <div className="closet-grid">

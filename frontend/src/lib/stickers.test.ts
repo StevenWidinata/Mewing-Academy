@@ -15,6 +15,7 @@ const empty: Progress = {
   playDays: [],
   shieldWeek: null,
   stickers: [],
+  bag: {},
 };
 
 describe('sticker book', () => {

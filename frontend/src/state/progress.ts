@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import type { Question, TopicId } from '../../../shared/types';
+import { addToBag, itemsForSession, welcomeGift, type Bag } from '../lib/bag';
 import { addLevelStars, levelStarsFrom, type LevelStars } from '../lib/levelStars';
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
@@ -27,10 +28,15 @@ export interface Progress {
   shieldWeek: string | null;
   /** Sticker book achievements earned, in order. */
   stickers: StickerId[];
+  /** Items earned by finishing rounds, spent in the closet shop. */
+  bag: Bag;
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [] };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {} };
+
+/** Set when an older save got its one-time welcome gift on this load (shown as a pop-up). */
+let gotWelcomeGift = false;
 
 function read(): Progress {
   try {
@@ -47,6 +53,11 @@ function read(): Progress {
       }
       // ...and stickers already earned (quietly, without a pop-up for each).
       if (!saved.stickers) merged.stickers = withEarnedStickers({ ...merged, stickers: [] });
+      // ...and a welcome gift of bag items for play from before the shop existed.
+      if (!saved.bag) {
+        merged.bag = welcomeGift(merged.byTopic, merged.sessions.filter((s) => s.mode === 'daily').length);
+        gotWelcomeGift = Object.keys(merged.bag).length > 0;
+      }
       return merged;
     }
   } catch {
@@ -59,7 +70,14 @@ let current = read();
 const listeners = new Set<() => void>();
 
 // Queue of newly earned rewards, shown one by one as pop-ups.
-let toasts: string[] = [];
+let toasts: string[] = gotWelcomeGift ? ['welcome:gift'] : [];
+if (gotWelcomeGift) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(current));
+  } catch {
+    /* ignore */
+  }
+}
 const toastListeners = new Set<() => void>();
 
 function write(raw: Progress) {
@@ -97,15 +115,18 @@ export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
   });
 }
 
-/** Saves a finished round (keeps the newest MAX_SESSIONS). */
-export function recordSession(session: Omit<SessionLog, 'at'>) {
-  if (!session.total) return;
+/** Saves a finished round (keeps the newest MAX_SESSIONS) and returns the bag items it earned. */
+export function recordSession(session: Omit<SessionLog, 'at'>): Bag {
+  if (!session.total) return {};
   const entry: SessionLog = { ...session, at: new Date().toISOString() };
+  const loot = itemsForSession(entry);
   write({
     ...current,
     sessions: [...current.sessions, entry].slice(-MAX_SESSIONS),
     levelStars: addLevelStars(current.levelStars, entry),
+    bag: addToBag(current.bag, loot),
   });
+  return loot;
 }
 
 /** Wrong answers are kept to practise later; a right answer clears that question. */

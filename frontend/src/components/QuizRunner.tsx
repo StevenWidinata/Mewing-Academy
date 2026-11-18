@@ -13,6 +13,7 @@ import type { VisionStatus } from '../vision/useVision';
 import { AnswerModeHint } from './AnswerModeHint';
 import { QuizProgress } from './QuizProgress';
 import { RoundRecap } from './RoundRecap';
+import { LootBanner } from './BagStrip';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
 import { Confetti } from './Confetti';
@@ -104,6 +105,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
             {fight.bigBossBeaten && <p className="chip" style={{ fontFamily: 'var(--font-read)' }}>💬 {(fight.phase === 2 && fight.defeated ? secondBoss : mainBoss).ko[lang]}</p>}
           </div>
         )}
+        <LootBanner loot={state.loot} />
         {renderDone(state.correctCount, total, restart)}
         <RoundRecap questions={questions} picks={state.picks} showFix={mode !== 'review'} />
       </section>

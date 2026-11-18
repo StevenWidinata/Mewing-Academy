@@ -10,6 +10,8 @@ import { Confetti } from '../components/Confetti';
 import { LevelPicker } from '../components/LevelPicker';
 import { MewyBuddy } from '../components/MewyBuddy';
 import { ModelPreloadBar } from '../components/ModelPreloadBar';
+import { LootBanner } from '../components/BagStrip';
+import type { Bag } from '../lib/bag';
 import { SpeakButton } from '../components/SpeakButton';
 import { SpriteScene } from '../components/Sprite';
 import { fetchMemoryRound } from '../lib/api';
@@ -28,6 +30,7 @@ export function MemoryPage() {
   const [phase, setPhase] = useState<Phase>('ready');
   const [qIndex, setQIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
+  const [loot, setLoot] = useState<Bag | null>(null);
   const [correct, setCorrect] = useState(0);
   const [countdown, setCountdown] = useState(0);
   const [hover, setHover] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 });
@@ -83,7 +86,7 @@ export function MemoryPage() {
     if (qIndex >= round.questions.length - 1) {
       setPhase('done');
       sfx.star(settings.sound);
-      recordSession(buildSession('memory', items));
+      setLoot(recordSession(buildSession('memory', items)));
     } else {
       setQIndex((i) => i + 1);
       setPicked(null);
@@ -120,6 +123,7 @@ export function MemoryPage() {
     return (
       <section style={{ textAlign: 'center' }}>
         <Confetti fire={correct >= 1 ? correct : 0} />
+        <LootBanner loot={loot} />
         <h1>⭐ {correct}/{round.questions.length}</h1>
         <AdaptiveTip
           level={level}

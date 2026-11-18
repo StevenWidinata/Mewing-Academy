@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Question } from '../../../shared/types';
 import { recordAnswer, recordSession, trackMistake } from '../state/progress';
 import type { Answer } from './boss';
+import type { Bag } from './bag';
 import { buildSession, type SessionMode } from './sessions';
 import { sfx } from './sound';
 import { useSettings } from '../state/settings';
@@ -19,9 +20,11 @@ export interface QuizState {
   answers: Answer[];
   /** The choice picked for each answered question (for the round recap). */
   picks: number[];
+  /** Bag items earned when the round finished. */
+  loot: Bag | null;
 }
 
-const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [], answers: [], picks: [] };
+const START: QuizState = { index: 0, picked: null, correctCount: 0, done: false, streak: 0, results: [], answers: [], picks: [], loot: null };
 
 /**
  * Side effects (saving progress, sounds, onFinish) run in the event handler,
@@ -66,14 +69,14 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
     if (state.done) return;
     if (state.index >= questions.length - 1) {
       sfx.star(settings.sound);
-      recordSession(
+      const loot = recordSession(
         buildSession(
           mode,
           questions.map((q, i) => ({ topic: q.topic, difficulty: q.difficulty, correct: !!state.answers[i]?.correct, byHand: !!state.answers[i]?.byHand })),
         ),
       );
       onFinish?.(state.correctCount, questions.length);
-      setState({ ...state, done: true });
+      setState({ ...state, done: true, loot });
     } else {
       setState({ ...state, index: state.index + 1, picked: null });
     }

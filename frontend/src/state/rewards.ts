@@ -118,6 +118,9 @@ export function describeUnlock(key: string, lang: Lang): string {
     const hb = HAND_BADGES.find((x) => x.tier === a);
     return `✋ ${lang === 'en' ? 'Hand Hero' : 'Pahlawan Tangan'} ${hb?.emoji ?? ''}`;
   }
+  if (kind === 'welcome') {
+    return lang === 'en' ? '🎁 Welcome gift: items for all your past play! Check your bag.' : '🎁 Hadiah sambutan: item untuk semua permainanmu sebelumnya! Lihat tasmu.';
+  }
   if (kind === 'sticker') {
     const st = STICKERS.find((x) => x.id === a);
     return st ? `📒 ${st.emoji} ${st.name[lang]}` : key;
