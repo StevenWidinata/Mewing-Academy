@@ -6,7 +6,7 @@ import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
 import { withEarnedStickers, type StickerId } from '../lib/stickers';
 import { addPlayDay, nextStreak } from '../lib/weekly';
-import { HAND_BONUS_EVERY, unlockKeys } from './rewards';
+import { HAND_BONUS_EVERY, canAfford, legacyOwned, payFrom, priceOf, unlockKeys, withBuyHints } from './rewards';
 
 export interface Progress {
   stars: number;
@@ -30,10 +30,14 @@ export interface Progress {
   stickers: StickerId[];
   /** Items earned by finishing rounds, spent in the closet shop. */
   bag: Bag;
+  /** Bought (or, from old saves, already unlocked) shop keys: `item:<id>`, `fur:<id>`. */
+  owned: string[];
+  /** Shop keys whose "you can buy" pop-up was already shown. */
+  buyHints: string[];
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {} };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [] };
 
 /** Set when an older save got its one-time welcome gift on this load (shown as a pop-up). */
 let gotWelcomeGift = false;
@@ -58,6 +62,9 @@ function read(): Progress {
         merged.bag = welcomeGift(merged.byTopic, merged.sessions.filter((s) => s.mode === 'daily').length);
         gotWelcomeGift = Object.keys(merged.bag).length > 0;
       }
+      // Shop: keep everything the old free rules had unlocked, without pop-ups.
+      if (!saved.owned) merged.owned = legacyOwned(merged);
+      if (!saved.buyHints) merged.buyHints = withBuyHints({ ...merged, buyHints: [] });
       return merged;
     }
   } catch {
@@ -81,7 +88,7 @@ if (gotWelcomeGift) {
 const toastListeners = new Set<() => void>();
 
 function write(raw: Progress) {
-  const next = { ...raw, stickers: withEarnedStickers(raw) };
+  const next = { ...raw, stickers: withEarnedStickers(raw), buyHints: withBuyHints(raw) };
   const before = new Set(unlockKeys(current));
   current = next;
   localStorage.setItem(KEY, JSON.stringify(next));
@@ -139,6 +146,14 @@ export function trackMistake(q: Question, correct: boolean) {
 export function earnSticker(id: StickerId) {
   if (current.stickers.includes(id)) return;
   write({ ...current, stickers: [...current.stickers, id] });
+}
+
+/** Buys a shop key with bag items. Returns false if it is owned already or not affordable. */
+export function buy(key: string): boolean {
+  const price = priceOf(key);
+  if (current.owned.includes(key) || !canAfford(current.bag, price)) return false;
+  write({ ...current, bag: payFrom(current.bag, price), owned: [...current.owned, key] });
+  return true;
 }
 
 export const DAILY_BONUS = 2;

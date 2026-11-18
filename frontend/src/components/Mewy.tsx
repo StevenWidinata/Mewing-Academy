@@ -14,6 +14,29 @@ const PINK = '#ff5ca8';
 const CYAN = '#27e0d8';
 const W = '#fdf6e3';
 const RED = '#e83b3b';
+const GOLD = '#ffcc00';
+const BLUE = '#3b7be8';
+const GREEN = '#3bb54a';
+const RAINBOW = ['#e83b3b', '#ff8a1f', '#ffcc00', '#3bb54a', '#3b7be8', '#9b4de0'];
+
+/** Capes and wings sit behind the head, so they are drawn first. */
+function drawItemBehind(item: ItemId, r: Rect) {
+  switch (item) {
+    case 'flipcape':
+      r(0, 7, 1, 15, RED); r(14, 7, 15, 15, BLUE); r(2, 13, 7, 15, RED); r(8, 13, 13, 15, BLUE);
+      break;
+    case 'herocape':
+      r(0, 6, 1, 15, RED); r(14, 6, 15, 15, RED); r(2, 13, 13, 15, RED);
+      break;
+    case 'wings':
+      RAINBOW.forEach((c, i) => {
+        r(0, 4 + i, 1, 4 + i, c);
+        r(14, 4 + i, 15, 4 + i, c);
+      });
+      r(1, 3, 1, 3, W); r(14, 3, 14, 3, W);
+      break;
+  }
+}
 
 function drawItem(item: ItemId, r: Rect) {
   switch (item) {
@@ -48,6 +71,50 @@ function drawItem(item: ItemId, r: Rect) {
     case 'bow':
       r(5, 13, 6, 14, CYAN); r(9, 13, 10, 14, CYAN); r(7, 13, 8, 14, '#1a8f8a');
       break;
+    case 'spacehelmet': {
+      const G = '#9fd8ff';
+      r(5, -3, 10, -3, G); r(3, -2, 4, -2, G); r(11, -2, 12, -2, G); r(2, -1, 2, 0, G); r(13, -1, 13, 0, G);
+      r(1, 1, 1, 11, G); r(14, 1, 14, 11, G); r(2, 12, 13, 13, '#c9c9d9'); r(7, -4, 8, -4, RED);
+      r(3, -1, 3, -1, W);
+      break;
+    }
+    case 'rainhat':
+      r(1, 2, 14, 2, GOLD); r(4, 0, 11, 1, GOLD); r(5, -1, 10, -1, GOLD); r(4, 1, 11, 1, '#e0a800');
+      break;
+    case 'racercap':
+      r(3, 1, 12, 2, RED); r(4, 0, 11, 0, RED); r(10, 2, 15, 2, K); r(7, 0, 8, 2, W);
+      break;
+    case 'fruithat':
+      r(5, -1, 10, 1, RED); r(6, -2, 9, -2, RED); r(4, 0, 4, 1, RED); r(11, 0, 11, 1, RED);
+      r(8, -4, 8, -3, '#7a4f2a'); r(9, -4, 10, -4, GREEN); r(6, -1, 6, -1, W);
+      break;
+    case 'doctor':
+      r(3, 2, 12, 2, '#d9d9e3'); r(6, -1, 9, 1, '#c0c0d0'); r(7, 0, 8, 0, W);
+      break;
+    case 'heartpin': {
+      const P = '#ff5ca8';
+      r(5, 13, 6, 13, P); r(9, 13, 10, 13, P); r(5, 14, 10, 14, P); r(6, 15, 9, 15, P); r(7, 13, 8, 13, P);
+      r(6, 13, 6, 13, W);
+      break;
+    }
+    case 'hopears':
+      r(5, -4, 6, 2, W); r(9, -4, 10, 2, W); r(5, -3, 5, 1, PINK); r(10, -3, 10, 1, PINK); r(4, 2, 11, 2, '#ff8a1f');
+      break;
+    case 'pocketwatch':
+      r(4, 13, 7, 13, GOLD); r(8, 13, 11, 15, GOLD); r(9, 14, 10, 14, W); r(9, 14, 9, 14, K);
+      break;
+    case 'flipcape':
+      r(5, 13, 10, 13, K);
+      break;
+    case 'crown':
+      r(3, 0, 12, 2, GOLD); r(3, -2, 3, -1, GOLD); r(7, -3, 8, -1, GOLD); r(12, -2, 12, -1, GOLD);
+      r(5, 1, 5, 1, RED); r(10, 1, 10, 1, CYAN); r(7, 1, 8, 1, PINK);
+      break;
+    case 'herocape':
+      r(6, 13, 9, 14, GOLD); r(7, 13, 8, 13, RED);
+      break;
+    case 'wings':
+      break;
   }
 }
 
@@ -74,6 +141,7 @@ export function Mewy({ size = 64, title = 'Mewy the mascot', fur, item, mood = '
     for (let y = y1; y <= y2; y++) for (let x = x1; x <= x2; x++) cells.push([x, y, c]);
   };
 
+  if (outfit) drawItemBehind(outfit, r);
   // Ears
   r(2, 1, 3, 3, f.main); r(12, 1, 13, 3, f.main); r(3, 2, 3, 3, PINK); r(12, 2, 12, 3, PINK);
   // Head
