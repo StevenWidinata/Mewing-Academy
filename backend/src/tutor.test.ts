@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { tutorReply } from '../../shared/tutor';
 import { findEntities, words } from '../../shared/tutor/smart';
 import { ENTITIES } from '../../shared/tutor/knowledge';
+import { MORE_FACTS } from '../../shared/tutor/more';
 
 const en = (q: string) => tutorReply(q, 'en');
 const id = (q: string) => tutorReply(q, 'id');
@@ -91,8 +92,17 @@ describe('smarter offline Ask Mewy', () => {
     expect(en('what is 3 + 4').lesson).toBe('math');
   });
 
+  it('offers "tell me more" for things it knows', () => {
+    const r = en('how many legs does a cat have');
+    expect(r.more?.text).toContain('32 muscles');
+    expect(r.more?.emoji).toBe('🐱');
+    expect(id('ceritakan tentang mars').more?.text).toContain('Olympus Mons');
+    expect(en('what is 3 + 4').more).toBeUndefined();
+  });
+
   it('every fact table entry is filled in both languages', () => {
     for (const e of ENTITIES) {
+      expect(MORE_FACTS[e.id]?.en && MORE_FACTS[e.id]?.id, `${e.id} needs a "tell me more" fact`).toBeTruthy();
       expect(e.names.length, e.id).toBeGreaterThan(0);
       expect(e.fact.en && e.fact.id, e.id).toBeTruthy();
       expect(e.name.en && e.name.id, e.id).toBeTruthy();

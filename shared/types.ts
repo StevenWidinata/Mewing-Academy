@@ -51,6 +51,8 @@ export interface TutorReply {
   confidence: number;
   /** Lesson that teaches more about the answer. */
   lesson?: Exclude<TopicId, 'memory'>;
+  /** "Tell me more!": a second fact about the same thing, with its picture. */
+  more?: { text: string; emoji: string };
 }
 
 export const COLORS: Record<ColorId, { hex: string; name: Text }> = {

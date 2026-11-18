@@ -13,6 +13,7 @@ import {
   type Entity,
 } from './knowledge';
 import { levenshtein } from './match';
+import { MORE_FACTS } from './more';
 
 /**
  * Smarter offline answers: find the THING the child asks about (dog, banana,
@@ -147,6 +148,12 @@ const reply = (text: string, intent: string, confidence: number, lesson?: Exclud
   lesson,
 });
 
+/** Adds the "Tell me more!" fact for the thing the answer is about. */
+function withMore(r: TutorReply, e: Entity, lang: Lang): TutorReply {
+  const more = MORE_FACTS[e.id];
+  return more ? { ...r, more: { text: more[lang], emoji: e.emoji } } : r;
+}
+
 function sequence(toks: string[], lang: Lang): TutorReply | null {
   const after = has(toks, AFTER);
   const before = has(toks, BEFORE);
@@ -229,7 +236,7 @@ export function smartReply(text: string, lang: Lang): TutorReply | null {
   for (const q of types) {
     for (const e of entities) {
       const a = answerFor(e, q, lang);
-      if (a) return reply(`${a} ${q === 'count' ? '' : e.fact[lang]}`.trim(), `${KIND_LESSON[e.kind]}:${e.id}`, 1, KIND_LESSON[e.kind]);
+      if (a) return withMore(reply(`${a} ${q === 'count' ? '' : e.fact[lang]}`.trim(), `${KIND_LESSON[e.kind]}:${e.id}`, 1, KIND_LESSON[e.kind]), e, lang);
     }
   }
 
@@ -252,7 +259,7 @@ export function smartReply(text: string, lang: Lang): TutorReply | null {
     const e = entities[0];
     const S = lang === 'en' ? subjEn(e) : subjId(e);
     const lead = e.kind === 'body' || e.kind === 'weather' || e.kind === 'space' ? '' : `${e.emoji} ${S}! `;
-    return reply(`${lead}${e.fact[lang]}`, `${KIND_LESSON[e.kind]}:${e.id}`, types.length ? 0.6 : 0.85, KIND_LESSON[e.kind]);
+    return withMore(reply(`${lead}${e.fact[lang]}`, `${KIND_LESSON[e.kind]}:${e.id}`, types.length ? 0.6 : 0.85, KIND_LESSON[e.kind]), e, lang);
   }
 
   // 5. "What do we smell with?"

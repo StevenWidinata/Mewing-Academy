@@ -13,6 +13,7 @@ interface Msg {
   confidence?: number;
   intent?: string;
   lesson?: TopicMeta['id'];
+  more?: { text: string; emoji: string };
 }
 
 /** How Mewy shows how sure it is, without a number meter. */
@@ -49,7 +50,7 @@ export function TutorPage() {
     setInput('');
     setBusy(true);
     const reply = await askTutor(text, settings.lang);
-    setMessages((m) => [...m, { from: 'mewy', text: reply.reply, confidence: reply.confidence, intent: reply.intent, lesson: reply.lesson }]);
+    setMessages((m) => [...m, { from: 'mewy', text: reply.reply, confidence: reply.confidence, intent: reply.intent, lesson: reply.lesson, more: reply.more }]);
     setBusy(false);
     requestAnimationFrame(() => listRef.current?.scrollTo(0, listRef.current.scrollHeight));
   };
@@ -105,6 +106,7 @@ export function TutorPage() {
               ) : (
                 m.text
               )}
+              {m.from === 'mewy' && m.more && <TellMore more={m.more} />}
               {m.from === 'mewy' && m.lesson && (
                 <div style={{ marginTop: 8 }}>
                   <Link to={`/lessons/${m.lesson}`} className="chip tutor-lesson">
@@ -132,5 +134,25 @@ export function TutorPage() {
         <button type="submit" className="btn" disabled={busy || !input.trim()}>{tr('tutorSend')}</button>
       </form>
     </section>
+  );
+}
+
+/** "Tell me more!": opens a second fact with a big picture under Mewy's answer. */
+function TellMore({ more }: { more: { text: string; emoji: string } }) {
+  const { tr } = useSettings();
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginTop: 8 }}>
+      {open ? (
+        <div className="tell-more">
+          <span className="tell-more__emoji" aria-hidden="true">{more.emoji}</span>
+          <span>{more.text}</span>
+        </div>
+      ) : (
+        <button type="button" className="btn btn--ghost tutor-chip" onClick={() => setOpen(true)}>
+          ✨ {tr('tutorTellMore')}
+        </button>
+      )}
+    </div>
   );
 }
