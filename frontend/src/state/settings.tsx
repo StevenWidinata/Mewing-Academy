@@ -26,6 +26,8 @@ export interface Settings {
   mewyItem: ItemId | null;
   /** Questions per Hand Quiz round. */
   roundSize: RoundSize;
+  /** The first-time "show 1, 2, 3, 4 fingers" camera practice was finished or skipped. */
+  cameraTutorialDone: boolean;
 }
 
 const DEFAULTS: Settings = {
@@ -43,6 +45,7 @@ const DEFAULTS: Settings = {
   mewyFur: 'yellow',
   mewyItem: null,
   roundSize: 5,
+  cameraTutorialDone: false,
 };
 
 const KEY = 'mewing.settings.v1';

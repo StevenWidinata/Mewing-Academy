@@ -102,6 +102,15 @@ export function SettingsPage() {
         <Row label={`🔊 ${tr('settingsAutoRead')}`}>
           <Toggle on={settings.autoRead} onToggle={() => set('autoRead', !settings.autoRead)} labelOn={tr('on')} labelOff={tr('off')} />
         </Row>
+        <Row label={`📷 ${tr('settingsCamTutorial')}`}>
+          {settings.cameraTutorialDone ? (
+            <button type="button" className="btn btn--ghost" onClick={() => set('cameraTutorialDone', false)}>
+              {tr('settingsCamTutorialAgain')}
+            </button>
+          ) : (
+            <span style={{ fontFamily: 'var(--font-read)' }}>{tr('settingsCamTutorialQueued')}</span>
+          )}
+        </Row>
       </div>
       <ParentsLinkCard />
     </section>

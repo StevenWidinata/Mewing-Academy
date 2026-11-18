@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { sfx } from '../lib/sound';
 import { useSettings } from '../state/settings';
-import { classify, type Classification } from '../vision/fingers';
+import { classify, poseFor, type Classification } from '../vision/fingers';
 import { LETTERS } from './ChoiceGrid';
 import { HandPose } from './HandPose';
 import { useVision, type VisionFrame, type VisionStatus } from '../vision/useVision';
 
 const HOLD_MS = 1200; // how long a finger pose must be held to confirm
+/** First-time camera practice: show 1, 2, 3, then 4 fingers. */
+const TUTORIAL_STEPS = 4;
 
 interface Props {
   choiceCount: number;
@@ -25,7 +28,15 @@ const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false
 const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
 
 export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false, onStatusChange }: Props) {
-  const { tr } = useSettings();
+  const { tr, settings, set } = useSettings();
+  // null = no practice; 0..3 = the finger count being practised; 4 = finished.
+  const [tutorial, setTutorial] = useState<number | null>(null);
+  const tutorialRef = useRef<number | null>(null);
+  const [tutorialProgress, setTutorialProgress] = useState(0);
+  const soundRef = useRef(settings.sound);
+  useEffect(() => {
+    soundRef.current = settings.sound;
+  }, [settings.sound]);
   // Only re-render when what we show changes, not on every camera frame.
   const [readout, setReadout] = useState<Readout>(EMPTY_READOUT);
   const lastKey = useRef(readoutKey(EMPTY_READOUT));
@@ -46,8 +57,49 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
     if (!paused) confirmed.current = false;
   }, [paused]);
 
+  // After practice, wait for the hand to drop once so a held pose is not taken as an answer.
+  const needsRelease = useRef(false);
+  const finishTutorial = useCallback(() => {
+    needsRelease.current = true;
+    tutorialRef.current = null;
+    setTutorial(null);
+    set('cameraTutorialDone', true);
+  }, [set]);
+
   const handleFrame = useCallback(
     (frame: VisionFrame) => {
+      const step = tutorialRef.current;
+      if (step != null) {
+        // Practice mode: answers do not count yet.
+        onHover?.(null, 0);
+        const result = classify(frame.hand?.landmarks?.[0], TUTORIAL_STEPS);
+        showReadout(result);
+        if (step >= TUTORIAL_STEPS) return;
+        if (result.answer !== step) {
+          candidate.current = null;
+          setTutorialProgress(0);
+          return;
+        }
+        if (candidate.current !== step) {
+          candidate.current = step;
+          holdStart.current = performance.now();
+        }
+        const progress = Math.min(1, (performance.now() - holdStart.current) / HOLD_MS);
+        setTutorialProgress(Math.round(progress * 10) / 10);
+        if (progress >= 1) {
+          candidate.current = null;
+          setTutorialProgress(0);
+          tutorialRef.current = step + 1;
+          setTutorial(step + 1);
+          if (step + 1 >= TUTORIAL_STEPS) {
+            sfx.star(soundRef.current);
+            window.setTimeout(finishTutorial, 1800);
+          } else {
+            sfx.correct(soundRef.current);
+          }
+        }
+        return;
+      }
       if (pausedRef.current || confirmed.current) {
         onHover?.(null, 0);
         return;
@@ -57,6 +109,11 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
       const { answer } = result;
       showReadout(result);
 
+      if (needsRelease.current) {
+        if (answer == null) needsRelease.current = false;
+        onHover?.(null, 0);
+        return;
+      }
       if (answer == null) {
         candidate.current = null;
         onHover?.(null, 0);
@@ -75,13 +132,25 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         onConfirm(answer);
       }
     },
-    [choiceCount, onConfirm, onHover, showReadout],
+    [choiceCount, onConfirm, onHover, showReadout, finishTutorial],
   );
 
   const { videoRef, status, start, stop } = useVision({ onFrame: handleFrame });
   useEffect(() => {
     onStatusChange?.(status);
   }, [status, onStatusChange]);
+
+  // Start the practice the first time the camera works on this device.
+  useEffect(() => {
+    if (status === 'running' && !settings.cameraTutorialDone && tutorialRef.current == null) {
+      tutorialRef.current = 0;
+      setTutorial(0);
+    }
+    if (status !== 'running' && tutorialRef.current != null) {
+      tutorialRef.current = null;
+      setTutorial(null);
+    }
+  }, [status, settings.cameraTutorialDone]);
 
   return (
     <div className="pixel-panel" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
@@ -108,6 +177,29 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
                       : status === 'error'
                         ? tr('cameraError')
                         : tr('answerWithHand')}
+          </div>
+        )}
+        {status === 'running' && tutorial != null && (
+          <div className="cam-tutorial" role="status" aria-live="polite">
+            {tutorial < TUTORIAL_STEPS ? (
+              <>
+                <p className="cam-tutorial__title">
+                  {tutorial === 0 ? tr('camTutorialStart') : tr('camTutorialNow')} {tutorial + 1}{' '}
+                  {tutorial === 0 ? tr('camTutorialFinger') : tr('camTutorialFingers')}
+                </p>
+                <HandPose pose={poseFor(tutorial)} size={56} />
+                <span className="cam-tutorial__bar" aria-hidden="true">
+                  <span style={{ width: `${tutorialProgress * 100}%` }} />
+                </span>
+                <ol className="cam-tutorial__dots" aria-label={`${tutorial + 1} / ${TUTORIAL_STEPS}`}>
+                  {Array.from({ length: TUTORIAL_STEPS }, (_, i) => (
+                    <li key={i} className={i < tutorial ? 'is-done' : i === tutorial ? 'is-now' : undefined} />
+                  ))}
+                </ol>
+              </>
+            ) : (
+              <p className="cam-tutorial__title">🎉 {tr('camTutorialDone')}</p>
+            )}
           </div>
         )}
         {status === 'running' && (
@@ -159,7 +251,12 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         </p>
       )}
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {status === 'running' && tutorial != null && tutorial < TUTORIAL_STEPS && (
+          <button type="button" className="btn btn--ghost" onClick={finishTutorial}>
+            {tr('camTutorialSkip')}
+          </button>
+        )}
         {status === 'running' ? (
           <button type="button" className="btn btn--ghost" onClick={stop}>
             {tr('cameraStop')}

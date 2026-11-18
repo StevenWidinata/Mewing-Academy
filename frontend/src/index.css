@@ -2424,3 +2424,54 @@ main > section > h1:first-child::after {
   text-align: center;
   background: var(--panel-glow);
 }
+
+/* ---- First-time camera practice overlay ---- */
+.cam-tutorial {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  background: rgba(12, 8, 32, 0.82);
+  color: #fdf6e3;
+  text-align: center;
+}
+.cam-tutorial__title {
+  margin: 0;
+  font-family: var(--font-read);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.cam-tutorial__bar {
+  display: block;
+  width: 70%;
+  height: 8px;
+  background: #0c0820;
+  border: 2px solid #fdf6e3;
+}
+.cam-tutorial__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transition: width 0.1s linear;
+}
+.cam-tutorial__dots {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cam-tutorial__dots li {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fdf6e3;
+}
+.cam-tutorial__dots li.is-done {
+  background: var(--green);
+}
+.cam-tutorial__dots li.is-now {
+  background: var(--yellow);
+}
