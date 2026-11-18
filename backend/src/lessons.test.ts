@@ -27,7 +27,11 @@ describe('lessons', () => {
       for (const m of getLessons(topic)) {
         const where = `${topic}/${m.id}`;
         expect(m.steps.length, where).toBeGreaterThanOrEqual(2);
-        for (const s of m.steps) expect(Boolean(s.visual?.length || s.emoji), `${where} step needs a picture`).toBe(true);
+        for (const s of m.steps) {
+          expect(Boolean(s.visual?.length || s.emoji), `${where} step needs a picture`).toBe(true);
+          expect(s.more?.text.en && s.more.text.id, `${where} step needs "want to know more?"`).toBeTruthy();
+          expect(Boolean(s.more?.emoji || s.more?.figure), `${where} "more" needs a picture`).toBe(true);
+        }
         expect(m.mistakes?.length ?? 0, where).toBeGreaterThanOrEqual(1);
         expect(m.mistakes!.length, where).toBeLessThanOrEqual(2);
         for (const x of m.mistakes!) for (const t of [x.wrong, x.right, x.why]) expect(t.en && t.id, where).toBeTruthy();

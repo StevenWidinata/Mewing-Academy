@@ -1,3 +1,4 @@
+import { LESSON_MORE } from './lessonsMore';
 import { NUMBER_LESSONS } from './lessonsNumbers';
 import { WORLD_LESSONS } from './lessonsWorld';
 import type { SpriteGroup, Text, TopicId } from './types';
@@ -72,10 +73,14 @@ export interface LessonModule {
 export type LessonTopic = Exclude<TopicId, 'memory'>;
 
 /** Every topic's lesson road: number topics + world topics. */
-export const LESSONS: Record<LessonTopic, LessonModule[]> = {
-  ...NUMBER_LESSONS,
-  ...WORLD_LESSONS,
-};
+const withMore = (m: LessonModule): LessonModule => ({
+  ...m,
+  steps: m.steps.map((s, i) => (s.more ? s : { ...s, more: LESSON_MORE[m.id]?.[i] })),
+});
+
+export const LESSONS: Record<LessonTopic, LessonModule[]> = Object.fromEntries(
+  Object.entries({ ...NUMBER_LESSONS, ...WORLD_LESSONS }).map(([topic, mods]) => [topic, mods.map(withMore)]),
+) as Record<LessonTopic, LessonModule[]>;
 
 export function getLessons(topic: LessonTopic): LessonModule[] {
   return LESSONS[topic];
