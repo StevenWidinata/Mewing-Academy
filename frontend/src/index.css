@@ -2527,3 +2527,22 @@ main > section > h1:first-child::after {
 .recap__right {
   font-weight: 700;
 }
+
+/* ---- World map: Easy / Medium / Hard stars under each island ---- */
+.island__stars {
+  margin-top: 3px;
+  display: flex;
+  gap: 1px;
+  padding: 0 4px;
+  background: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+.island__stars > span {
+  color: #5d5680;
+}
+.island__stars > span.is-on {
+  color: var(--yellow);
+  text-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
+}

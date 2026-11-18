@@ -6,7 +6,15 @@ import { BADGES, correctIn } from '../state/rewards';
 import { useSettings } from '../state/settings';
 import { Mewy } from './Mewy';
 
-const ROW_H = 150;
+const ROW_H = 160;
+const LEVEL_NAMES = { en: ['Easy', 'Medium', 'Hard'], id: ['Mudah', 'Sedang', 'Sulit'] };
+
+/** Screen-reader text like "Level stars: Easy, Hard". */
+function levelLabel(levels: number[], lang: 'en' | 'id'): string {
+  const head = lang === 'en' ? 'Level stars' : 'Bintang tingkat';
+  const none = lang === 'en' ? 'none yet' : 'belum ada';
+  return `${head}: ${levels.length ? levels.map((d) => LEVEL_NAMES[lang][d - 1]).join(', ') : none}`;
+}
 const CLEAR_AT = BADGES[0].need; // bronze badge = level cleared
 const ISLAND_COLORS = ['#3bb54a', '#27e0d8', '#ffcc00', '#ff8a1f', '#ff5ca8', '#9b4de0'];
 
@@ -52,6 +60,13 @@ export function WorldMap() {
           <span className="island__emoji" aria-hidden="true">{s.t.emoji}</span>
           {s.cleared && <span className="island__flag" aria-label={settings.lang === 'en' ? 'cleared' : 'selesai'}>🚩</span>}
           <span className="island__name">{s.t.title[settings.lang]}</span>
+          <span className="island__stars" aria-label={levelLabel(progress.levelStars[s.t.id] ?? [], settings.lang)}>
+            {([1, 2, 3] as const).map((d) => (
+              <span key={d} className={(progress.levelStars[s.t.id] ?? []).includes(d) ? 'is-on' : undefined} aria-hidden="true">
+                ★
+              </span>
+            ))}
+          </span>
         </Link>
       ))}
       <div className="map-mewy" style={{ left: `${mewy.x}%`, top: mewy.y - 64 }} aria-hidden="true">

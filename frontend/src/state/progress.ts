@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import type { Question, TopicId } from '../../../shared/types';
+import { addLevelStars, levelStarsFrom, type LevelStars } from '../lib/levelStars';
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
 import { HAND_BONUS_EVERY, unlockKeys } from './rewards';
@@ -16,15 +17,23 @@ export interface Progress {
   mistakes: Question[];
   /** Right answers given with the camera (Hand Hero). */
   handAnswers: number;
+  /** World map: levels cleared with 80%+ per topic. */
+  levelStars: LevelStars;
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0 };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {} };
 
 function read(): Progress {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...EMPTY, ...(JSON.parse(raw) as Partial<Progress>) };
+    if (raw) {
+      const saved = JSON.parse(raw) as Partial<Progress>;
+      const merged = { ...EMPTY, ...saved };
+      // Saves from before level stars existed: rebuild them from the history.
+      if (!saved.levelStars) merged.levelStars = levelStarsFrom(merged.sessions);
+      return merged;
+    }
   } catch {
     /* ignore */
   }
@@ -82,7 +91,11 @@ export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
 export function recordSession(session: Omit<SessionLog, 'at'>) {
   if (!session.total) return;
   const entry: SessionLog = { ...session, at: new Date().toISOString() };
-  write({ ...current, sessions: [...current.sessions, entry].slice(-MAX_SESSIONS) });
+  write({
+    ...current,
+    sessions: [...current.sessions, entry].slice(-MAX_SESSIONS),
+    levelStars: addLevelStars(current.levelStars, entry),
+  });
 }
 
 /** Wrong answers are kept to practise later; a right answer clears that question. */

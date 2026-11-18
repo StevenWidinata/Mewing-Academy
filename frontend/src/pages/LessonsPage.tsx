@@ -13,6 +13,11 @@ export function LessonsPage() {
           : 'Pilih pulau untuk belajar, lalu main Kuis Tangan untuk berlatih! Dapatkan 5 jawaban benar di satu topik untuk menancapkan bendera 🚩.'}
       </p>
       <WorldMap />
+      <p className="chip" style={{ fontFamily: 'var(--font-read)', marginTop: '0.5rem' }}>
+        {settings.lang === 'en'
+          ? '★★★ Score 80% or more in a quiz round to earn the Easy, Medium and Hard stars of an island!'
+          : '★★★ Dapatkan nilai 80% atau lebih dalam satu ronde kuis untuk bintang Mudah, Sedang, dan Sulit di setiap pulau!'}
+      </p>
     </section>
   );
 }
