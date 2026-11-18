@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useSettings } from '../state/settings';
 
 interface Particle {
@@ -72,11 +73,14 @@ export function Confetti({ fire }: { fire: number }) {
   }, [fire, settings.reduceMotion]);
 
   if (settings.reduceMotion) return null;
-  return (
+  // Rendered into <body>: inside a transformed parent, "fixed" would act like
+  // "absolute" and push the page wider than the screen.
+  return createPortal(
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 50, width: '100vw', height: '100vh' }}
-    />
+      style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 50, width: '100%', height: '100%' }}
+    />,
+    document.body,
   );
 }
