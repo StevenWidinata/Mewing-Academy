@@ -35,6 +35,20 @@ export const FURS: { id: FurId; stars: number; name: Text; main: string; shade: 
   { id: 'calico', stars: 100, name: { en: 'Calico', id: 'Belang Tiga' }, main: '#f7f3ea', shade: '#d9d2c3' },
 ];
 
+/** Hand Hero: right answers made with the camera. */
+export const HAND_BONUS_EVERY = 5;
+export const HAND_BADGES: { tier: BadgeTier; need: number; emoji: string }[] = [
+  { tier: 'bronze', need: 5, emoji: '🥉' },
+  { tier: 'silver', need: 25, emoji: '🥈' },
+  { tier: 'gold', need: 50, emoji: '🥇' },
+];
+
+export function handBadge(n: number) {
+  let best: (typeof HAND_BADGES)[number] | null = null;
+  for (const b of HAND_BADGES) if (n >= b.need) best = b;
+  return best;
+}
+
 export const BADGES: { tier: BadgeTier; need: number; emoji: string }[] = [
   { tier: 'bronze', need: 5, emoji: '🥉' },
   { tier: 'silver', need: 15, emoji: '🥈' },
@@ -70,6 +84,10 @@ export function unlockKeys(p: Progress): string[] {
   for (const [t, s] of Object.entries(p.byTopic)) {
     for (const b of BADGES) if ((s?.correct ?? 0) >= b.need) keys.push(`badge:${t}:${b.tier}`);
   }
+  const hands = p.handAnswers ?? 0;
+  for (const b of HAND_BADGES) if (hands >= b.need) keys.push(`hand:${b.tier}`);
+  // Only the latest bonus, so each new one pops up once.
+  if (hands >= HAND_BONUS_EVERY) keys.push(`handbonus:${Math.floor(hands / HAND_BONUS_EVERY)}`);
   return keys;
 }
 
@@ -87,6 +105,13 @@ export function describeUnlock(key: string, lang: Lang): string {
   if (kind === 'fur') {
     const f = FURS.find((x) => x.id === a);
     return f ? `🐱 ${f.name[lang]}` : key;
+  }
+  if (kind === 'hand') {
+    const hb = HAND_BADGES.find((x) => x.tier === a);
+    return `✋ ${lang === 'en' ? 'Hand Hero' : 'Pahlawan Tangan'} ${hb?.emoji ?? ''}`;
+  }
+  if (kind === 'handbonus') {
+    return lang === 'en' ? `✋ +1 ⭐ Hand Hero bonus!` : `✋ +1 ⭐ bonus Pahlawan Tangan!`;
   }
   const badge = BADGES.find((x) => x.tier === b);
   return `${badge?.emoji ?? '🏅'} ${topicTitle(a, lang)}`;

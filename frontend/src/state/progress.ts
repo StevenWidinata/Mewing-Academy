@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import type { Question, TopicId } from '../../../shared/types';
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
-import { unlockKeys } from './rewards';
+import { HAND_BONUS_EVERY, unlockKeys } from './rewards';
 
 export interface Progress {
   stars: number;
@@ -14,10 +14,12 @@ export interface Progress {
   sessions: SessionLog[];
   /** Missed questions to practise again in "Fix my mistakes" (oldest first). */
   mistakes: Question[];
+  /** Right answers given with the camera (Hand Hero). */
+  handAnswers: number;
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [] };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0 };
 
 function read(): Progress {
   try {
@@ -55,8 +57,11 @@ const dayBefore = (d: string) => {
   return date.toISOString().slice(0, 10);
 };
 
-export function recordAnswer(topic: TopicId, correct: boolean) {
+export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
   const prev = current;
+  // Hand Hero: every HAND_BONUS_EVERY right camera answers earn 1 bonus star.
+  const handAnswers = prev.handAnswers + (correct && byHand ? 1 : 0);
+  const handBonus = handAnswers > prev.handAnswers && handAnswers % HAND_BONUS_EVERY === 0 ? 1 : 0;
   const topicStats = prev.byTopic[topic] ?? { correct: 0, total: 0 };
   const now = today();
   let streak = prev.streak;
@@ -65,7 +70,8 @@ export function recordAnswer(topic: TopicId, correct: boolean) {
   }
   write({
     ...prev,
-    stars: prev.stars + (correct ? 1 : 0),
+    stars: prev.stars + (correct ? 1 : 0) + handBonus,
+    handAnswers,
     byTopic: { ...prev.byTopic, [topic]: { correct: topicStats.correct + (correct ? 1 : 0), total: topicStats.total + 1 } },
     lastPlayed: now,
     streak,

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { TOPICS } from '../../../shared/types';
 import { ParentsLinkCard } from '../components/ParentsLinkCard';
 import { useProgress } from '../state/progress';
-import { badgeFor, nextBadge, topicTitle } from '../state/rewards';
+import { HAND_BONUS_EVERY, badgeFor, handBadge, nextBadge, topicTitle } from '../state/rewards';
 import { useSettings } from '../state/settings';
 
 export function ProgressPage() {
@@ -23,6 +23,14 @@ export function ProgressPage() {
           <div style={{ fontSize: '2rem' }}>🔥</div>
           <div style={{ fontFamily: 'var(--font-pixel)', fontSize: '1.5rem', color: 'var(--accent)' }}>{progress.streak}</div>
           <div style={{ fontFamily: 'var(--font-read)' }}>{tr('progressStreak')}</div>
+        </div>
+        <div className="pixel-panel" style={{ textAlign: 'center', flex: 1, minWidth: 160 }}>
+          <div style={{ fontSize: '2rem' }}>✋{handBadge(progress.handAnswers)?.emoji ?? ''}</div>
+          <div style={{ fontFamily: 'var(--font-pixel)', fontSize: '1.5rem', color: 'var(--accent)' }}>{progress.handAnswers}</div>
+          <div style={{ fontFamily: 'var(--font-read)' }}>{tr('handHero')}</div>
+          <div style={{ fontFamily: 'var(--font-read)', fontSize: '0.8rem', opacity: 0.85 }}>
+            {tr('handHeroNext')}: {HAND_BONUS_EVERY - (progress.handAnswers % HAND_BONUS_EVERY)}
+          </div>
         </div>
       </div>
 

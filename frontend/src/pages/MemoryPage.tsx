@@ -72,7 +72,7 @@ export function MemoryPage() {
         setCorrect((c) => c + 1);
         sfx.correct(settings.sound);
       } else sfx.wrong(settings.sound);
-      recordAnswer('memory', isRight);
+      recordAnswer('memory', isRight, byHand);
     },
     [picked, round, qIndex, settings.sound],
   );

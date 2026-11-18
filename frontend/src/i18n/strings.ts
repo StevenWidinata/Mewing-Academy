@@ -142,6 +142,8 @@ export const STRINGS = {
   progressEmpty: { en: 'Play a game to earn your first star!', id: 'Main dulu untuk dapat bintang pertama!' },
   progressTotal: { en: 'Total stars', id: 'Total bintang' },
   progressReset: { en: 'Clear my stars', id: 'Hapus bintangku' },
+  handHero: { en: 'Hand Hero answers', id: 'Jawaban Pahlawan Tangan' },
+  handHeroNext: { en: 'Right camera answers to the next +1 ⭐', id: 'Jawaban kamera benar menuju +1 ⭐ berikutnya' },
   progressStreak: { en: 'Day streak', id: 'Hari beruntun' },
 
   // Closet / rewards

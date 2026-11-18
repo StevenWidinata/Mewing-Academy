@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { Progress } from './progress';
-import { badgeFor, isFurUnlocked, isItemUnlocked, nextBadge, unlockKeys } from './rewards';
+import { badgeFor, describeUnlock, handBadge, isFurUnlocked, isItemUnlocked, nextBadge, unlockKeys } from './rewards';
 
-const p = (stars: number, byTopic: Progress['byTopic'] = {}): Progress => ({ stars, byTopic, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [] });
+const p = (stars: number, byTopic: Progress['byTopic'] = {}): Progress => ({ stars, byTopic, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0 });
 
 describe('rewards', () => {
   it('unlocks a topic outfit after 5 correct answers in that topic', () => {
@@ -33,5 +33,15 @@ describe('rewards', () => {
     expect(keys).toContain('fur:orange');
     expect(keys).toContain('badge:math:bronze');
     expect(keys).not.toContain('fur:yellow');
+  });
+
+  it('Hand Hero: badge tiers and one pop-up per bonus star', () => {
+    const keys = unlockKeys({ ...p(0), handAnswers: 12 });
+    expect(keys).toContain('hand:bronze');
+    expect(keys).not.toContain('hand:silver');
+    expect(keys.filter((k) => k.startsWith('handbonus:'))).toEqual(['handbonus:2']);
+    expect(handBadge(4)).toBeNull();
+    expect(handBadge(25)?.tier).toBe('silver');
+    expect(describeUnlock('handbonus:2', 'en')).toContain('+1');
   });
 });

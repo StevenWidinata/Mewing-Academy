@@ -45,7 +45,7 @@ export function useQuiz(questions: Question[], onFinish?: (correct: number, tota
       if (state.picked != null || state.done) return;
       const q = questions[state.index];
       const correct = choice === q.answer;
-      recordAnswer(q.topic, correct);
+      recordAnswer(q.topic, correct, byHand);
       trackMistake(q, correct);
       if (correct) sfx.correct(settings.sound);
       else sfx.wrong(settings.sound);
