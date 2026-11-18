@@ -16,6 +16,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
   counting: [
     {
       id: 'count-1',
+      tryIt: { figure: 'tenframe', config: { target: 5 }, prompt: T('Put 5 counters in the frame. Touch each box once!', 'Taruh 5 penghitung di bingkai. Sentuh tiap kotak sekali!') },
       title: T('1. Count to 5', '1. Berhitung sampai 5'),
       goal: T('Touch and say each number.', 'Sentuh dan sebut tiap angka.'),
       steps: [
@@ -36,6 +37,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'count-2',
+      tryIt: { figure: 'tenframe', config: { target: 7 }, prompt: T('Make 7. Is 7 more or fewer than a full row of 5?', 'Buat 7. Apakah 7 lebih banyak atau lebih sedikit dari satu baris penuh berisi 5?') },
       title: T('2. More or Fewer', '2. Lebih Banyak atau Lebih Sedikit'),
       goal: T('Compare two groups.', 'Membandingkan dua kelompok.'),
       steps: [
@@ -59,6 +61,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'count-3',
+      tryIt: { figure: 'hopper', config: { step: 1, max: 10 }, prompt: T('Hop one number at a time and say each number out loud.', 'Loncat satu angka setiap kali dan ucapkan angkanya keras-keras.') },
       title: T('3. What Comes Next', '3. Angka Berikutnya'),
       goal: T('Know the number order.', 'Tahu urutan angka.'),
       steps: [
@@ -82,6 +85,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
   math: [
     {
       id: 'math-1',
+      tryIt: { figure: 'apples', config: { op: 'plus', a: 2, b: 1 }, prompt: T('Change the two groups of apples and count them all together.', 'Ubah dua kelompok apel dan hitung semuanya bersama.') },
       title: T('1. Adding (+)', '1. Menambah (+)'),
       goal: T('Put groups together.', 'Menggabungkan kelompok.'),
       steps: [
@@ -105,7 +109,8 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'math-2',
-      title: T('2. Taking Away (−)', '2. Mengurang (−)'),
+      tryIt: { figure: 'apples', config: { op: 'minus', start: 5 }, prompt: T('Eat 2 apples by tapping them. How many are left?', 'Makan 2 apel dengan mengetuknya. Sisa berapa?') },
+      title: T('2. Taking Away (-)', '2. Mengurang (-)'),
       goal: T('Take some away and count what is left.', 'Ambil sebagian dan hitung sisanya.'),
       steps: [
         step(T('Start with 5 balls. Take away 2. Count what is left.', 'Mulai dengan 5 bola. Ambil 2. Hitung sisanya.'), {
@@ -129,6 +134,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'math-3',
+      tryIt: { figure: 'apples', config: { op: 'plus', a: 3, b: 2 }, prompt: T('Story time: 3 apples, then 2 more. Show it with the apples!', 'Cerita: 3 apel, lalu dapat 2 lagi. Tunjukkan dengan apel!') },
       title: T('3. Story Problems', '3. Soal Cerita'),
       goal: T('Find the maths in a story.', 'Menemukan hitungan dalam cerita.'),
       steps: [
@@ -152,6 +158,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
   skipcount: [
     {
       id: 'skip-1',
+      tryIt: { figure: 'hopper', config: { step: 10, max: 100 }, prompt: T('Help the frog hop by 10s all the way to 100!', 'Bantu katak meloncat 10-10 sampai ke 100!') },
       title: T('1. Count by 10s', '1. Hitung Loncat 10'),
       goal: T('Big jumps!', 'Loncatan besar!'),
       steps: [
@@ -169,6 +176,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'skip-2',
+      tryIt: { figure: 'hopper', config: { step: 5, max: 50 }, prompt: T('Hop by 5s, like counting fingers on hands.', 'Loncat 5-5, seperti menghitung jari tangan.') },
       title: T('2. Count by 5s', '2. Hitung Loncat 5'),
       goal: T('Like the fingers on a hand.', 'Seperti jari di satu tangan.'),
       steps: [
@@ -189,6 +197,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'skip-3',
+      tryIt: { figure: 'hopper', config: { step: 2, max: 20 }, prompt: T('Hop by 2s, like counting pairs of shoes.', 'Loncat 2-2, seperti menghitung pasang sepatu.') },
       title: T('3. Count by 2s', '3. Hitung Loncat 2'),
       goal: T('Pairs of things.', 'Benda berpasangan.'),
       steps: [
@@ -213,6 +222,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
   time: [
     {
       id: 'time-1',
+      tryIt: { figure: 'clock', config: { hour: 3, half: 0 }, prompt: T('Move the hands to show 3 o\'clock.', 'Gerakkan jarumnya untuk menunjukkan jam 3.') },
       title: T("1. O'clock", '1. Jam Tepat'),
       goal: T('Read the short hand.', 'Membaca jarum pendek.'),
       steps: [
@@ -237,6 +247,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'time-2',
+      tryIt: { figure: 'clock', config: { hour: 6, half: 1 }, prompt: T('Move the hands to show half past 6.', 'Gerakkan jarumnya untuk menunjukkan jam setengah 7.') },
       title: T('2. Half Past', '2. Setengah'),
       goal: T('The long hand points at 6.', 'Jarum panjang menunjuk angka 6.'),
       steps: [
@@ -262,6 +273,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'time-3',
+      tryIt: { figure: 'week', config: {}, prompt: T('Tap through the week. What comes after Sunday?', 'Ketuk untuk melewati seminggu. Apa yang datang setelah Minggu?') },
       title: T('3. Days of the Week', '3. Nama Hari'),
       goal: T('7 days, in order.', '7 hari, berurutan.'),
       steps: [
@@ -282,6 +294,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
   patterns: [
     {
       id: 'pattern-1',
+      tryIt: { figure: 'pattern', config: { kind: 'ab' }, prompt: T('Finish the color pattern.', 'Selesaikan pola warnanya.') },
       title: T('1. Repeating Colors', '1. Warna Berulang'),
       goal: T('Find what repeats.', 'Temukan yang berulang.'),
       steps: [
@@ -301,6 +314,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'pattern-2',
+      tryIt: { figure: 'pattern', config: { kind: 'abc' }, prompt: T('This pattern has 3 parts. Finish it!', 'Pola ini punya 3 bagian. Selesaikan!') },
       title: T('2. Shape Patterns', '2. Pola Bentuk'),
       goal: T('Shapes can repeat too.', 'Bentuk juga bisa berulang.'),
       steps: [
@@ -323,6 +337,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'pattern-3',
+      tryIt: { figure: 'pattern', config: { kind: 'aab' }, prompt: T('Star, star, heart... finish the pattern!', 'Bintang, bintang, hati... selesaikan polanya!') },
       title: T('3. Number Patterns', '3. Pola Angka'),
       goal: T('Find the jump.', 'Temukan loncatannya.'),
       steps: [
@@ -346,6 +361,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
   shapes: [
     {
       id: 'shape-1',
+      tryIt: { figure: 'corners', config: { shape: 'triangle' }, prompt: T('Tap every corner of the triangle, then try the other shapes.', 'Ketuk setiap sudut segitiga, lalu coba bentuk lainnya.') },
       title: T('1. Basic Shapes', '1. Bentuk Dasar'),
       goal: T('Know the circle, square and triangle.', 'Mengenal lingkaran, persegi, dan segitiga.'),
       steps: [
@@ -360,6 +376,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'shape-2',
+      tryIt: { figure: 'corners', config: { shape: 'square' }, prompt: T('Count the corners of a square and a rectangle.', 'Hitung sudut persegi dan persegi panjang.') },
       title: T('2. Counting Corners', '2. Menghitung Sudut'),
       goal: T('Corners are the pointy bits.', 'Sudut adalah bagian yang lancip.'),
       steps: [
@@ -376,6 +393,7 @@ export const NUMBER_LESSONS: Record<NumberTopic, LessonModule[]> = {
     },
     {
       id: 'shape-3',
+      tryIt: { figure: 'corners', config: { shape: 'hexagon' }, prompt: T('Bees love hexagons! How many corners does one have?', 'Lebah suka segi enam! Ada berapa sudutnya?') },
       title: T('3. Shapes Around Us', '3. Bentuk di Sekitar Kita'),
       goal: T('Find shapes in real life.', 'Menemukan bentuk di sekitar kita.'),
       steps: [

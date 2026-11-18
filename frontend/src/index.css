@@ -3117,3 +3117,185 @@ main > section > h1:first-child::after {
   font-family: var(--font-read);
   text-align: center;
 }
+
+/* ---- Number figures ---- */
+.fig-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+}
+.fig-btn {
+  font-size: 0.55rem;
+  padding: 0.55em 0.8em;
+}
+.fig-btn--big {
+  font-size: 1.4rem;
+  padding: 0.2em 0.5em;
+}
+.fig-eq {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  color: var(--accent);
+}
+.fig-status {
+  margin: 0.4rem 0 0;
+  font-weight: 700;
+}
+.fig-status.is-ok {
+  color: var(--green);
+}
+.tenframe {
+  display: grid;
+  grid-template-columns: repeat(5, 48px);
+  gap: 4px;
+  justify-content: center;
+}
+.tenframe__cell {
+  width: 48px;
+  height: 48px;
+  font-size: 1.4rem;
+  background: var(--chip-bg);
+  border: 3px solid var(--ink);
+  cursor: pointer;
+}
+.tenframe__cell.is-on {
+  background: #fdf6e3;
+}
+.apples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+.apples--two {
+  align-items: center;
+  gap: 1rem;
+}
+.apples__group {
+  display: grid;
+  justify-items: center;
+  font-size: 1.6rem;
+  min-width: 100px;
+}
+.apples__one {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.apples__one.is-eaten {
+  opacity: 0.35;
+  transform: scale(0.8);
+}
+.hopper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  padding-top: 1.4rem;
+}
+.hopper__mark {
+  position: relative;
+  min-width: 34px;
+  padding: 4px 2px;
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  border: 2px solid var(--ink);
+}
+.hopper__mark.is-hit {
+  background: var(--green);
+  color: #ffffff;
+}
+.hopper__mark.is-here {
+  outline: 3px solid var(--accent);
+}
+.hopper__frog {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  animation: hop 0.35s ease-out;
+}
+@keyframes hop {
+  from { transform: translate(-80%, -60%); }
+  to { transform: translate(-50%, 0); }
+}
+.clock {
+  width: 190px;
+  height: 190px;
+  display: block;
+  margin: 0 auto;
+}
+.clock line {
+  transition: transform 0.3s ease;
+}
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.week li {
+  padding: 6px 0;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  border: 2px solid var(--ink);
+}
+.week li.is-now {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.pattern {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+.pattern__slot {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  font-size: 1.5rem;
+  background: #fdf6e3;
+  border: 3px solid var(--ink);
+}
+.pattern__slot.is-blank {
+  border-style: dashed;
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+}
+.pattern__slot.is-filled {
+  border-style: solid;
+  font-size: 1.5rem;
+}
+.corners {
+  width: 200px;
+  height: 200px;
+  display: block;
+  margin: 0 auto;
+}
+.corners__dot {
+  fill: #ffffff;
+  stroke: #1a1430;
+  stroke-width: 2;
+  cursor: pointer;
+}
+.corners__dot.is-hit {
+  fill: var(--green);
+}
+:root[data-motion='reduced'] .hopper__frog,
+:root[data-motion='reduced'] .clock line {
+  animation: none;
+  transition: none;
+}

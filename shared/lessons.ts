@@ -11,7 +11,7 @@ import type { SpriteGroup, Text, TopicId } from './types';
 
 /** Interactive pictures, one kind per topic (drawn by the frontend). */
 export type FigureId =
-  | 'tenframe' | 'apples' | 'hopper' | 'clock' | 'pattern' | 'corners'
+  | 'tenframe' | 'apples' | 'hopper' | 'clock' | 'week' | 'pattern' | 'corners'
   | 'mixer' | 'legs' | 'letterbd' | 'plate' | 'bodymap' | 'weather' | 'vehicles' | 'seesaw' | 'faces' | 'planets';
 
 /** Small per-lesson settings for a figure, e.g. { hour: 3 } or { op: 'minus' }. */
