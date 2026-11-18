@@ -27,6 +27,8 @@ export const STRINGS = {
   // Home
   heroPlay: { en: 'Start Playing', id: 'Mulai Bermain' },
   heroHow: { en: 'How does it work?', id: 'Bagaimana caranya?' },
+  nextStepLabel: { en: 'Mewy suggests', id: 'Saran Mewy' },
+  nextStepGo: { en: 'Go', id: 'Ayo' },
   pickGame: { en: 'Pick a game', id: 'Pilih permainan' },
 
   // Generic

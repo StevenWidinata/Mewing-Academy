@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { TOPICS } from '../../../shared/types';
 import { Mewy } from '../components/Mewy';
+import { NextStepCard } from '../components/NextStepCard';
 import { useProgress } from '../state/progress';
 import { TopicIcon } from '../components/TopicIcon';
 import { useSettings } from '../state/settings';
@@ -39,6 +40,8 @@ export function HomePage() {
           <Link to="/how-ai" className="btn btn--secondary">{tr('heroHow')}</Link>
         </div>
       </div>
+
+      <NextStepCard />
 
       <h2>{tr('pickGame')}</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>

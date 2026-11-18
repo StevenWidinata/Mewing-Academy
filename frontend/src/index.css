@@ -2546,3 +2546,45 @@ main > section > h1:first-child::after {
   color: var(--yellow);
   text-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
 }
+
+/* ---- Home: what's next ---- */
+.next-step {
+  display: block;
+  margin: 0 0 2rem;
+  text-decoration: none;
+  color: var(--white);
+  background: var(--panel-glow);
+}
+.next-step__label {
+  font-family: var(--font-read);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.next-step__row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+.next-step__emoji {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+.next-step__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 180px;
+}
+.next-step__title {
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--accent);
+}
+.next-step__sub {
+  font-family: var(--font-read);
+  font-size: 1.05rem;
+}
