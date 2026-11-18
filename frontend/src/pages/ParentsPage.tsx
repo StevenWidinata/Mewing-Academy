@@ -4,6 +4,7 @@ import { TOPICS, type Difficulty, type Lang, type TopicId } from '../../../share
 import { ColumnChart, LineChart } from '../components/charts/charts';
 import { ParentAccount } from '../components/ParentAccount';
 import { ParentGate } from '../components/ParentGate';
+import { RecoveryCodeCard } from '../components/RecoveryCodeCard';
 import { activityByDay, buildInsights, summarizeTopic, topicHistory, type Insight, type Standing, type TopicSummary } from '../lib/insights';
 import { isUnlocked, lock } from '../state/parentLock';
 import { today, useProgress } from '../state/progress';
@@ -245,6 +246,7 @@ function Dashboard({ onLock }: { onLock: () => void }) {
         </>
       )}
 
+      <RecoveryCodeCard />
       <ParentAccount onLock={onLock} />
 
       <p className="chip" style={{ fontFamily: 'var(--font-read)', fontSize: '0.85rem' }}>

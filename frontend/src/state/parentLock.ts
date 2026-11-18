@@ -8,6 +8,8 @@
 const PIN_KEY = 'mewing.parentPin.v1';
 const UNLOCK_KEY = 'mewing.parentUnlocked';
 const FAILS_KEY = 'mewing.parentFails';
+const RECOVERY_KEY = 'mewing.parentRecovery.v1';
+const RESET_KEY = 'mewing.parentResetAt';
 
 export const MAX_TRIES = 5;
 export const LOCKOUT_MS = 30_000;
@@ -50,10 +52,89 @@ export async function checkPin(pin: string): Promise<boolean> {
   return (await hashPin(pin, stored.salt)) === stored.hash;
 }
 
-/** Forgot PIN: removes only the PIN. Progress is untouched. */
+/** Removes the PIN (and its recovery code). Progress is untouched. */
 export function clearPin() {
   localStorage.removeItem(PIN_KEY);
+  localStorage.removeItem(RECOVERY_KEY);
+  localStorage.removeItem(RESET_KEY);
   lock();
+}
+
+// ---- recovery code: shown once when the PIN is made, needed to reset it ----
+// No look-alike characters (0/O, 1/I/L).
+const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+
+/** A code like MEWY-4K7Q-9TZP (8 random characters). */
+export function makeRecoveryCode(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(8));
+  const chars = [...bytes].map((b) => CODE_CHARS[b % CODE_CHARS.length]).join('');
+  return `MEWY-${chars.slice(0, 4)}-${chars.slice(4)}`;
+}
+
+/** Ignores case, spaces and dashes, and the MEWY prefix is optional. */
+const normalizeCode = (code: string) => code.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^MEWY/, '');
+
+export async function setRecoveryCode(code: string): Promise<void> {
+  const salt = toHex(crypto.getRandomValues(new Uint8Array(16)).buffer);
+  localStorage.setItem(RECOVERY_KEY, JSON.stringify({ salt, hash: await hashPin(normalizeCode(code), salt) }));
+}
+
+export const hasRecoveryCode = () => {
+  try {
+    return !!localStorage.getItem(RECOVERY_KEY);
+  } catch {
+    return false;
+  }
+};
+
+export async function checkRecoveryCode(code: string): Promise<boolean> {
+  try {
+    const raw = localStorage.getItem(RECOVERY_KEY);
+    const stored = raw ? (JSON.parse(raw) as Partial<StoredPin>) : null;
+    if (!stored?.salt || !stored.hash || normalizeCode(code).length !== 8) return false;
+    return (await hashPin(normalizeCode(code), stored.salt)) === stored.hash;
+  } catch {
+    return false;
+  }
+}
+
+// ---- lost the code too: grown-up sums, then a 24-hour wait anyone can see ----
+export const RESET_WAIT_MS = 24 * 60 * 60 * 1000;
+/** Session flag read by the dashboard: a pending PIN reset was cancelled by entering the PIN. */
+export const RESET_CANCELLED_KEY = 'mewing.parentResetCancelled';
+
+/** Two 2-digit multiplications: easy with a calculator for a grown-up, very hard for young kids. */
+export function makeChallenge(rng: () => number = Math.random): [number, number][] {
+  const two = () => 12 + Math.floor(rng() * 87); // 12..98
+  return [
+    [two(), two()],
+    [two(), two()],
+  ];
+}
+
+export const checkChallenge = (sums: [number, number][], answers: string[]) =>
+  sums.every(([a, b], i) => Number(answers[i]?.trim()) === a * b);
+
+export function requestReset(now = Date.now()) {
+  localStorage.setItem(RESET_KEY, String(now));
+}
+
+/** When a PIN reset was asked for (ms), or null. */
+export function resetRequestedAt(): number | null {
+  try {
+    const v = Number(localStorage.getItem(RESET_KEY));
+    return v > 0 ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+export const cancelReset = () => localStorage.removeItem(RESET_KEY);
+
+/** True once the 24-hour wait is over (then the PIN may be removed). */
+export function resetReady(now = Date.now()): boolean {
+  const at = resetRequestedAt();
+  return at != null && now - at >= RESET_WAIT_MS;
 }
 
 // ---- unlocked for this browser tab session ----

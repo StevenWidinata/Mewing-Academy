@@ -20,6 +20,7 @@ Object.assign(globalThis, { localStorage: new MemoryStorage(), sessionStorage: n
 
 const lockMod = await import('./parentLock');
 const { LOCKOUT_MS, MAX_TRIES, checkPin, clearPin, hasPin, isUnlocked, isValidPin, lockoutLeft, noteFailure, setPin, unlock } = lockMod;
+const { RESET_WAIT_MS, cancelReset, checkChallenge, checkRecoveryCode, hasRecoveryCode, makeChallenge, makeRecoveryCode, requestReset, resetReady, resetRequestedAt, setRecoveryCode } = lockMod;
 
 beforeEach(() => {
   localStorage.clear();
@@ -65,5 +66,57 @@ describe('parent PIN', () => {
     noteFailure(now);
     expect(lockoutLeft(now)).toBe(LOCKOUT_MS);
     expect(lockoutLeft(now + LOCKOUT_MS)).toBe(0);
+  });
+});
+
+describe('PIN recovery (kids cannot reset it)', () => {
+  it('makes readable codes without look-alike characters', () => {
+    for (let i = 0; i < 50; i++) expect(makeRecoveryCode()).toMatch(/^MEWY-[A-HJKMNP-Z2-9]{4}-[A-HJKMNP-Z2-9]{4}$/);
+  });
+
+  it('checks the code, ignoring case, spaces, dashes and the prefix', async () => {
+    await setRecoveryCode('MEWY-4K7Q-9TZP');
+    expect(hasRecoveryCode()).toBe(true);
+    expect(await checkRecoveryCode('mewy 4k7q 9tzp')).toBe(true);
+    expect(await checkRecoveryCode('4K7Q9TZP')).toBe(true);
+    expect(await checkRecoveryCode('MEWY-4K7Q-9TZX')).toBe(false);
+    expect(await checkRecoveryCode('RESET')).toBe(false);
+  });
+
+  it('stores only a hash of the code', async () => {
+    await setRecoveryCode('MEWY-4K7Q-9TZP');
+    const raw = localStorage.getItem('mewing.parentRecovery.v1') ?? '';
+    expect(raw).toContain('hash');
+    expect(raw).not.toContain('4K7Q');
+  });
+
+  it('grown-up sums are 2-digit multiplications', () => {
+    const sums = makeChallenge(() => 0.5);
+    for (const [a, b] of sums) {
+      expect(a).toBeGreaterThanOrEqual(12);
+      expect(b).toBeLessThanOrEqual(98);
+    }
+    expect(checkChallenge([[47, 38], [12, 15]], ['1786', '180'])).toBe(true);
+    expect(checkChallenge([[47, 38], [12, 15]], ['1786', '181'])).toBe(false);
+  });
+
+  it('removes the PIN only after the 24-hour wait, and can be cancelled', async () => {
+    await setPin('1234');
+    const t = 5_000_000;
+    requestReset(t);
+    expect(resetRequestedAt()).toBe(t);
+    expect(resetReady(t + RESET_WAIT_MS - 1)).toBe(false);
+    expect(resetReady(t + RESET_WAIT_MS)).toBe(true);
+    cancelReset();
+    expect(resetReady(t + RESET_WAIT_MS)).toBe(false);
+  });
+
+  it('clearing the PIN also clears the code and any reset request', async () => {
+    await setPin('1234');
+    await setRecoveryCode('MEWY-4K7Q-9TZP');
+    requestReset(1);
+    clearPin();
+    expect(hasRecoveryCode()).toBe(false);
+    expect(resetRequestedAt()).toBeNull();
   });
 });
