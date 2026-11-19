@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import type { Lang } from '../../../shared/types';
 import { SettingsHelp } from '../components/SettingsHelp';
 import type { StringKey } from '../i18n/strings';
+import { sfx } from '../lib/sound';
 import { HOLD_MS, HOLD_SPEEDS } from '../state/holdSpeed';
 import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
@@ -150,6 +151,21 @@ function SoundTab() {
     <>
       <Row label={tr('settingsSound')} desc={tr('settingsSoundDesc')}>
         <Toggle on={settings.sound} onToggle={() => set('sound', !settings.sound)} label={tr('settingsSound')} {...onOff} />
+      </Row>
+      <Row label={tr('settingsSfxVolume')} desc={tr('settingsSfxVolumeDesc')}>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.1}
+          value={settings.sfxVolume}
+          disabled={!settings.sound}
+          aria-label={tr('settingsSfxVolume')}
+          onChange={(e) => set('sfxVolume', Number(e.target.value))}
+          onPointerUp={() => sfx.correct(settings.sound)}
+          onKeyUp={() => sfx.tick(settings.sound)}
+          style={{ padding: 0 }}
+        />
       </Row>
       <Row label={`🎵 ${tr('settingsMusic')}`} desc={tr('settingsMusicDesc')}>
         <Toggle on={settings.music} onToggle={() => set('music', !settings.music)} label={tr('settingsMusic')} {...onOff} />

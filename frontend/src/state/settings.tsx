@@ -5,6 +5,7 @@ import type { FurId, ItemId } from './rewards';
 import { BREAK_CHOICES, type BreakMinutes } from '../lib/breakTime';
 import { HOLD_SPEEDS, type HoldSpeed } from './holdSpeed';
 import { ROUND_SIZES, type RoundSize } from './roundSize';
+import { setSfxVolume } from '../lib/sound';
 
 export type ThemeId = 'purple' | 'sky' | 'mint' | 'sunset';
 export type TextSize = 'normal' | 'large' | 'xlarge';
@@ -17,6 +18,8 @@ export interface Settings {
   readableFont: boolean;
   textSize: TextSize;
   sound: boolean;
+  /** Sound effects volume, 0..1. */
+  sfxVolume: number;
   autoRead: boolean;
   /** 8-bit background music (off by default). */
   music: boolean;
@@ -44,6 +47,7 @@ const DEFAULTS: Settings = {
   readableFont: false,
   textSize: 'normal',
   sound: true,
+  sfxVolume: 1,
   autoRead: false,
   music: false,
   musicVolume: 0.4,
@@ -58,6 +62,11 @@ const DEFAULTS: Settings = {
 
 const KEY = 'mewing.settings.v1';
 
+/** A stored 0..1 volume, or the default if it is missing or broken. */
+function volume(v: unknown, fallback: number): number {
+  return typeof v === 'number' && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : fallback;
+}
+
 function load(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
@@ -68,6 +77,7 @@ function load(): Settings {
       if (!ROUND_SIZES.includes(merged.roundSize)) merged.roundSize = DEFAULTS.roundSize;
       if (!HOLD_SPEEDS.includes(merged.holdSpeed)) merged.holdSpeed = DEFAULTS.holdSpeed;
       if (!BREAK_CHOICES.includes(merged.breakMinutes)) merged.breakMinutes = DEFAULTS.breakMinutes;
+      merged.sfxVolume = volume(merged.sfxVolume, DEFAULTS.sfxVolume);
       return merged;
     }
   } catch {
@@ -102,6 +112,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     root.dataset.motion = settings.reduceMotion ? 'reduced' : 'full';
     root.dataset.font = settings.readableFont ? 'readable' : 'pixel';
     root.dataset.textSize = settings.textSize;
+    setSfxVolume(settings.sfxVolume);
   }, [settings]);
 
   const tr = useCallback((key: StringKey) => t(key, settings.lang), [settings.lang]);

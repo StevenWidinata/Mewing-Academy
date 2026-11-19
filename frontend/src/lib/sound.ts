@@ -1,15 +1,21 @@
 // Simple blips via the Web Audio API, so there are no sound files to ship.
 let ctx: AudioContext | null = null;
+// 0..1, from the "Sound effects volume" setting (set by SettingsProvider).
+let sfxVolume = 1;
+
+export function setSfxVolume(v: number) {
+  sfxVolume = Math.min(1, Math.max(0, v));
+}
 
 function tone(freq: number, durationMs: number, type: OscillatorType, gain: number, delay = 0) {
-  if (typeof AudioContext === 'undefined') return;
+  if (typeof AudioContext === 'undefined' || sfxVolume <= 0) return;
   ctx ??= new AudioContext();
   const start = ctx.currentTime + delay;
   const osc = ctx.createOscillator();
   const vol = ctx.createGain();
   osc.type = type;
   osc.frequency.value = freq;
-  vol.gain.setValueAtTime(gain, start);
+  vol.gain.setValueAtTime(gain * sfxVolume, start);
   vol.gain.exponentialRampToValueAtTime(0.0001, start + durationMs / 1000);
   osc.connect(vol).connect(ctx.destination);
   osc.start(start);

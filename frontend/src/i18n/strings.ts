@@ -226,6 +226,8 @@ export const STRINGS = {
   settingsSound: { en: 'Sounds', id: 'Suara' },
   settingsMusic: { en: '8-bit music', id: 'Musik 8-bit' },
   settingsMusicVolume: { en: 'Music volume', id: 'Volume musik' },
+  settingsSfxVolume: { en: 'Sound effects volume', id: 'Volume efek suara' },
+  settingsSfxVolumeDesc: { en: 'How loud the blips and dings are. Let go of the slider to hear it.', id: 'Seberapa keras bunyi efeknya. Lepaskan penggeser untuk mendengarnya.' },
   settingsPaw: { en: 'Paw cursor', id: 'Kursor kaki kucing' },
   // Settings tabs and the one-line help under each setting
   tabDisplay: { en: 'Display', id: 'Layar' },
