@@ -14,6 +14,7 @@ import { AnswerModeHint } from './AnswerModeHint';
 import { QuizProgress } from './QuizProgress';
 import { RoundRecap } from './RoundRecap';
 import { WhyPanel } from './WhyPanel';
+import { LeaveRoundGuard } from './LeaveRoundGuard';
 import { HINTS_PER_ROUND, pickHiddenChoice } from '../lib/hint';
 import { LootBanner } from './BagStrip';
 import { CameraStage } from './CameraStage';
@@ -134,6 +135,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
   const comboShake = revealed && state.picked === current.answer && state.streak >= 3 && !settings.reduceMotion;
   return (
     <section className={comboShake ? 'shake' : undefined}>
+      <LeaveRoundGuard active={state.answers.length > 0} />
       <QuizProgress index={state.index} total={total} results={state.results} stars={state.correctCount} />
 
       {boss && (

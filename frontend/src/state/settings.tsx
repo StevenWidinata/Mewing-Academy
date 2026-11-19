@@ -42,6 +42,8 @@ export interface Settings {
   hints: boolean;
   /** Color-blind helper: a letter on every color square and colored shape. */
   colorLetters: boolean;
+  /** Ask "Leave this round?" before leaving a half-done quiz round. */
+  confirmLeave: boolean;
   /** How long to hold fingers still before the answer counts. */
   holdSpeed: HoldSpeed;
   /** Parent-set stretch break after this many minutes of play (0 = off). */
@@ -70,13 +72,14 @@ const DEFAULTS: Settings = {
   bossBattles: true,
   hints: true,
   colorLetters: false,
+  confirmLeave: true,
   breakMinutes: 0,
 };
 
 const KEY = 'mewing.settings.v1';
 
 /** Newer on/off settings: a broken stored value falls back to the default. */
-const BOOL_KEYS = ['bossBattles', 'hints', 'colorLetters'] as const satisfies readonly (keyof Settings)[];
+const BOOL_KEYS = ['bossBattles', 'hints', 'colorLetters', 'confirmLeave'] as const satisfies readonly (keyof Settings)[];
 
 /** A stored 0..1 volume, or the default if it is missing or broken. */
 function volume(v: unknown, fallback: number): number {

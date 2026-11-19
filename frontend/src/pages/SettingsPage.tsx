@@ -240,6 +240,9 @@ function PlayTab() {
         </span>
         <Toggle on={settings.colorLetters} onToggle={() => set('colorLetters', !settings.colorLetters)} label={tr('settingsColorLetters')} {...onOff} />
       </Row>
+      <Row label={`🚪 ${tr('settingsConfirmLeave')}`} desc={tr('settingsConfirmLeaveDesc')}>
+        <Toggle on={settings.confirmLeave} onToggle={() => set('confirmLeave', !settings.confirmLeave)} label={tr('settingsConfirmLeave')} {...onOff} />
+      </Row>
       <Row label={`💡 ${tr('settingsHints')}`} desc={tr('settingsHintsDesc')}>
         <Toggle on={settings.hints} onToggle={() => set('hints', !settings.hints)} label={tr('settingsHints')} {...onOff} />
       </Row>
