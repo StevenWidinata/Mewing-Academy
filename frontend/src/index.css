@@ -3620,3 +3620,8 @@ main > section > h1:first-child::after {
   border: 2px solid var(--ink);
   box-shadow: 2px 2px 0 var(--shadow);
 }
+/* A wrong answer the hint crossed out: stays in place, clearly "not this one" */
+.btn.choice-btn--hidden {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

@@ -23,6 +23,8 @@ interface Props {
   numericChoices?: boolean;
   /** Lets the page switch tapping off while the camera is running. */
   onStatusChange?: (status: VisionStatus) => void;
+  /** A choice the hint crossed out: showing it is ignored. */
+  blockedChoice?: number | null;
 }
 
 /** A short phone vibration, where supported. */
@@ -38,7 +40,7 @@ type Readout = Pick<Classification, 'answer' | 'pose' | 'reason'>;
 const EMPTY_READOUT: Readout = { answer: null, pose: [false, false, false, false, false], reason: 'no-hand' };
 const readoutKey = (r: Readout) => `${r.answer}|${r.reason}|${r.pose.map(Number).join('')}`;
 
-export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false, onStatusChange }: Props) {
+export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, numericChoices = false, onStatusChange, blockedChoice = null }: Props) {
   const { tr, settings, set } = useSettings();
   const preload = useHandModelPreload();
   // null = no practice; 0..3 = the finger count being practised; 4 = finished.
@@ -75,6 +77,10 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
     }
   }, []);
   const confirmed = useRef(false);
+  const blockedRef = useRef(blockedChoice);
+  useEffect(() => {
+    blockedRef.current = blockedChoice;
+  }, [blockedChoice]);
   const pausedRef = useRef(paused);
   useEffect(() => {
     pausedRef.current = paused;
@@ -147,7 +153,7 @@ export function CameraStage({ choiceCount, onConfirm, paused = false, onHover, n
         onHover?.(null, 0);
         return;
       }
-      if (answer == null) {
+      if (answer == null || answer === blockedRef.current) {
         candidate.current = null;
         onHover?.(null, 0);
         return;

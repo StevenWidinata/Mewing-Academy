@@ -22,6 +22,7 @@ const GAME_TIPS: { icon: string; text: Text }[] = [
   { icon: '⚡', text: T('Answer within 5 seconds for a QUICK bonus.', 'Jawab dalam 5 detik untuk bonus CEPAT.') },
   { icon: '👾', text: T('Right answers knock down the boss. The final K.O. comes on the last question.', 'Jawaban benar menjatuhkan bos. K.O. terakhir terjadi di soal terakhir.') },
   { icon: '⭐', text: T('Every right answer earns a star. Spend stars in the Closet to dress up Mewy.', 'Setiap jawaban benar memberi bintang. Belanjakan bintang di Lemari untuk mendandani Mewy.') },
+  { icon: '💡', text: T('Stuck? The Hint button crosses out one wrong answer, once per round.', 'Bingung? Tombol Petunjuk mencoret satu jawaban salah, sekali per ronde.') },
   { icon: '🔍', text: T('Got one wrong? Tap "Why?" to see the right answer explained.', 'Salah? Ketuk "Kenapa?" untuk melihat penjelasan jawaban yang benar.') },
 ];
 

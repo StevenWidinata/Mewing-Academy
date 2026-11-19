@@ -14,6 +14,7 @@ import { AnswerModeHint } from './AnswerModeHint';
 import { QuizProgress } from './QuizProgress';
 import { RoundRecap } from './RoundRecap';
 import { WhyPanel } from './WhyPanel';
+import { HINTS_PER_ROUND, pickHiddenChoice } from '../lib/hint';
 import { LootBanner } from './BagStrip';
 import { CameraStage } from './CameraStage';
 import { ChoiceGrid } from './ChoiceGrid';
@@ -37,8 +38,23 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
   const { tr, settings } = useSettings();
   const lang = settings.lang;
   const { state, current, pick, next, restart, total } = useQuiz(questions, onFinish, mode);
-  const pickByHand = useCallback((i: number) => pick(i, true), [pick]);
-  const pickByTap = useCallback((i: number) => pick(i), [pick]);
+  // 💡 Hint: crosses out one wrong answer, HINTS_PER_ROUND times a round.
+  const [hintsLeft, setHintsLeft] = useState(HINTS_PER_ROUND);
+  const [hint, setHint] = useState<{ index: number; choice: number } | null>(null);
+  const hiddenChoice = hint && hint.index === state.index ? hint.choice : null;
+  const pickByHand = useCallback((i: number) => i !== hiddenChoice && pick(i, true), [pick, hiddenChoice]);
+  const pickByTap = useCallback((i: number) => i !== hiddenChoice && pick(i), [pick, hiddenChoice]);
+  const takeHint = () => {
+    const choice = pickHiddenChoice(current, Math.random());
+    if (choice == null || hintsLeft <= 0) return;
+    setHint({ index: state.index, choice });
+    setHintsLeft((n) => n - 1);
+  };
+  const restartRound = useCallback(() => {
+    setHintsLeft(HINTS_PER_ROUND);
+    setHint(null);
+    restart();
+  }, [restart]);
   const [hover, setHover] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 });
   const onHover = useCallback((index: number | null, progress: number) => setHover({ index, progress }), []);
   const [camStatus, setCamStatus] = useState<VisionStatus>('idle');
@@ -69,11 +85,11 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
       if (!tapEnabled || state.picked != null || state.done || (e.target as HTMLElement)?.tagName === 'INPUT') return;
       const map: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 };
       const idx = map[e.key.toLowerCase()];
-      if (idx != null && idx < current.choices.length) pick(idx);
+      if (idx != null && idx < current.choices.length && idx !== hiddenChoice) pick(idx);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [tapEnabled, state.picked, state.done, current, pick]);
+  }, [tapEnabled, state.picked, state.done, current, pick, hiddenChoice]);
 
   // Optional auto read-aloud of each new question.
   useEffect(() => {
@@ -107,7 +123,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
           </div>
         )}
         <LootBanner loot={state.loot} />
-        {renderDone(state.correctCount, total, restart)}
+        {renderDone(state.correctCount, total, restartRound)}
         <RoundRecap questions={questions} picks={state.picks} showFix={mode !== 'review'} />
       </section>
     );
@@ -148,6 +164,7 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
         <CameraStage
           choiceCount={current.choices.length}
           onConfirm={pickByHand}
+          blockedChoice={hiddenChoice}
           onHover={onHover}
           paused={revealed}
           numericChoices={hasNumberLabels(current.choices.map((c) => c.label[lang]))}
@@ -155,7 +172,14 @@ export function QuizRunner({ questions, onFinish, renderDone, boss = false, mode
         />
         <div>
           <AnswerModeHint tapEnabled={tapEnabled} />
-          <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pickByTap} tapEnabled={tapEnabled} />
+          <ChoiceGrid choices={current.choices} hovered={hover.index} holdProgress={hover.progress} picked={state.picked} answer={current.answer} onPick={pickByTap} tapEnabled={tapEnabled} hiddenChoice={hiddenChoice} />
+          {settings.hints && !revealed && current.choices.length > 2 && (
+            <div style={{ textAlign: 'center', marginTop: '0.8rem' }}>
+              <button type="button" className="btn btn--ghost hint-btn" onClick={takeHint} disabled={hintsLeft <= 0 || hiddenChoice != null}>
+                💡 {tr('hint')} × {hintsLeft}
+              </button>
+            </div>
+          )}
           {revealed && (
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <p style={{ fontFamily: 'var(--font-read)', fontSize: '1.1rem' }}>

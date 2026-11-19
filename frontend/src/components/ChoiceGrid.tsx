@@ -30,9 +30,11 @@ interface Props {
    * gestures, so the camera stays the main way to play.
    */
   tapEnabled?: boolean;
+  /** A wrong choice the 💡 hint crossed out. It keeps its place so fingers still match A-D. */
+  hiddenChoice?: number | null;
 }
 
-export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer, onPick, disabled, showFingerHint = true, tapEnabled = true }: Props) {
+export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer, onPick, disabled, showFingerHint = true, tapEnabled = true, hiddenChoice = null }: Props) {
   const { settings } = useSettings();
   const revealed = picked != null && answer != null;
 
@@ -43,18 +45,19 @@ export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer,
       style={{ display: 'grid', gridTemplateColumns: choices.length > 2 ? '1fr 1fr' : '1fr', gap: '1rem', maxWidth: 640, margin: '0 auto', width: '100%' }}
     >
       {choices.map((c, i) => {
-        const isHover = hovered === i && !revealed;
+        const isHidden = hiddenChoice === i;
+        const isHover = hovered === i && !revealed && !isHidden;
         const isPicked = picked === i;
         const isCorrect = revealed && i === answer;
         const isWrong = revealed && isPicked && i !== answer;
-        const bg = isCorrect ? 'var(--green)' : isWrong ? 'var(--red)' : isHover ? 'var(--cyan)' : 'var(--yellow)';
+        const bg = isCorrect ? 'var(--green)' : isWrong ? 'var(--red)' : isHidden ? 'var(--btn-ghost)' : isHover ? 'var(--cyan)' : 'var(--yellow)';
         return (
           <button
             key={i}
             type="button"
-            className={`btn choice-btn${tapEnabled ? '' : ' choice-btn--camera'}`}
-            onClick={() => tapEnabled && !disabled && !revealed && onPick(i)}
-            disabled={disabled || revealed}
+            className={`btn choice-btn${tapEnabled ? '' : ' choice-btn--camera'}${isHidden ? ' choice-btn--hidden' : ''}`}
+            onClick={() => tapEnabled && !disabled && !revealed && !isHidden && onPick(i)}
+            disabled={disabled || revealed || isHidden}
             aria-disabled={!tapEnabled || undefined}
             aria-pressed={isPicked}
             style={{ background: bg, position: 'relative', overflow: 'hidden', fontSize: '1rem', padding: '1.2em 1em', minHeight: 72 }}
@@ -75,7 +78,8 @@ export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer,
                 </span>
               )}
               {c.color && <ColorSwatch color={c.color} />}
-              <span style={{ fontFamily: 'var(--font-read)', fontWeight: 700 }}>{c.label[settings.lang]}</span>
+              <span style={{ fontFamily: 'var(--font-read)', fontWeight: 700, textDecoration: isHidden ? 'line-through 3px' : undefined }}>{c.label[settings.lang]}</span>
+              {isHidden && <span className="sr-only">{settings.lang === 'en' ? '(crossed out by the hint)' : '(dicoret oleh petunjuk)'}</span>}
             </span>
           </button>
         );

@@ -232,6 +232,9 @@ function PlayTab() {
       <Row label={`👾 ${tr('settingsBoss')}`} desc={tr('settingsBossDesc')}>
         <Toggle on={settings.bossBattles} onToggle={() => set('bossBattles', !settings.bossBattles)} label={tr('settingsBoss')} {...onOff} />
       </Row>
+      <Row label={`💡 ${tr('settingsHints')}`} desc={tr('settingsHintsDesc')}>
+        <Toggle on={settings.hints} onToggle={() => set('hints', !settings.hints)} label={tr('settingsHints')} {...onOff} />
+      </Row>
     </>
   );
 }
