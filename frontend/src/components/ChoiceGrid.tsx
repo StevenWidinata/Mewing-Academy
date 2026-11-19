@@ -63,7 +63,8 @@ export function ChoiceGrid({ choices, hovered, holdProgress = 0, picked, answer,
             {isHover && holdProgress > 0 && !settings.reduceMotion && (
               <span aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.45)', transformOrigin: 'left', transform: `scaleX(${holdProgress})`, transition: 'transform 0.05s linear' }} />
             )}
-            <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            {/* Wraps on narrow cards instead of clipping the label */}
+            <span style={{ position: 'relative', display: 'inline-flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' }}>
               <strong style={{ fontFamily: 'var(--font-pixel)', marginRight: showFingerHint ? 2 : 8 }}>{LETTERS[i]}</strong>
               {showFingerHint && (
                 <span

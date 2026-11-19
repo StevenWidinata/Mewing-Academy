@@ -473,6 +473,8 @@ select {
 /* ============ Grouped navigation bar (desktop) ============ */
 .navbar {
   display: flex;
+  /* Wrap to a second row instead of pushing the page wider on mid-size screens */
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: space-between;
   gap: 0.5rem;
