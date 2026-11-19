@@ -3655,3 +3655,12 @@ main > section > h1:first-child::after {
   gap: 0.75rem;
   margin-top: 0.4rem;
 }
+.settings-confirm p,
+.settings-status {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-read);
+  font-weight: 700;
+}
+.settings-status:empty {
+  display: none;
+}

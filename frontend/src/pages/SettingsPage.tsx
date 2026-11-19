@@ -2,6 +2,7 @@ import { useRef, type KeyboardEvent, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Lang } from '../../../shared/types';
 import { SettingsHelp } from '../components/SettingsHelp';
+import { SettingsSave } from '../components/SettingsSave';
 import { ColorSwatch } from '../components/Sprite';
 import type { StringKey } from '../i18n/strings';
 import { sfx } from '../lib/sound';
@@ -20,6 +21,7 @@ const TABS = [
   { id: 'display', icon: '🖥️', label: 'tabDisplay' },
   { id: 'sound', icon: '🔊', label: 'tabSound' },
   { id: 'play', icon: '✋', label: 'tabPlay' },
+  { id: 'save', icon: '💾', label: 'tabSave' },
   { id: 'help', icon: '❓', label: 'tabHelp' },
 ] as const satisfies readonly { id: string; icon: string; label: StringKey }[];
 type TabId = (typeof TABS)[number]['id'];
@@ -254,6 +256,7 @@ const PANELS: Record<TabId, () => ReactNode> = {
   display: DisplayTab,
   sound: SoundTab,
   play: PlayTab,
+  save: SettingsSave,
   help: SettingsHelp,
 };
 

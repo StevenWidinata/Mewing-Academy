@@ -104,14 +104,38 @@ function load(): Settings {
   } catch {
     /* ignore corrupt storage */
   }
-  // Respect the OS "reduce motion" preference on first visit.
+  return firstVisit();
+}
+
+/** Defaults, respecting the OS "reduce motion" preference. */
+function firstVisit(): Settings {
   const prefersReduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   return { ...DEFAULTS, reduceMotion: prefersReduced };
+}
+
+/**
+ * "Restore defaults": resets the preferences on the Settings page. Keeps the
+ * language, what Mewy is wearing, the finished camera practice, and the
+ * settings a grown-up set in the PIN-locked corner.
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function restoredDefaults(prev: Settings): Settings {
+  return {
+    ...firstVisit(),
+    lang: prev.lang,
+    mewyFur: prev.mewyFur,
+    mewyItem: prev.mewyItem,
+    cameraTutorialDone: prev.cameraTutorialDone,
+    roundSize: prev.roundSize,
+    breakMinutes: prev.breakMinutes,
+  };
 }
 
 interface Ctx {
   settings: Settings;
   set: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
+  /** Puts the Settings page back to normal (see restoredDefaults). */
+  resetSettings: () => void;
   tr: (key: StringKey) => string;
 }
 
@@ -137,9 +161,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSpeechRate(settings.speechRate);
   }, [settings]);
 
+  const resetSettings = useCallback(() => setSettings(restoredDefaults), []);
+
   const tr = useCallback((key: StringKey) => t(key, settings.lang), [settings.lang]);
 
-  const value = useMemo<Ctx>(() => ({ settings, set, tr }), [settings, set, tr]);
+  const value = useMemo<Ctx>(() => ({ settings, set, resetSettings, tr }), [settings, set, resetSettings, tr]);
   return <SettingsContext value={value}>{children}</SettingsContext>;
 }
 
