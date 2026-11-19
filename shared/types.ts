@@ -64,6 +64,11 @@ export const COLORS: Record<ColorId, { hex: string; name: Text }> = {
   orange: { hex: '#ff8a1f', name: { en: 'Orange', id: 'Oranye' } },
 };
 
+/** First letter of the color's name, for the color-blind helper (Merah = M, Biru = B...). */
+export function colorLetter(color: ColorId, lang: Lang): string {
+  return COLORS[color].name[lang].charAt(0).toUpperCase();
+}
+
 /** EN plural / ID name. Indonesian has no plural -s. */
 export const SPRITE_NAMES: Record<SpriteId, { one: Text; many: Text }> = {
   apple: { one: { en: 'apple', id: 'apel' }, many: { en: 'apples', id: 'apel' } },

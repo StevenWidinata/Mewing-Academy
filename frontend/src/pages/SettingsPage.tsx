@@ -2,6 +2,7 @@ import { useRef, type KeyboardEvent, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Lang } from '../../../shared/types';
 import { SettingsHelp } from '../components/SettingsHelp';
+import { ColorSwatch } from '../components/Sprite';
 import type { StringKey } from '../i18n/strings';
 import { sfx } from '../lib/sound';
 import { SPEECH_RATES, canSpeak, setSpeechRate, speak } from '../lib/speak';
@@ -231,6 +232,13 @@ function PlayTab() {
       </Row>
       <Row label={`👾 ${tr('settingsBoss')}`} desc={tr('settingsBossDesc')}>
         <Toggle on={settings.bossBattles} onToggle={() => set('bossBattles', !settings.bossBattles)} label={tr('settingsBoss')} {...onOff} />
+      </Row>
+      <Row label={`🎨 ${tr('settingsColorLetters')}`} desc={tr('settingsColorLettersDesc')}>
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <ColorSwatch color="red" />
+          <ColorSwatch color="blue" />
+        </span>
+        <Toggle on={settings.colorLetters} onToggle={() => set('colorLetters', !settings.colorLetters)} label={tr('settingsColorLetters')} {...onOff} />
       </Row>
       <Row label={`💡 ${tr('settingsHints')}`} desc={tr('settingsHintsDesc')}>
         <Toggle on={settings.hints} onToggle={() => set('hints', !settings.hints)} label={tr('settingsHints')} {...onOff} />

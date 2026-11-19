@@ -254,6 +254,8 @@ export const STRINGS = {
   settingsHints: { en: 'Hint button', id: 'Tombol petunjuk' },
   settingsHintsDesc: { en: 'A 💡 button in quizzes that crosses out one wrong answer, once per round.', id: 'Tombol 💡 di kuis yang mencoret satu jawaban salah, sekali per ronde.' },
   hint: { en: 'Hint', id: 'Petunjuk' },
+  settingsColorLetters: { en: 'Color-blind helper', id: 'Bantuan buta warna' },
+  settingsColorLettersDesc: { en: 'Puts the first letter of the color on colored shapes and squares (R = red, B = blue...).', id: 'Menaruh huruf pertama warna di bentuk dan kotak berwarna (M = merah, B = biru...).' },
   settingsCamTutorialDesc: { en: 'The "show 1, 2, 3, 4 fingers" warm-up for the camera.', id: 'Pemanasan "tunjukkan 1, 2, 3, 4 jari" untuk kamera.' },
   on: { en: 'On', id: 'Nyala' },
   off: { en: 'Off', id: 'Mati' },

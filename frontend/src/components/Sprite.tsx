@@ -1,6 +1,10 @@
-import { COLORS, type ColorId, type SpriteGroup, type SpriteId } from '../../../shared/types';
+import { COLORS, colorLetter, type ColorId, type SpriteGroup, type SpriteId } from '../../../shared/types';
+import { useSettings } from '../state/settings';
 
 const INK = '#1a1430';
+/** Dark letters read best on these; white on the rest. */
+const LIGHT: ColorId[] = ['yellow', 'orange'];
+const letterInk = (color: ColorId) => (LIGHT.includes(color) ? INK : '#ffffff');
 
 /** A single colored shape, drawn as SVG so color and shape are both honored. */
 function Shape({ sprite, color, size }: { sprite: SpriteId; color: ColorId; size: number }) {
@@ -64,13 +68,20 @@ function heart(s: number): string {
 }
 
 export function SpriteScene({ groups, size = 56 }: { groups: SpriteGroup[]; size?: number }) {
+  const { settings } = useSettings();
+  const letters = settings.colorLetters;
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center', alignItems: 'center' }}>
       {groups.map((g, gi) => (
         <div key={gi} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', justifyContent: 'center', maxWidth: size * 4 }}>
           {Array.from({ length: g.count }, (_, i) => (
-            <span key={i} className="pop" style={{ display: 'inline-flex' }}>
+            <span key={i} className="pop" style={{ display: 'inline-flex', position: 'relative' }}>
               <Shape sprite={g.sprite} color={g.color} size={size} />
+              {letters && (
+                <span className="color-letter" aria-hidden="true" style={{ background: COLORS[g.color].hex, color: letterInk(g.color) }}>
+                  {colorLetter(g.color, settings.lang)}
+                </span>
+              )}
             </span>
           ))}
         </div>
@@ -80,12 +91,34 @@ export function SpriteScene({ groups, size = 56 }: { groups: SpriteGroup[]; size
 }
 
 export function ColorSwatch({ color, size = 20 }: { color: ColorId; size?: number }) {
+  const { settings } = useSettings();
+  const letters = settings.colorLetters;
+  const s = letters ? Math.max(size, 26) : size;
   return (
     <span
       aria-hidden="true"
       // The light inner ring keeps the swatch visible on a card of the same
       // color (yellow on a yellow card, green on the green "right answer" card).
-      style={{ display: 'inline-block', flexShrink: 0, width: size, height: size, background: COLORS[color].hex, border: `2px solid ${INK}`, boxShadow: 'inset 0 0 0 2px #fdf6e3', verticalAlign: 'middle', marginRight: 8 }}
-    />
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        width: s,
+        height: s,
+        background: COLORS[color].hex,
+        border: `2px solid ${INK}`,
+        boxShadow: 'inset 0 0 0 2px #fdf6e3',
+        verticalAlign: 'middle',
+        marginRight: 8,
+        color: letterInk(color),
+        fontFamily: 'var(--font-read)',
+        fontWeight: 700,
+        fontSize: 14,
+        lineHeight: 1,
+      }}
+    >
+      {letters ? colorLetter(color, settings.lang) : null}
+    </span>
   );
 }
