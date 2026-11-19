@@ -9,7 +9,8 @@ import type { Difficulty } from '../../../shared/types';
  * Boss HP is 70% of the round's total base damage, so a kid needs most
  * answers right. If the boss is knocked out before the last question, a
  * smaller "Mini Muddle" jumps out with HP sized to the questions left, so
- * there is always something to hit.
+ * there is always something to hit. Mini Muddle holds on at 1 HP until the
+ * last question, so the final K.O. is always the round's finale.
  */
 
 export const BASE_DAMAGE: Record<Difficulty, number> = { 1: 10, 2: 15, 3: 20 };
@@ -90,7 +91,9 @@ export function bossState(difficulties: Difficulty[], answers: Answer[]): BossSt
     const hit = hitFor(difficulties[i] ?? 1, streak, a);
     lastHit = hit;
     if (defeated) return; // victory lap: hits still show, nothing left to beat
-    hp = Math.max(0, hp - hit.damage);
+    const isLast = i === difficulties.length - 1;
+    // Phase 2 has no boss after it: it can't fall before the last question.
+    hp = Math.max(phase === 2 && !isLast ? 1 : 0, hp - hit.damage);
     if (hp > 0) return;
     if (phase === 1) {
       bigBossBeaten = true;

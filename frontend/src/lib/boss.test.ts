@@ -67,6 +67,25 @@ describe('bossState', () => {
     expect(after.phase).toBe(2);
   });
 
+  it('Mini Muddle holds on at 1 HP until the last question', () => {
+    // 15 easy questions, fast perfect play: both bosses would fall early.
+    const d = easy(15);
+    const answers = Array.from({ length: 14 }, () => right(1000, 1));
+    const before = bossState(d, answers);
+    expect(before.phase).toBe(2);
+    expect(before.hp).toBe(1);
+    expect(before.defeated).toBe(false);
+    const end = bossState(d, [...answers, right(1000, 1)]);
+    expect(end).toMatchObject({ phase: 2, hp: 0, defeated: true });
+  });
+
+  it('Mini Muddle runs away if the last answer is wrong', () => {
+    const d = easy(15);
+    const answers = Array.from({ length: 14 }, () => right(1000, 1));
+    const end = bossState(d, [...answers, wrong()]);
+    expect(end).toMatchObject({ phase: 2, hp: 1, defeated: false, bigBossBeaten: true });
+  });
+
   it('a KO on the last question wins without a phase 2', () => {
     // HP 35; two misses, then 10 + 10 + 15 (combo crit) = 35 on the final answer.
     const s = bossState(easy(5), [wrong(), wrong(), right(), right(), right()]);
