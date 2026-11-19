@@ -249,6 +249,8 @@ export const STRINGS = {
   settingsMusicVolumeDesc: { en: 'How loud the music is.', id: 'Seberapa keras musiknya.' },
   settingsAutoReadDesc: { en: 'Mewy reads every new question and its answers out loud.', id: 'Mewy membacakan setiap soal baru dan jawabannya.' },
   settingsHoldSpeedDesc: { en: 'How long to keep your fingers still before the answer counts.', id: 'Berapa lama jari harus diam sebelum jawaban dihitung.' },
+  settingsBoss: { en: 'Boss battles', id: 'Pertarungan bos' },
+  settingsBossDesc: { en: 'Right answers knock down a boss in the Hand Quiz. Turn off for a calmer quiz.', id: 'Jawaban benar menjatuhkan bos di Kuis Tangan. Matikan untuk kuis yang lebih tenang.' },
   settingsCamTutorialDesc: { en: 'The "show 1, 2, 3, 4 fingers" warm-up for the camera.', id: 'Pemanasan "tunjukkan 1, 2, 3, 4 jari" untuk kamera.' },
   on: { en: 'On', id: 'Nyala' },
   off: { en: 'Off', id: 'Mati' },

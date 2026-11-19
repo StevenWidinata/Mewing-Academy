@@ -210,6 +210,7 @@ function SoundTab() {
 
 function PlayTab() {
   const { settings, set, tr } = useSettings();
+  const onOff = { labelOn: tr('on'), labelOff: tr('off') };
   return (
     <>
       <Row label={`✋ ${tr('settingsHoldSpeed')}`} desc={tr('settingsHoldSpeedDesc')}>
@@ -227,6 +228,9 @@ function PlayTab() {
         ) : (
           <span style={{ fontFamily: 'var(--font-read)' }}>{tr('settingsCamTutorialQueued')}</span>
         )}
+      </Row>
+      <Row label={`👾 ${tr('settingsBoss')}`} desc={tr('settingsBossDesc')}>
+        <Toggle on={settings.bossBattles} onToggle={() => set('bossBattles', !settings.bossBattles)} label={tr('settingsBoss')} {...onOff} />
       </Row>
     </>
   );

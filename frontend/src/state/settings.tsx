@@ -36,6 +36,8 @@ export interface Settings {
   roundSize: RoundSize;
   /** The first-time "show 1, 2, 3, 4 fingers" camera practice was finished or skipped. */
   cameraTutorialDone: boolean;
+  /** Fight a boss during Hand Quiz rounds. */
+  bossBattles: boolean;
   /** How long to hold fingers still before the answer counts. */
   holdSpeed: HoldSpeed;
   /** Parent-set stretch break after this many minutes of play (0 = off). */
@@ -61,10 +63,14 @@ const DEFAULTS: Settings = {
   roundSize: 5,
   cameraTutorialDone: false,
   holdSpeed: 'normal',
+  bossBattles: true,
   breakMinutes: 0,
 };
 
 const KEY = 'mewing.settings.v1';
+
+/** Newer on/off settings: a broken stored value falls back to the default. */
+const BOOL_KEYS = ['bossBattles'] as const satisfies readonly (keyof Settings)[];
 
 /** A stored 0..1 volume, or the default if it is missing or broken. */
 function volume(v: unknown, fallback: number): number {
@@ -83,6 +89,7 @@ function load(): Settings {
       if (!BREAK_CHOICES.includes(merged.breakMinutes)) merged.breakMinutes = DEFAULTS.breakMinutes;
       merged.sfxVolume = volume(merged.sfxVolume, DEFAULTS.sfxVolume);
       if (!SPEECH_RATES.includes(merged.speechRate)) merged.speechRate = DEFAULTS.speechRate;
+      for (const k of BOOL_KEYS) if (typeof merged[k] !== 'boolean') merged[k] = DEFAULTS[k];
       return merged;
     }
   } catch {
