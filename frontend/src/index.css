@@ -3515,3 +3515,57 @@ main > section > h1:first-child::after {
   font-size: 2.2rem;
   line-height: 1;
 }
+
+/* ============ Settings: game-style tabs ============ */
+.settings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 720px;
+  margin: 0 0 1rem;
+}
+.btn.settings-tab {
+  flex: 1 1 auto;
+  background: var(--btn-ghost);
+  color: var(--btn-ghost-text);
+  font-size: 0.7rem;
+}
+.btn.settings-tab.is-active {
+  background: var(--yellow);
+  color: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: 4px 7px 0 var(--shadow);
+}
+.settings-panel {
+  display: grid;
+  gap: 1rem;
+  max-width: 720px;
+}
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  flex-wrap: wrap;
+}
+.settings-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.settings-row__label {
+  font-family: var(--font-read);
+  font-weight: 700;
+}
+.settings-row__desc {
+  font-family: var(--font-read);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+.settings-row__controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
