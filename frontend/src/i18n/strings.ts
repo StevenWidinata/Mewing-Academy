@@ -200,6 +200,9 @@ export const STRINGS = {
   mewySad: { en: 'Nice try! Let’s keep learning.', id: 'Sudah bagus! Ayo terus belajar.' },
   readAloud: { en: 'Read aloud', id: 'Bacakan' },
   settingsAutoRead: { en: 'Read questions aloud automatically', id: 'Bacakan soal otomatis' },
+  settingsSpeechRate: { en: 'Read-aloud speed', id: 'Kecepatan membaca' },
+  settingsSpeechRateDesc: { en: 'How fast Mewy talks. Pick one to hear a sample.', id: 'Seberapa cepat Mewy berbicara. Pilih satu untuk mendengar contoh.' },
+  speechSample: { en: 'Hi! I am Mewy. What color is the sky?', id: 'Halo! Aku Mewy. Apa warna langit?' },
 
   // Adaptive difficulty, daily challenge, parents
   adaptUp: { en: 'Wow! You are ready for a harder level!', id: 'Wah! Kamu siap untuk tingkat lebih sulit!' },

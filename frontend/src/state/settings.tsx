@@ -6,6 +6,7 @@ import { BREAK_CHOICES, type BreakMinutes } from '../lib/breakTime';
 import { HOLD_SPEEDS, type HoldSpeed } from './holdSpeed';
 import { ROUND_SIZES, type RoundSize } from './roundSize';
 import { setSfxVolume } from '../lib/sound';
+import { SPEECH_RATES, setSpeechRate, type SpeechRate } from '../lib/speak';
 
 export type ThemeId = 'purple' | 'sky' | 'mint' | 'sunset';
 export type TextSize = 'normal' | 'large' | 'xlarge';
@@ -21,6 +22,8 @@ export interface Settings {
   /** Sound effects volume, 0..1. */
   sfxVolume: number;
   autoRead: boolean;
+  /** How fast questions are read aloud. */
+  speechRate: SpeechRate;
   /** 8-bit background music (off by default). */
   music: boolean;
   /** 0..1 */
@@ -49,6 +52,7 @@ const DEFAULTS: Settings = {
   sound: true,
   sfxVolume: 1,
   autoRead: false,
+  speechRate: 'normal',
   music: false,
   musicVolume: 0.4,
   pawCursor: true,
@@ -78,6 +82,7 @@ function load(): Settings {
       if (!HOLD_SPEEDS.includes(merged.holdSpeed)) merged.holdSpeed = DEFAULTS.holdSpeed;
       if (!BREAK_CHOICES.includes(merged.breakMinutes)) merged.breakMinutes = DEFAULTS.breakMinutes;
       merged.sfxVolume = volume(merged.sfxVolume, DEFAULTS.sfxVolume);
+      if (!SPEECH_RATES.includes(merged.speechRate)) merged.speechRate = DEFAULTS.speechRate;
       return merged;
     }
   } catch {
@@ -113,6 +118,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     root.dataset.font = settings.readableFont ? 'readable' : 'pixel';
     root.dataset.textSize = settings.textSize;
     setSfxVolume(settings.sfxVolume);
+    setSpeechRate(settings.speechRate);
   }, [settings]);
 
   const tr = useCallback((key: StringKey) => t(key, settings.lang), [settings.lang]);

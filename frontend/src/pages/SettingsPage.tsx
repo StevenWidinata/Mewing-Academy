@@ -4,6 +4,7 @@ import type { Lang } from '../../../shared/types';
 import { SettingsHelp } from '../components/SettingsHelp';
 import type { StringKey } from '../i18n/strings';
 import { sfx } from '../lib/sound';
+import { SPEECH_RATES, canSpeak, setSpeechRate, speak } from '../lib/speak';
 import { HOLD_MS, HOLD_SPEEDS } from '../state/holdSpeed';
 import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
@@ -185,6 +186,24 @@ function SoundTab() {
       <Row label={`🔊 ${tr('settingsAutoRead')}`} desc={tr('settingsAutoReadDesc')}>
         <Toggle on={settings.autoRead} onToggle={() => set('autoRead', !settings.autoRead)} label={tr('settingsAutoRead')} {...onOff} />
       </Row>
+      {canSpeak && (
+        <Row label={`🗣️ ${tr('settingsSpeechRate')}`} desc={tr('settingsSpeechRateDesc')}>
+          {SPEECH_RATES.map((r) => (
+            <Choice
+              key={r}
+              active={settings.speechRate === r}
+              onPick={() => {
+                set('speechRate', r);
+                setSpeechRate(r); // right away, so the sample already uses it
+                speak(tr('speechSample'), settings.lang);
+              }}
+            >
+              {r === 'slow' ? '🐢 ' : r === 'fast' ? '🐇 ' : ''}
+              {tr(r === 'slow' ? 'holdSlow' : r === 'normal' ? 'holdNormal' : 'holdFast')}
+            </Choice>
+          ))}
+        </Row>
+      )}
     </>
   );
 }
