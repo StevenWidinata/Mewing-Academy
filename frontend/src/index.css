@@ -3569,3 +3569,54 @@ main > section > h1:first-child::after {
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+.settings-help {
+  font-family: var(--font-read);
+}
+.settings-help p {
+  margin: 0.4rem 0;
+}
+.settings-help__title {
+  font-size: 0.95rem;
+  margin: 0 0 0.6rem;
+}
+.settings-help__sub {
+  font-family: var(--font-read);
+  font-size: 1rem;
+  margin: 1rem 0 0.2rem;
+}
+.settings-help__fingers {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.6rem;
+}
+.settings-help__fingers li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--btn-ghost);
+  color: var(--btn-ghost-text);
+  border: 3px solid var(--ink);
+}
+.settings-help__list {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.settings-help__list--icons {
+  list-style: none;
+  padding-left: 0;
+}
+.settings-help kbd {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  padding: 0.15em 0.45em;
+  background: var(--white);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--shadow);
+}

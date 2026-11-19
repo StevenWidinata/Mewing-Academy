@@ -231,6 +231,7 @@ export const STRINGS = {
   tabDisplay: { en: 'Display', id: 'Layar' },
   tabSound: { en: 'Sound', id: 'Suara' },
   tabPlay: { en: 'Play', id: 'Main' },
+  tabHelp: { en: 'Help', id: 'Bantuan' },
   settingsLangDesc: { en: 'Words on buttons, questions and read-aloud.', id: 'Kata di tombol, soal, dan suara bacaan.' },
   settingsThemeDesc: { en: 'Colors of the whole site.', id: 'Warna seluruh situs.' },
   settingsTextSizeDesc: { en: 'Make all the letters bigger.', id: 'Buat semua huruf lebih besar.' },

@@ -1,7 +1,7 @@
 import { useRef, type KeyboardEvent, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Lang } from '../../../shared/types';
-import { ParentsLinkCard } from '../components/ParentsLinkCard';
+import { SettingsHelp } from '../components/SettingsHelp';
 import type { StringKey } from '../i18n/strings';
 import { HOLD_MS, HOLD_SPEEDS } from '../state/holdSpeed';
 import { useSettings, type TextSize, type ThemeId } from '../state/settings';
@@ -17,6 +17,7 @@ const TABS = [
   { id: 'display', icon: '🖥️', label: 'tabDisplay' },
   { id: 'sound', icon: '🔊', label: 'tabSound' },
   { id: 'play', icon: '✋', label: 'tabPlay' },
+  { id: 'help', icon: '❓', label: 'tabHelp' },
 ] as const satisfies readonly { id: string; icon: string; label: StringKey }[];
 type TabId = (typeof TABS)[number]['id'];
 const isTab = (v: string | null): v is TabId => TABS.some((t) => t.id === v);
@@ -200,6 +201,7 @@ const PANELS: Record<TabId, () => ReactNode> = {
   display: DisplayTab,
   sound: SoundTab,
   play: PlayTab,
+  help: SettingsHelp,
 };
 
 export function SettingsPage() {
@@ -215,7 +217,6 @@ export function SettingsPage() {
       <div role="tabpanel" id={`settings-panel-${tab}`} aria-labelledby={`settings-tab-${tab}`} className="settings-panel">
         <Panel />
       </div>
-      <ParentsLinkCard />
     </section>
   );
 }
