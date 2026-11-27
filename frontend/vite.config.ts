@@ -11,14 +11,16 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // A new version waits until the child taps "Update" (UpdatePrompt), so a
+      // round in progress is never reloaded away under them.
+      registerType: 'prompt',
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Mewing Academy',
         short_name: 'Mewing',
         description: 'Learn with your hands. Play with AI.',
         theme_color: '#ffcc00',
-        background_color: '#130d2e',
+        background_color: '#cfeeff',
         display: 'standalone',
         orientation: 'any',
         icons: [

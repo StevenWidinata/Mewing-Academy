@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { sfx } from '../lib/sound';
 import { useProgress } from '../state/progress';
@@ -66,7 +66,9 @@ export function Layout() {
       <NavBar />
 
       <main id="main" tabIndex={-1}>
-        <Outlet />
+        <Suspense fallback={<p className="page-loading blink">{tr('loading')}</p>}>
+          <Outlet />
+        </Suspense>
       </main>
       <RewardToast />
       <BreakReminder />

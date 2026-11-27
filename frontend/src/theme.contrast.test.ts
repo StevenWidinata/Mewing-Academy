@@ -58,6 +58,7 @@ function ratio(a: RGBA, b: RGBA): number {
 const BASE = block(':root');
 const THEMES: Record<string, Record<string, string>> = {
   sky: BASE, // Sky Blue is the :root base
+  night: { ...BASE, ...block(":root[data-theme='night']") },
   mint: { ...BASE, ...block(":root[data-theme='mint']") },
   sunset: { ...BASE, ...block(":root[data-theme='sunset']") },
 };

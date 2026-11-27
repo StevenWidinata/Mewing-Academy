@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import type { TopicId } from '../../../shared/types';
+import { TOPICS, type TopicId } from '../../../shared/types';
 import { Mewy } from '../components/Mewy';
 import { useProgress } from '../state/progress';
 import { BADGES, correctIn, topicTitle } from '../state/rewards';
@@ -28,6 +28,7 @@ export function CertificatePage() {
   const title = topicTitle(topic, L);
   const correct = correctIn(progress, topic as TopicId);
   const earned = correct >= GOLD.need;
+  const emoji = topic === 'memory' ? '🧠' : (TOPICS.find((x) => x.id === topic)?.emoji ?? '⭐');
 
   const changeName = (v: string) => {
     setName(v);
@@ -70,6 +71,11 @@ export function CertificatePage() {
               <p className="certificate__line">{tr('certGivenTo')}</p>
               <p className="certificate__name">{name.trim() || '__________'}</p>
               <p className="certificate__line">{tr('certFor').replace('{topic}', title).replace('{n}', String(correct))}</p>
+              <div className="certificate__seal" aria-hidden="true">
+                <span className="certificate__star">⭐</span>
+                <span className="certificate__topic">{emoji}</span>
+                <span className="certificate__star">⭐</span>
+              </div>
               <div className="certificate__foot">
                 <span className="certificate__date">{date}</span>
                 <span className="certificate__sign">

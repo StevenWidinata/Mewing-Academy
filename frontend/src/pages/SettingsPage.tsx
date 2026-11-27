@@ -12,6 +12,7 @@ import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
 const THEMES: { id: ThemeId; name: { en: string; id: string }; swatch: string; ink: string }[] = [
   { id: 'sky', name: { en: 'Sky Blue', id: 'Langit Biru' }, swatch: 'linear-gradient(135deg,#7cc8f2,#c9f0ff)', ink: '#14304d' },
+  { id: 'night', name: { en: 'Night Sky', id: 'Langit Malam' }, swatch: 'linear-gradient(135deg,#071530,#24598f)', ink: '#fdf6e3' },
   { id: 'mint', name: { en: 'Mint Green', id: 'Hijau Mint' }, swatch: 'linear-gradient(135deg,#7fdca4,#dcf9e6)', ink: '#13402a' },
   { id: 'sunset', name: { en: 'Sunset Peach', id: 'Senja Persik' }, swatch: 'linear-gradient(135deg,#ffb38a,#ffe7c2)', ink: '#4a2318' },
 ];

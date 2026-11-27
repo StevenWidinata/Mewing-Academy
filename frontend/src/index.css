@@ -55,6 +55,35 @@
 
 /* ---- Other background themes (Sky Blue is the :root base above).
    (--white is the "foreground text" token used across the app.) ---- */
+/* Night Sky: the one dark theme, navy with light text and yellow headings */
+:root[data-theme='night'] {
+  --bg: #0e2240;
+  --bg-2: #071530;
+  --panel: #15325a;
+  --panel-light: #1d4a78;
+  --panel-glow: linear-gradient(160deg, #183a66 0%, #122c50 100%);
+  --grad-hero: linear-gradient(120deg, #15325a 0%, #1d4a78 50%, #24598f 100%);
+  --text: #fdf6e3;
+  --white: #fdf6e3;
+  --accent: #ffcc00;
+  --frame: #3b8fd4;
+  --frame-dark: #1d4a78;
+  --shadow: #04101f;
+  --heading-shadow: 3px 3px 0 #04101f;
+  --surface: rgba(10, 26, 52, 0.92);
+  --btn-ghost: #bfe0ff;
+  --btn-ghost-text: #102a43;
+  --chip-bg: #071530;
+  --chip-text: #fdf6e3;
+  /* On a dark page the hover border is a light blue so it still shows */
+  --hover-ring: #5aa8ea;
+  --hover-glow: rgba(90, 168, 234, 0.45);
+  --viz-series: #3987e5;
+  --viz-grid: rgba(253, 246, 227, 0.16);
+  --viz-ring: #122c50;
+  --viz-tip-bg: #fdf6e3;
+  --viz-tip-text: #102a43;
+}
 :root[data-theme='mint'] {
   --bg: #d6f5e3;
   --bg-2: #b4ebcc;
@@ -3748,6 +3777,28 @@ main > section > h1:first-child::after {
   font-size: clamp(1rem, 3.4vw, 1.9rem);
   overflow-wrap: anywhere;
 }
+.certificate__seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.6rem, 3vw, 1.6rem);
+  margin: clamp(0.4rem, 2vw, 1.2rem) 0;
+}
+.certificate__star {
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+}
+.certificate__topic {
+  display: grid;
+  place-items: center;
+  width: clamp(3.5rem, 11vw, 6rem);
+  height: clamp(3.5rem, 11vw, 6rem);
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
+  line-height: 1;
+  background: radial-gradient(circle at 35% 30%, #fff8d6, #ffcc00 70%);
+  border: 4px solid #1d5a8f;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #ffcc00, 0 0 0 7px #1d5a8f;
+}
 .certificate__foot {
   width: 100%;
   display: flex;
@@ -3802,4 +3853,62 @@ main > section > h1:first-child::after {
     box-shadow: none;
     aspect-ratio: auto;
   }
+}
+
+/* ============ New version bar ============ */
+.update-bar {
+  position: fixed;
+  left: 50%;
+  top: 1rem;
+  transform: translateX(-50%);
+  z-index: 250; /* above the title screen too */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  text-align: center;
+}
+.update-bar__text {
+  font-family: var(--font-read);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.update-bar__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ============ Error page + page loading ============ */
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+.error-page h1 {
+  margin: 0;
+}
+.error-page__text {
+  max-width: 34rem;
+  margin: 0;
+  font-family: var(--font-read);
+  font-size: 1.1rem;
+}
+.error-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.page-loading {
+  margin: 2rem 0;
+  text-align: center;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  color: var(--accent);
 }
