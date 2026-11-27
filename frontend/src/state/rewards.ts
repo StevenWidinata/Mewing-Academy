@@ -2,6 +2,7 @@ import { TOPICS, type Lang, type Text, type TopicId } from '../../../shared/type
 import { BAG_ITEMS, type Bag, type BagKind } from '../lib/bag';
 import { STAGES } from '../lib/mewyStage';
 import { STICKERS } from '../lib/stickers';
+import { STREAK_GIFTS } from '../lib/streakGifts';
 import { WEEKLY_GOAL, weekStart } from '../lib/weekly';
 import type { Progress } from './progress';
 
@@ -159,6 +160,7 @@ export function unlockKeys(p: Progress): string[] {
   if (p.shieldWeek) keys.push(`shield:${p.shieldWeek}`);
   for (const s of p.stickers ?? []) keys.push(`sticker:${s}`);
   for (const st of STAGES) if (st.min > 0 && (p.bestStreak ?? 0) >= st.min) keys.push(`stage:${st.id}`);
+  for (const d of p.streakGifts ?? []) keys.push(`streakgift:${d}`);
   return keys;
 }
 
@@ -203,6 +205,11 @@ export function describeUnlock(key: string, lang: Lang): string {
   }
   if (kind === 'shield') {
     return lang === 'en' ? '🛡️ Your streak shield saved your streak!' : '🛡️ Perisai menyelamatkan hari beruntunmu!';
+  }
+  if (kind === 'streakgift') {
+    const g = STREAK_GIFTS.find((x) => String(x.days) === a);
+    const n = g?.tickets ?? 1;
+    return lang === 'en' ? `🔥 ${a}-day streak! +${n} 🎟️ Golden Ticket` : `🔥 ${a} hari beruntun! +${n} 🎟️ Tiket Emas`;
   }
   if (kind === 'handbonus') {
     return lang === 'en' ? `✋ +1 ⭐ Hand Hero bonus!` : `✋ +1 ⭐ bonus Pahlawan Tangan!`;

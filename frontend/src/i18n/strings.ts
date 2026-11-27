@@ -162,6 +162,26 @@ export const STRINGS = {
     id: 'Perisai sudah dipakai minggu ini. Kembali lagi hari Senin!',
   },
   progressStreak: { en: 'Day streak', id: 'Hari beruntun' },
+  streakPlayedToday: { en: 'You played today. Come back tomorrow!', id: 'Kamu sudah main hari ini. Datang lagi besok ya!' },
+  streakPlayToday: { en: 'Answer one question today to keep your streak!', id: 'Jawab satu soal hari ini supaya hari beruntunmu tidak putus!' },
+  streakStart: { en: 'Play today to start a streak!', id: 'Main hari ini untuk mulai hari beruntun!' },
+  streakNextGift: { en: 'Gift at a {n}-day streak: +{t} 🎟️', id: 'Hadiah di {n} hari beruntun: +{t} 🎟️' },
+  streakAllGifts: { en: 'All streak gifts collected! 🏆', id: 'Semua hadiah hari beruntun sudah didapat! 🏆' },
+
+  // Printable certificate (gold badge)
+  certButton: { en: 'Certificate', id: 'Sertifikat' },
+  certTitle: { en: 'Certificate of Mastery', id: 'Sertifikat Juara' },
+  certGivenTo: { en: 'proudly given to', id: 'dengan bangga diberikan kepada' },
+  certFor: { en: 'for mastering {topic} with {n} right answers', id: 'karena menguasai topik {topic} dengan {n} jawaban benar' },
+  certNameLabel: { en: "Child's name", id: 'Nama anak' },
+  certNamePlaceholder: { en: 'Type a name', id: 'Ketik nama' },
+  certPrint: { en: 'Print / Save as PDF', id: 'Cetak / Simpan PDF' },
+  certNotYet: {
+    en: 'This certificate unlocks with the gold badge: {n} more right answers in {topic}.',
+    id: 'Sertifikat ini terbuka dengan lencana emas: {n} jawaban benar lagi di {topic}.',
+  },
+  certSign: { en: 'Mewy, Head Teacher', id: 'Mewy, Kepala Sekolah' },
+  certBack: { en: 'Back to my stars', id: 'Kembali ke bintangku' },
 
   // Closet / rewards
   navCloset: { en: "Mewy's Closet", id: 'Lemari Mewy' },
