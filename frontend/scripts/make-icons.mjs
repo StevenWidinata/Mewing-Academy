@@ -1,5 +1,5 @@
-// Generates app icons as valid PNGs with no image library — a pixel cat (Mewy)
-// on a yellow background. Uses Node's zlib for PNG IDAT compression.
+// Generates app icons and the link-preview image as valid PNGs with no image
+// library — a pixel cat (Mewy) on a sky-blue background. Uses Node's zlib for PNG IDAT compression.
 import { deflateSync } from 'node:zlib';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -9,10 +9,10 @@ const pub = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 mkdirSync(pub, { recursive: true });
 
 const C = {
-  bg: [19, 13, 46],
+  bg: [29, 90, 143],
   y: [255, 204, 0],
   yd: [224, 168, 0],
-  k: [26, 20, 48],
+  k: [16, 42, 67],
   p: [255, 92, 168],
   w: [253, 246, 227],
 };
@@ -84,10 +84,56 @@ function encodePng(w, h, raw) {
   return Buffer.concat([sig, chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
 }
 
+/** 1200x630 link-preview image (og:image): Mewy on a sky gradient with pixel stars. */
+function makeOg() {
+  const W = 1200;
+  const H = 630;
+  const cell = 24; // Mewy is 16 cells = 384px
+  const catX = (W - 16 * cell) / 2;
+  const catY = 90;
+  const top = [29, 90, 143];
+  const bottom = [168, 220, 247];
+  const stars = [[120, 90], [260, 200], [180, 430], [980, 120], [1080, 300], [900, 470], [330, 540], [1010, 560], [70, 300], [1150, 80]];
+  const row = W * 3 + 1;
+  const raw = Buffer.alloc(row * H);
+  for (let y = 0; y < H; y++) {
+    raw[y * row] = 0;
+    const t = y / (H - 1);
+    const sky = top.map((c, i) => Math.round(c + (bottom[i] - c) * t));
+    for (let x = 0; x < W; x++) {
+      let px = sky;
+      // Yellow ground strip with a navy top edge
+      if (y >= H - 40) px = y < H - 34 ? C.k : C.y;
+      // 8x8 pixel stars with a plus shape
+      for (const [sx, sy] of stars) {
+        const dx = Math.abs(x - sx);
+        const dy = Math.abs(y - sy);
+        if ((dx < 4 && dy < 12) || (dy < 4 && dx < 12)) px = C.w;
+      }
+      // Mewy, with a hard navy drop shadow
+      const gx = Math.floor((x - catX) / cell);
+      const gy = Math.floor((y - catY) / cell);
+      const sgx = Math.floor((x - catX - 16) / cell);
+      const sgy = Math.floor((y - catY - 16) / cell);
+      const inCat = x >= catX && y >= catY && gx < 16 && gy < 16 ? catPixel(gx, gy) : null;
+      const inShadow = x >= catX + 16 && y >= catY + 16 && sgx < 16 && sgy < 16 ? catPixel(sgx, sgy) : null;
+      if (inShadow && !inCat) px = C.k;
+      if (inCat) px = inCat;
+      const o = y * row + 1 + x * 3;
+      raw[o] = px[0];
+      raw[o + 1] = px[1];
+      raw[o + 2] = px[2];
+    }
+  }
+  return encodePng(W, H, raw);
+}
+
+writeFileSync(join(pub, 'og-image.png'), makeOg());
+
 for (const size of [192, 512]) {
   writeFileSync(join(pub, `icon-${size}.png`), makeIcon(size));
 }
 // A small favicon too.
-const favSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#130d2e"/><rect x="3" y="3" width="10" height="10" fill="#ffcc00"/><rect x="5" y="6" width="2" height="2" fill="#1a1430"/><rect x="9" y="6" width="2" height="2" fill="#1a1430"/><rect x="7" y="8" width="2" height="1" fill="#ff5ca8"/></svg>`;
+const favSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#1d5a8f"/><rect x="3" y="3" width="10" height="10" fill="#ffcc00"/><rect x="5" y="6" width="2" height="2" fill="#102a43"/><rect x="9" y="6" width="2" height="2" fill="#102a43"/><rect x="7" y="8" width="2" height="1" fill="#ff5ca8"/></svg>`;
 writeFileSync(join(pub, 'favicon.svg'), favSvg);
-console.log('[icons] wrote icon-192.png, icon-512.png, favicon.svg');
+console.log('[icons] wrote icon-192.png, icon-512.png, og-image.png, favicon.svg');

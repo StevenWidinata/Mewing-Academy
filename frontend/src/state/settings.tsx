@@ -8,8 +8,8 @@ import { ROUND_SIZES, type RoundSize } from './roundSize';
 import { setSfxVolume } from '../lib/sound';
 import { SPEECH_RATES, setSpeechRate, type SpeechRate } from '../lib/speak';
 
-export type ThemeId = 'sky' | 'mint' | 'sunset';
-const THEME_IDS: readonly ThemeId[] = ['sky', 'mint', 'sunset'];
+export type ThemeId = 'sky' | 'night' | 'mint' | 'sunset';
+const THEME_IDS: readonly ThemeId[] = ['sky', 'night', 'mint', 'sunset'];
 export type TextSize = 'normal' | 'large' | 'xlarge';
 
 export interface Settings {

@@ -183,6 +183,18 @@ export const STRINGS = {
   certSign: { en: 'Mewy, Head Teacher', id: 'Mewy, Kepala Sekolah' },
   certBack: { en: 'Back to my stars', id: 'Kembali ke bintangku' },
 
+  // New version + error page
+  updateReady: { en: 'A new version of Mewing Academy is ready!', id: 'Versi baru Mewing Academy sudah siap!' },
+  updateNow: { en: 'Update', id: 'Perbarui' },
+  updateLater: { en: 'Later', id: 'Nanti' },
+  errorTitle: { en: 'Oops! Mewy tripped.', id: 'Ups! Mewy tersandung.' },
+  errorText: {
+    en: 'Something went wrong on this page. Reloading usually fixes it, and your stars are safe.',
+    id: 'Ada yang salah di halaman ini. Biasanya beres kalau dimuat ulang, dan bintangmu tetap aman.',
+  },
+  errorReload: { en: 'Reload', id: 'Muat ulang' },
+  errorHome: { en: 'Go home', id: 'Ke beranda' },
+
   // Closet / rewards
   navCloset: { en: "Mewy's Closet", id: 'Lemari Mewy' },
   closetItems: { en: 'Outfits', id: 'Pakaian' },

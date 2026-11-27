@@ -1,12 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { registerSW } from 'virtual:pwa-register';
 import { App } from './App';
 import './index.css';
 import { SettingsProvider } from './state/settings';
 
-// Auto-update the installed app when a new version is deployed.
-registerSW({ immediate: true });
+// The service worker is registered by <UpdatePrompt /> (in App), which
+// offers to update when a new version is deployed.
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
