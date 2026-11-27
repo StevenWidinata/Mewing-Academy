@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Progress } from './progress';
 import { ITEMS, badgeFor, canAfford, describeUnlock, handBadge, isFurUnlocked, isItemUnlocked, legacyOwned, missingFor, nextBadge, payFrom, priceOf, unlockKeys, withBuyHints } from './rewards';
 
-const p = (stars: number, byTopic: Progress['byTopic'] = {}): Progress => ({ stars, byTopic, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0, bestStreak: 0 });
+const p = (stars: number, byTopic: Progress['byTopic'] = {}): Progress => ({ stars, byTopic, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0, bestStreak: 0, streakGifts: [] });
 
 describe('rewards', () => {
   it('outfits and furs are owned only after buying (Sunny Yellow is free)', () => {

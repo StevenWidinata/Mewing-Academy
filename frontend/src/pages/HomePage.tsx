@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { TOPICS } from '../../../shared/types';
 import { Mewy } from '../components/Mewy';
 import { NextStepCard } from '../components/NextStepCard';
+import { StreakCard } from '../components/StreakCard';
 import { useProgress } from '../state/progress';
 import { TopicIcon } from '../components/TopicIcon';
 import { useSettings } from '../state/settings';
@@ -42,6 +43,7 @@ export function HomePage() {
       </div>
 
       <NextStepCard />
+      <StreakCard />
 
       <h2>{tr('pickGame')}</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>

@@ -1,6 +1,7 @@
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { AboutPage } from './pages/AboutPage';
+import { CertificatePage } from './pages/CertificatePage';
 import { ClosetPage } from './pages/ClosetPage';
 import { DailyPage } from './pages/DailyPage';
 import { ParentsPage } from './pages/ParentsPage';
@@ -32,6 +33,7 @@ const router = createHashRouter([
       { path: 'review', element: <ReviewPage /> },
       { path: 'parents', element: <ParentsPage /> },
       { path: 'progress', element: <ProgressPage /> },
+      { path: 'certificate/:topic', element: <CertificatePage /> },
       { path: 'how-ai', element: <HowAiPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'settings', element: <SettingsPage /> },

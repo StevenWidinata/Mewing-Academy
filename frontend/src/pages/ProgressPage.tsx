@@ -74,6 +74,11 @@ export function ProgressPage() {
                 <div style={{ height: 16, background: 'var(--bg)', border: '2px solid var(--ink)', marginTop: 6 }}>
                   <div style={{ height: '100%', width: `${pct}%`, background: 'var(--green)' }} />
                 </div>
+                {badge?.tier === 'gold' && (
+                  <Link to={`/certificate/${id}`} className="btn btn--ghost" style={{ fontSize: '0.6rem', marginTop: 8 }}>
+                    📜 {tr('certButton')}
+                  </Link>
+                )}
                 {upcoming && (
                   <div style={{ fontFamily: 'var(--font-read)', fontSize: '0.8rem', marginTop: 4, opacity: 0.85 }}>
                     {tr('nextBadge')}: {upcoming.emoji} {upcoming.need - s.correct} ✔

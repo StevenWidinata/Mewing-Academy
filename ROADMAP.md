@@ -6,7 +6,7 @@ continue from the first item without a commit.
 
 | # | Improvement | Notes |
 |---|---|---|
-| 1 | Background themes | Purple Night, Sky Blue, Mint Green, Sunset Peach (Settings) |
+| 1 | Background themes | Sky Blue (default), Mint Green, Sunset Peach (Settings). Purple Night was removed later |
 | 2 | Mewy's Closet – outfits | One outfit per topic, unlocked after 5 correct answers in that topic |
 | 3 | Mewy fur colors | Unlocked at star milestones (10, 25, 40, 60, 80, 100) |
 | 4 | Topic badges + unlock pop-ups | Bronze 5 / Silver 15 / Gold 30 correct per topic |
@@ -20,3 +20,11 @@ continue from the first item without a commit.
 **Status: all 10 done** (plus a fix so each answer is counted only once).
 Open the Closet from the menu, the Daily Challenge from Home, and the
 Parent/Teacher Corner from the footer link.
+
+## Later additions
+
+| Improvement | Notes |
+|---|---|
+| Sky Blue main theme | Sky Blue is the base and default look; Purple Night removed (old saves move to Sky Blue). Hovered cards get a solid border in the theme's dark tone instead of the rainbow border |
+| Streak gifts + Home streak card | Golden Tickets the first time a 3 / 7 / 14 / 30-day streak is reached (+1 / +2 / +3 / +5). Home shows today's streak, whether it is safe yet, and the next gift |
+| Printable certificate | Each topic with the gold badge (30 right answers) gets a certificate on the Progress page: type the child's name, then print or save as PDF (A4 landscape) |

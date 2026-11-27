@@ -23,6 +23,7 @@ const empty: Progress = {
   tutorQuestions: 0,
   purchases: 0,
   bestStreak: 0,
+  streakGifts: [],
 };
 
 describe('sticker book', () => {

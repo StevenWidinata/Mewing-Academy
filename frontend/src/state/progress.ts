@@ -5,6 +5,7 @@ import { addLevelStars, levelStarsFrom, type LevelStars } from '../lib/levelStar
 import { addMistake, removeMistake } from '../lib/mistakes';
 import { MAX_SESSIONS, type SessionLog } from '../lib/sessions';
 import { timeSticker, withEarnedStickers, type StickerId } from '../lib/stickers';
+import { giftsDue, passedGifts } from '../lib/streakGifts';
 import { addPlayDay, nextStreak } from '../lib/weekly';
 import { HAND_BONUS_EVERY, canAfford, legacyOwned, payFrom, priceOf, unlockKeys, withBuyHints } from './rewards';
 
@@ -41,10 +42,12 @@ export interface Progress {
   purchases: number;
   /** Longest day streak ever: Mewy's growth stage never goes back down. */
   bestStreak: number;
+  /** Streak milestones (days) whose Golden Ticket gift was given. */
+  streakGifts: number[];
 }
 
 const KEY = 'mewing.progress.v1';
-const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0, bestStreak: 0 };
+const EMPTY: Progress = { stars: 0, byTopic: {}, lastPlayed: null, streak: 0, lastDaily: null, sessions: [], mistakes: [], handAnswers: 0, levelStars: {}, playDays: [], shieldWeek: null, stickers: [], bag: {}, owned: [], buyHints: [], fixedCount: 0, lessonsDone: [], tutorQuestions: 0, purchases: 0, bestStreak: 0, streakGifts: [] };
 
 /** Set when an older save got its one-time welcome gift on this load (shown as a pop-up). */
 let gotWelcomeGift = false;
@@ -72,6 +75,8 @@ function read(): Progress {
       // Shop: keep everything the old free rules had unlocked, without pop-ups.
       if (!saved.owned) merged.owned = legacyOwned(merged);
       merged.bestStreak = Math.max(saved.bestStreak ?? 0, merged.streak);
+      // ...and streak gifts: milestones already passed count as given.
+      if (!saved.streakGifts) merged.streakGifts = passedGifts(merged.bestStreak);
       if (!saved.buyHints) merged.buyHints = withBuyHints({ ...merged, buyHints: [] });
       return merged;
     }
@@ -118,8 +123,13 @@ export function recordAnswer(topic: TopicId, correct: boolean, byHand = false) {
   const topicStats = prev.byTopic[topic] ?? { correct: 0, total: 0 };
   const now = today();
   const { streak, shieldWeek } = nextStreak(prev, now);
+  // Streak gifts: Golden Tickets the first time each milestone is reached.
+  const gifts = giftsDue(streak, prev.streakGifts);
+  const giftTickets = gifts.reduce((n, g) => n + g.tickets, 0);
   write({
     ...prev,
+    bag: giftTickets ? addToBag(prev.bag, { ticket: giftTickets }) : prev.bag,
+    streakGifts: gifts.length ? [...prev.streakGifts, ...gifts.map((g) => g.days)] : prev.streakGifts,
     stars: prev.stars + (correct ? 1 : 0) + handBonus,
     handAnswers,
     byTopic: { ...prev.byTopic, [topic]: { correct: topicStats.correct + (correct ? 1 : 0), total: topicStats.total + 1 } },
