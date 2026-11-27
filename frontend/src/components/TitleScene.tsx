@@ -49,7 +49,7 @@ export default function TitleScene({ speed, warp }: Props) {
     }
     renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio));
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x2a0d5e, 18, 46);
+    scene.fog = new THREE.Fog(0x0b2a55, 18, 46);
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
     camera.position.set(0, 1.6, 8);
     camera.lookAt(0, 1.6, 0);
@@ -58,11 +58,11 @@ export default function TitleScene({ speed, warp }: Props) {
     sun.position.set(0, 4.2, -40);
     scene.add(sun);
 
-    // Low-poly purple mountains on the horizon
+    // Low-poly navy mountains on the horizon
     const mountains = new THREE.Group();
     for (let i = -6; i <= 6; i++) {
       const h = 2 + ((i * 7919) % 5 + 5) % 5;
-      const m = new THREE.Mesh(new THREE.ConeGeometry(3.4, h, 4), new THREE.MeshBasicMaterial({ color: i % 2 ? 0x3a1470 : 0x2a0d5e, fog: false }));
+      const m = new THREE.Mesh(new THREE.ConeGeometry(3.4, h, 4), new THREE.MeshBasicMaterial({ color: i % 2 ? 0x15406e : 0x0b2a55, fog: false }));
       m.position.set(i * 4.6, h / 2 - 0.2, -34 - Math.abs(i));
       m.rotation.y = Math.PI / 4;
       mountains.add(m);
@@ -71,7 +71,7 @@ export default function TitleScene({ speed, warp }: Props) {
 
     // Neon grid floor that scrolls toward the camera
     const CELL = 2;
-    const grid = new THREE.GridHelper(120, 60, 0xff5ca8, 0x27e0d8);
+    const grid = new THREE.GridHelper(120, 60, 0x3b8fd4, 0x27e0d8);
     (grid.material as THREE.Material).transparent = true;
     (grid.material as THREE.Material).opacity = 0.75;
     scene.add(grid);

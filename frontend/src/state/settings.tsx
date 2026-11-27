@@ -8,7 +8,8 @@ import { ROUND_SIZES, type RoundSize } from './roundSize';
 import { setSfxVolume } from '../lib/sound';
 import { SPEECH_RATES, setSpeechRate, type SpeechRate } from '../lib/speak';
 
-export type ThemeId = 'purple' | 'sky' | 'mint' | 'sunset';
+export type ThemeId = 'sky' | 'mint' | 'sunset';
+const THEME_IDS: readonly ThemeId[] = ['sky', 'mint', 'sunset'];
 export type TextSize = 'normal' | 'large' | 'xlarge';
 
 export interface Settings {
@@ -52,7 +53,7 @@ export interface Settings {
 
 const DEFAULTS: Settings = {
   lang: 'en',
-  theme: 'purple',
+  theme: 'sky',
   highContrast: false,
   reduceMotion: false,
   readableFont: false,
@@ -93,6 +94,8 @@ function load(): Settings {
       // fingerMode was removed (count mode only); drop it from old saves.
       const { fingerMode: _removed, ...saved } = JSON.parse(raw) as Partial<Settings> & { fingerMode?: unknown };
       const merged = { ...DEFAULTS, ...saved };
+      // The Purple Night theme was removed: old saves move to Sky Blue.
+      if (!THEME_IDS.includes(merged.theme)) merged.theme = DEFAULTS.theme;
       if (!ROUND_SIZES.includes(merged.roundSize)) merged.roundSize = DEFAULTS.roundSize;
       if (!HOLD_SPEEDS.includes(merged.holdSpeed)) merged.holdSpeed = DEFAULTS.holdSpeed;
       if (!BREAK_CHOICES.includes(merged.breakMinutes)) merged.breakMinutes = DEFAULTS.breakMinutes;

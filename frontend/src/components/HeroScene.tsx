@@ -83,7 +83,7 @@ export default function HeroScene() {
 
     const cat = buildCat();
     scene.add(cat);
-    const planets = [planet(0xff5ca8, 0.9, true), planet(0x3bb54a, 0.55, false), planet(0x9b4de0, 0.4, true), planet(0x27e0d8, 0.35, false)];
+    const planets = [planet(0xff5ca8, 0.9, true), planet(0x3bb54a, 0.55, false), planet(0x3b8fd4, 0.4, true), planet(0x27e0d8, 0.35, false)];
     const spots = [[-4.2, 1.6, -2], [4.3, -1.4, -1], [3.2, 2.2, -4], [-3.4, -1.9, -3]];
     planets.forEach((p, i) => {
       p.position.set(spots[i][0], spots[i][1], spots[i][2]);
