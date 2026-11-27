@@ -2,28 +2,29 @@
 @import '@fontsource/atkinson-hyperlegible/400.css';
 @import '@fontsource/atkinson-hyperlegible/700.css';
 
-/* ---- Design tokens: 8-bit arcade, primary yellow ---- */
+/* ---- Design tokens: 8-bit arcade, primary yellow.
+   The base (no data-theme) is the Sky Blue look, the default theme. ---- */
 :root {
   --yellow: #ffcc00;
   --yellow-deep: #e0a800;
-  --ink: #1a1430;
-  --bg: #241b4a;
-  --bg-2: #130d2e;
-  --panel: #2e2360;
-  --panel-light: #413085;
+  --ink: #102a43;
+  --bg: #cfeeff;
+  --bg-2: #a8dcf7;
+  --panel: #ffffff;
+  --panel-light: #e3f4ff;
   --cyan: #27e0d8;
   --pink: #ff5ca8;
   --green: #3bb54a;
   --red: #e83b3b;
-  --white: #fdf6e3;
-  --shadow: #0c0820;
+  --white: #14304d;
+  --shadow: #2a5a80;
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
   --font-read: 'Atkinson Hyperlegible', system-ui, sans-serif;
   --font-ui: var(--font-pixel);
 
   --text: var(--white);
-  --accent: var(--yellow);
+  --accent: #0d5ea8;
   --focus: var(--cyan);
 
   --space: 1rem;
@@ -31,46 +32,29 @@
   --scale: 1;
 
   /* Lively gradients + glows (kept gentle for young eyes) */
-  --grad-hero: linear-gradient(120deg, #3a2a7a 0%, #5a2f8f 45%, #883a7e 100%);
-  --grad-sun: linear-gradient(135deg, #ffcc00 0%, #ff8a1f 100%);
-  --panel-glow: linear-gradient(160deg, #352a72 0%, #2a2057 100%);
-  --glow-cyan: 0 0 0 rgba(0, 0, 0, 0);
-  --heading-shadow: 3px 3px 0 #0c0820;
-  /* Content "screen" behind every page (translucent over the 3D background) */
-  --surface: rgba(14, 9, 36, 0.92);
-  /* Unselected / secondary buttons: must stand out from --surface (>= 3:1) */
-  --btn-ghost: #d9ccff;
-  --btn-ghost-text: #1a1430;
-  /* Small labels that sit on the busy background */
-  --chip-bg: #0c0820;
-  --chip-text: #fdf6e3;
-  /* Frame color for the arcade cabinet around the content */
-  --frame: #7b5cff;
-  --frame-dark: #3a2a7a;
-}
-
-/* ---- Background themes. Light themes flip text to dark for readability.
-   (--white is the "foreground text" token used across the app.) ---- */
-:root[data-theme='sky'] {
-  --bg: #cfeeff;
-  --bg-2: #a8dcf7;
-  --panel: #ffffff;
-  --panel-light: #e3f4ff;
-  --panel-glow: linear-gradient(160deg, #ffffff 0%, #e6f5ff 100%);
   --grad-hero: linear-gradient(120deg, #7cc8f2 0%, #a7e0ff 50%, #c9f0ff 100%);
-  --text: #14304d;
-  --white: #14304d;
-  --accent: #0d5ea8;
-  --frame: #3b8fd4;
-  --frame-dark: #1d5a8f;
-  --shadow: #2a5a80;
+  --grad-sun: linear-gradient(135deg, #ffcc00 0%, #ff8a1f 100%);
+  --panel-glow: linear-gradient(160deg, #ffffff 0%, #e6f5ff 100%);
+  --glow-cyan: 0 0 0 rgba(0, 0, 0, 0);
   --heading-shadow: 2px 2px 0 rgba(255, 255, 255, 0.9);
+  /* Content "screen" behind every page (translucent over the 3D background) */
   --surface: rgba(255, 255, 255, 0.94);
+  /* Unselected / secondary buttons: must stand out from --surface (>= 3:1) */
   --btn-ghost: #1d5a8f;
   --btn-ghost-text: #ffffff;
+  /* Small labels that sit on the busy background */
   --chip-bg: #ffffff;
   --chip-text: #14304d;
+  /* Frame color for the arcade cabinet around the content */
+  --frame: #3b8fd4;
+  --frame-dark: #1d5a8f;
+  /* Border + soft glow on hovered cards and tiles: the theme's dark tone */
+  --hover-ring: var(--frame-dark);
+  --hover-glow: rgba(29, 90, 143, 0.35);
 }
+
+/* ---- Other background themes (Sky Blue is the :root base above).
+   (--white is the "foreground text" token used across the app.) ---- */
 :root[data-theme='mint'] {
   --bg: #d6f5e3;
   --bg-2: #b4ebcc;
@@ -90,6 +74,7 @@
   --btn-ghost-text: #ffffff;
   --chip-bg: #ffffff;
   --chip-text: #13402a;
+  --hover-glow: rgba(27, 107, 67, 0.35);
 }
 :root[data-theme='sunset'] {
   --bg: #ffe3d1;
@@ -110,6 +95,7 @@
   --btn-ghost-text: #ffffff;
   --chip-bg: #ffffff;
   --chip-text: #4a2318;
+  --hover-glow: rgba(168, 68, 31, 0.35);
 }
 
 /* ---- Accessibility: easy-to-read font swaps pixel font everywhere ---- */
@@ -358,8 +344,8 @@ select {
 .card--link:hover,
 .card--link:focus-visible {
   transform: translate(-3px, -4px);
-  box-shadow: 9px 10px 0 var(--shadow), 0 0 18px rgba(39, 224, 216, 0.35);
-  border-color: var(--cyan);
+  box-shadow: 9px 10px 0 var(--shadow), 0 0 18px var(--hover-glow);
+  border-color: var(--hover-ring);
 }
 .card--link:active {
   transform: translate(1px, 1px);
@@ -395,7 +381,7 @@ select {
 }
 .btn--ghost:hover {
   filter: brightness(1.08);
-  box-shadow: 6px 6px 0 var(--shadow), 0 0 14px rgba(155, 77, 224, 0.5);
+  box-shadow: 6px 6px 0 var(--shadow), 0 0 14px var(--hover-glow);
 }
 
 /* ---- Animated gradient hero ---- */
@@ -754,14 +740,14 @@ main > section {
 /* ============ Title screen (PRESS START) ============ */
 .title-screen {
   /* Fixed night palette: themes must never change the title screen. */
-  --title-bg: #1d1442;
-  --title-dim: #c9bfe8;
+  --title-bg: #0e2240;
+  --title-dim: #bcd6f0;
   --text: #fdf6e3;
   --white: #fdf6e3;
-  --panel-light: #413085;
-  --btn-ghost: #413085;
+  --panel-light: #1d4a78;
+  --btn-ghost: #1d4a78;
   --btn-ghost-text: #fdf6e3;
-  --shadow: #0c0820;
+  --shadow: #06142a;
   color: var(--text);
   position: fixed;
   inset: 0;
@@ -769,7 +755,7 @@ main > section {
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: radial-gradient(ellipse at 50% 35%, #4a2f8f 0%, #1d1442 55%, #0c0820 100%);
+  background: radial-gradient(ellipse at 50% 35%, #2f6fb0 0%, #0e2240 55%, #06142a 100%);
 }
 .title-stage {
   position: relative;
@@ -855,7 +841,7 @@ main > section > h1:first-child {
   padding: 0.9rem 1.2rem 1.1rem;
   background: var(--grad-hero);
   border: 4px solid var(--ink);
-  box-shadow: 0 6px 0 #1a1238, 6px 12px 0 var(--shadow);
+  box-shadow: 0 6px 0 var(--frame-dark), 6px 12px 0 var(--shadow);
   transform: perspective(700px) rotateX(5deg);
   transform-origin: bottom;
 }
@@ -949,7 +935,7 @@ main > section > h1:first-child::after {
 }
 .fun-bg__planet {
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, #fff8 0%, var(--c) 35%, #1a1238 100%);
+  background: radial-gradient(circle at 32% 30%, #fff8 0%, var(--c) 35%, #102a43 100%);
   opacity: 0.45;
   animation-name: floaty;
 }
@@ -1176,20 +1162,18 @@ main > section > h1:first-child::after {
   to { background-position: 12px 50%, 24px 50%, 36px 50%; }
 }
 
-/* B: flowing rainbow pixel border on hovered / focused cards and tiles */
+/* B: hovered / focused cards and tiles get a solid border in the theme's
+   dark tone (dark blue on Sky Blue) plus a soft glow of the same color */
 .card--link:hover,
 .card--link:focus-visible,
 .topic-tile:hover,
 .topic-tile:focus-visible {
-  border-color: transparent;
-  background-image: var(--panel-glow), linear-gradient(90deg, #e83b3b, #ff8a1f, #ffcc00, #3bb54a, #27e0d8, #3b7be8, #9b4de0, #e83b3b);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  background-size: 100% 100%, 300% 100%;
-  animation: rainbowFlow 2s linear infinite;
+  border-color: var(--hover-ring);
+  box-shadow: 6px 6px 0 var(--shadow), 0 0 16px var(--hover-glow);
 }
-@keyframes rainbowFlow {
-  to { background-position: 0 0, 300% 0; }
+.card--link:hover,
+.card--link:focus-visible {
+  box-shadow: 9px 10px 0 var(--shadow), 0 0 18px var(--hover-glow);
 }
 
 :root[data-contrast='high'] #main {
@@ -1284,8 +1268,8 @@ main > section > h1:first-child::after {
 
 /* ============ Synthwave title screen ============ */
 .title-screen {
-  --title-bg: #140a3a; /* pill behind the tagline and hint */
-  background: linear-gradient(to bottom, #0b0630 0%, #1c0b4a 35%, #4a1670 62%, #8a2a7e 74%, #1c0b4a 75%, #0b0630 100%);
+  --title-bg: #0a1d3a; /* pill behind the tagline and hint */
+  background: linear-gradient(to bottom, #061430 0%, #0b2a55 35%, #1d5a8f 62%, #3b8fd4 74%, #0b2a55 75%, #061430 100%);
 }
 .title-scene {
   position: absolute;
@@ -1297,17 +1281,17 @@ main > section > h1:first-child::after {
 .title-stage {
   z-index: 2;
 }
-/* Logo: yellow + cyan faces with a pink/purple 3D extrusion, tilts with the mouse */
+/* Logo: yellow + cyan faces with a blue 3D extrusion, tilts with the mouse */
 .title-logo {
   transition: transform 0.15s ease-out;
 }
 .title-logo span {
   color: #ffd84a;
-  text-shadow: 1px 1px 0 #ff9ed0, 2px 2px 0 #ff7dbf, 3px 3px 0 #ff5ca8, 4px 4px 0 #e0439a, 5px 5px 0 #b8338a, 6px 6px 0 #8a2a7e, 9px 9px 0 #0b0630, 0 0 26px rgba(255, 92, 168, 0.55);
+  text-shadow: 1px 1px 0 #9fd3ff, 2px 2px 0 #7cc0f5, 3px 3px 0 #5aa8ea, 4px 4px 0 #3b8fd4, 5px 5px 0 #2a75b8, 6px 6px 0 #1d5a8f, 9px 9px 0 #061430, 0 0 26px rgba(59, 143, 212, 0.55);
 }
 .title-logo span:last-child {
   color: #4ff3ec;
-  text-shadow: 1px 1px 0 #b98cff, 2px 2px 0 #a070ff, 3px 3px 0 #8a5cff, 4px 4px 0 #7247e0, 5px 5px 0 #5a35b8, 6px 6px 0 #3a2a7a, 9px 9px 0 #0b0630, 0 0 26px rgba(39, 224, 216, 0.55);
+  text-shadow: 1px 1px 0 #7fe9f0, 2px 2px 0 #4fcfe0, 3px 3px 0 #2bb3cc, 4px 4px 0 #1f8fb0, 5px 5px 0 #176f94, 6px 6px 0 #0f4f75, 9px 9px 0 #061430, 0 0 26px rgba(39, 224, 216, 0.55);
 }
 .title-tag,
 .title-hint {
@@ -1327,10 +1311,10 @@ main > section > h1:first-child::after {
   position: relative;
   padding: 0;
   border: none;
-  background: #8a2a7e;
+  background: #1d5a8f;
   border-radius: 14px;
   cursor: pointer;
-  box-shadow: 0 0 0 4px #0b0630, 0 10px 0 4px #0b0630, 0 0 30px rgba(255, 92, 168, 0.5);
+  box-shadow: 0 0 0 4px #061430, 0 10px 0 4px #061430, 0 0 30px rgba(59, 143, 212, 0.5);
   transition: box-shadow 0.15s;
 }
 .arcade-btn__top {
@@ -1349,7 +1333,7 @@ main > section > h1:first-child::after {
 }
 .arcade-btn:hover,
 .arcade-btn:focus-visible {
-  box-shadow: 0 0 0 4px #0b0630, 0 10px 0 4px #0b0630, 0 0 46px 6px rgba(255, 92, 168, 0.85), 0 0 80px rgba(39, 224, 216, 0.5);
+  box-shadow: 0 0 0 4px #061430, 0 10px 0 4px #061430, 0 0 46px 6px rgba(59, 143, 212, 0.85), 0 0 80px rgba(39, 224, 216, 0.5);
 }
 .arcade-btn:hover .arcade-btn__top,
 .arcade-btn:focus-visible .arcade-btn__top {
@@ -1372,7 +1356,7 @@ main > section > h1:first-child::after {
   inset: 0;
   z-index: 3;
   pointer-events: none;
-  background: radial-gradient(circle, #fff 0%, #ffe8f6 30%, transparent 70%);
+  background: radial-gradient(circle, #fff 0%, #e3f4ff 30%, transparent 70%);
   opacity: 0;
   animation: flash 1s ease-in forwards;
 }
@@ -1791,22 +1775,13 @@ main > section > h1:first-child::after {
 }
 
 /* ============ Charts (parent dashboard) ============ */
-/* Single-series color validated with the dataviz validator per surface:
-   #3987e5 on the dark card, #2a78d6 on the light themes. */
+/* Single-series color validated with the dataviz validator: #2a78d6 on the
+   light themes (every theme is light now). */
 :root {
-  --viz-series: #3987e5;
-  --viz-grid: rgba(253, 246, 227, 0.16);
-  --viz-ring: #2a2057;
-  --viz-tip-bg: #fdf6e3;
-  --viz-tip-text: #1a1430;
-}
-:root[data-theme='sky'],
-:root[data-theme='mint'],
-:root[data-theme='sunset'] {
   --viz-series: #2a78d6;
   --viz-grid: rgba(0, 0, 0, 0.14);
   --viz-ring: #ffffff;
-  --viz-tip-bg: #1a1430;
+  --viz-tip-bg: #102a43;
   --viz-tip-text: #fdf6e3;
 }
 :root[data-contrast='high'] {
@@ -2053,7 +2028,7 @@ main > section > h1:first-child::after {
   background: #9fe6a8;
 }
 .tag--ok {
-  background: #d9ccff;
+  background: #bfe0ff;
 }
 .tag--focus {
   background: #ffc58a;
@@ -2450,7 +2425,7 @@ main > section > h1:first-child::after {
   display: block;
   width: 70%;
   height: 8px;
-  background: #0c0820;
+  background: #102a43;
   border: 2px solid #fdf6e3;
 }
 .cam-tutorial__bar > span {
@@ -3023,7 +2998,7 @@ main > section > h1:first-child::after {
 
 /* ---- Mewy growing up ---- */
 .mewy--legend {
-  filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.85)) drop-shadow(0 0 14px rgba(155, 77, 224, 0.6));
+  filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.85)) drop-shadow(0 0 14px rgba(59, 143, 212, 0.6));
 }
 .mewy-age {
   display: flex;

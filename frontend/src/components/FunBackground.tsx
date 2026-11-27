@@ -8,7 +8,7 @@ import { Mewy } from './Mewy';
 // Deterministic "random" so shapes stay put between renders (no Math.random in render).
 let seed = 7;
 const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-const COLORS = ['#ffcc00', '#27e0d8', '#ff5ca8', '#9b4de0', '#3bb54a'];
+const COLORS = ['#ffcc00', '#27e0d8', '#ff5ca8', '#3b8fd4', '#3bb54a'];
 const LAYERS = [
   { depth: -260, move: 14, count: 26, size: [3, 6] },
   { depth: -120, move: 30, count: 14, size: [8, 14] },

@@ -30,7 +30,7 @@ const changed: Settings = {
 describe('restoredDefaults', () => {
   it('resets the Settings page preferences', () => {
     expect(restoredDefaults(changed)).toMatchObject({
-      theme: 'purple',
+      theme: 'sky',
       highContrast: false,
       textSize: 'normal',
       sound: true,

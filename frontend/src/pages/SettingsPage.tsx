@@ -11,7 +11,6 @@ import { HOLD_MS, HOLD_SPEEDS } from '../state/holdSpeed';
 import { useSettings, type TextSize, type ThemeId } from '../state/settings';
 
 const THEMES: { id: ThemeId; name: { en: string; id: string }; swatch: string; ink: string }[] = [
-  { id: 'purple', name: { en: 'Purple Night', id: 'Malam Ungu' }, swatch: 'linear-gradient(135deg,#3a2a7a,#883a7e)', ink: '#fdf6e3' },
   { id: 'sky', name: { en: 'Sky Blue', id: 'Langit Biru' }, swatch: 'linear-gradient(135deg,#7cc8f2,#c9f0ff)', ink: '#14304d' },
   { id: 'mint', name: { en: 'Mint Green', id: 'Hijau Mint' }, swatch: 'linear-gradient(135deg,#7fdca4,#dcf9e6)', ink: '#13402a' },
   { id: 'sunset', name: { en: 'Sunset Peach', id: 'Senja Persik' }, swatch: 'linear-gradient(135deg,#ffb38a,#ffe7c2)', ink: '#4a2318' },
